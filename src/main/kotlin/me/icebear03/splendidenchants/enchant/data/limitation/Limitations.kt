@@ -3,13 +3,6 @@ package me.icebear03.splendidenchants.enchant.data.limitation
 import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
 
-/**
- * SplendidEnchants
- * me.icebear03.splendidenchants.enchant.data.limitation.Limitations
- *
- * @author mical
- * @since 2023/6/19 7:39 PM
- */
 class Limitations(vararg lines: String) {
 
     var limitations = arrayListOf<Pair<LimitType, String>>()

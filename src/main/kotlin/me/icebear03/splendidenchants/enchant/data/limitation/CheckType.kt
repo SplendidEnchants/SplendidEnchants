@@ -2,13 +2,6 @@ package me.icebear03.splendidenchants.enchant.data.limitation
 
 import java.util.*
 
-/**
- * SplendidEnchants
- * me.icebear03.splendidenchants.enchant.data.limitation.CheckType
- *
- * @author mical
- * @since 2023/6/19 7:35 PM
- */
 enum class CheckType(vararg types: LimitType) {
 
     //TODO 应当改为可配置 就像2.7那样
