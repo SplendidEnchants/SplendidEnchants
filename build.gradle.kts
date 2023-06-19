@@ -18,6 +18,7 @@ taboolib {
     install("common-5")
     install("module-chat")
     install("module-nms")
+    install("module-kether")
     install("module-configuration")
     install("module-lang")
     install("module-ui")
