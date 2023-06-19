@@ -13,7 +13,7 @@ class Limitations(vararg lines: String) {
 
     // 检查操作是否被允许（比如是否可以附魔到某个物品上、使用时是否可以生效、村民生成新交易等）
     // item 就是跟操作直接有关的物品（如正在被附魔的书、正在使用的剑、生成的新交易中卖出的附魔书等）
-    fun checkAvailable(checkType: CheckType, creature: LivingEntity, item: ItemStack?): Pair<Boolean, String> {
+    fun checkAvailable(checkType: CheckType, creature: LivingEntity, item: ItemStack): Pair<Boolean, String> {
         for (limitation in limitations) {
             val limitType = limitation.first
             val value = limitation.second

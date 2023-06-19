@@ -1,19 +1,16 @@
 package me.icebear03.splendidenchants.enchant.data
 
-class Rarity(private val id: String, private val name: String, private val color: String, private val weight: Double) {
-    fun id(): String {
-        return id
-    }
-
-    fun name(): String {
-        return name
-    }
-
-    fun color(): String {
-        return color
-    }
-
-    fun weight(): Double {
-        return weight
-    } //TODO attainsources在各个配置文件处理
-}
+/**
+ * SplendidEnchants
+ * me.icebear03.splendidenchants.enchant.data.Rarity
+ *
+ * @author HamsterYDS
+ * @since 2023/6/19 9:56 PM
+ */
+data class Rarity(
+    val id: String,
+    val name: String,
+    val color: String,
+    val weight: Double
+)
+// TODO: attainsources 在各个配置文件处理

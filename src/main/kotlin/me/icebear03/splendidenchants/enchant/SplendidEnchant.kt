@@ -1,48 +1,43 @@
 package me.icebear03.splendidenchants.enchant
 
 import me.icebear03.splendidenchants.enchant.data.BasicData
-import me.icebear03.splendidenchants.enchant.data.Rarity
-import me.icebear03.splendidenchants.enchant.data.Target
-import me.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.enchantments.EnchantmentTarget
 import org.bukkit.inventory.ItemStack
 
-class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey) {
-    var basicData: BasicData? = null
-    var limitations: Limitations? = null
-    var rarity: Rarity? = null
-    var target: Target? = null
-    override fun getName(): String {
-        return basicData!!.id
-    }
+/**
+ * SplendidEnchants
+ * me.icebear03.splendidenchants.enchant.SplendidEnchant
+ *
+ * @author HamsterYDS
+ * @since 2023/6/19 10:02 PM
+ */
+class SplendidEnchant(val key: NamespacedKey) : Enchantment(key) {
 
-    override fun getMaxLevel(): Int {
-        return basicData!!.maxLevel
-    }
+    lateinit var basicData: BasicData // Please initialize
 
-    override fun getStartLevel(): Int {
-        return 1
-    }
+    override fun getName(): String = basicData.id
 
-    override fun getItemTarget(): EnchantmentTarget {
-        return EnchantmentTarget.ALL
-    }
+    override fun getMaxLevel(): Int = basicData.maxLevel
+
+    override fun getStartLevel(): Int = 1
+
+    override fun getItemTarget(): EnchantmentTarget = EnchantmentTarget.ALL
 
     override fun isTreasure(): Boolean {
-        return false //TODO 可选数据
+        TODO("Not yet implemented Optional")
     }
 
     override fun isCursed(): Boolean {
-        return false //TODO 可选数据
+        TODO("Not yet implemented Optional")
     }
 
-    override fun conflictsWith(enchantment: Enchantment): Boolean {
-        return false //TODO
+    override fun conflictsWith(p0: Enchantment): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun canEnchantItem(itemStack: ItemStack): Boolean {
-        return true //TODO
+    override fun canEnchantItem(p0: ItemStack): Boolean {
+        TODO("Not yet implemented")
     }
 }
