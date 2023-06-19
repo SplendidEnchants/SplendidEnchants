@@ -1,9 +1,14 @@
 package hamsteryds.splendidenchants.enchants
 
-import org.bukkit.plugin.java.JavaPlugin
+import taboolib.common.platform.Plugin
+import taboolib.common.platform.function.info
+import taboolib.common.platform.function.releaseResourceFile
 
-open class SplendidEnchants : JavaPlugin() {
+object SplendidEnchants : Plugin() {
+
     override fun onEnable() {
-        logger.info("SplendidEnchants in Kotlin loaded!")
+        releaseResourceFile("nmsl.yml")
+        EnchantmentLoader.initialize()
+        info("Successfully running ExamplePlugin!")
     }
 }

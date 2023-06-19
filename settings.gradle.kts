@@ -1,3 +1,1 @@
-
-rootProject.name = "SplendidEnchants"
-
+rootProject.name="SplendidEnchants"
