@@ -22,9 +22,9 @@ enum class CheckType(vararg types: LimitType) {
     ANVIL(LimitType.CONFLICT, LimitType.DEPENDENCE), // 进行铁砧拼合物品附魔时
     USE(LimitType.CONFLICT, LimitType.DEPENDENCE); // 使用物品上的附魔时
 
-    val limitTypes: MutableSet<LimitType> = HashSet()
+    val limitTypes = hashSetOf<LimitType>()
 
     init {
-        limitTypes.addAll(Arrays.asList(*types))
+        limitTypes.addAll(types)
     }
 }
