@@ -25,6 +25,6 @@ enum class CheckType(vararg types: LimitType) {
     val limitTypes = hashSetOf<LimitType>()
 
     init {
-        limitTypes.addAll(types)
+        limitTypes.addAll(arrayListOf(*types))
     }
 }
