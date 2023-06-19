@@ -1,0 +1,40 @@
+id: test
+name: "测试附魔"
+maxLevel: 2
+description:
+  general: "每击杀若干只怪物后，下一次攻击伤害增加"
+  leveled: "每击杀{amount}只怪物后，下一次攻击伤害增加{percent}%"
+
+rarity: epic
+#可选，默认为true
+grindstoneable: false
+#可选，默认为1
+weight: 0.85
+
+limitations:
+  #- "PAPI_EXPRESSION:%player_level%>=30"
+  #- "PERMISSION:splendidenchants.enchant.test.use"
+  - "CONFLICT:锋利"
+  - "DEPENDENCE: 亡灵杀手"
+
+#TODO 创造共同默认的display设置处
+params:
+  击杀累计: 3-level
+  伤害提升百分比: 30*level
+
+#TODO 这里是初始值，应支持int、double、String等类型
+variable:
+  当前累计: 0
+
+#TODO 创造共同默认的display设置处
+displayers:
+  - "{public} &7当前(§e{当前累计}§7/§a{击杀累计}§7)"
+
+mechanisms:
+  listeners:
+    KILLMOB:
+      - "{当前累计}={当前累计}+1"
+    ATTACK:
+      - "{当前累计}>={击杀累计}"
+      - "{当前累计}=0"
+      - "damage=damage*(1+伤害提升百分比/100)"

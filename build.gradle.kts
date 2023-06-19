@@ -8,7 +8,7 @@ plugins {
 taboolib {
     description {
         contributors {
-            name("白熊")
+            name("大白熊_IceBear")
             name("xiaozhangup")
             name("Mical")
         }
