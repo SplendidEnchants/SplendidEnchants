@@ -4,6 +4,8 @@ maxLevel: 2
 description:
   general: "每击杀若干只怪物后，下一次攻击伤害增加"
   leveled: "每击杀{amount}只怪物后，下一次攻击伤害增加{percent}%"
+targets:
+  - swords
 
 rarity: epic
 #可选，默认为true

@@ -29,14 +29,25 @@ class Limitations(vararg lines: String) {
                     else false to "{limit.conflict} || enchant=$value"
                 }
 
-                LimitType.CONFLICT -> false to "{limit.conflict} || enchant=$value"
+                //TODO
+                LimitType.CONFLICT_ENCHANT -> false to "{limit.conflict} || enchant=$value"
 
-                LimitType.DEPENDENCE -> false to "{limit.dependence} || enchant=$value"
+                //TODO
+                LimitType.DEPENDENCE_ENCHANT -> false to "{limit.dependence} || enchant=$value"
+
+                //TODO
+                LimitType.CONFLICT_GROUP -> false to "{limit.conflict} || enchant=$value"
+
+                //TODO
+                LimitType.DEPENDENCE_GROUP -> false to "{limit.dependence} || enchant=$value"
             }
         }
         return true to ""
     }
 
-    // TODO: 添加 limitation
+    fun addLimitation(limitType: LimitType,value: String){
+        limitations.add(limitType to value)
+    }
+
     // TODO: 根据 limitation生成附魔介绍（GUI（附属中）、文字输出等）
 }
