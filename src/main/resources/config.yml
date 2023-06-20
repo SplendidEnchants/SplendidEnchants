@@ -1,0 +1,4 @@
+# 默认使用 TabooLib 语言文本解析
+# 若此项配置为 true, 则对语言文本解析 MiniMessage, 且不允许出现原版颜色符号
+# 默认为 false
+use_mini_message: false

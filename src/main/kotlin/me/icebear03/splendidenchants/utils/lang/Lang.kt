@@ -1,7 +1,27 @@
 package me.icebear03.splendidenchants.utils.lang
 
+import me.icebear03.splendidenchants.SplendidConfig
+import net.kyori.adventure.text.minimessage.MiniMessage
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.ProxyPlayer
+
+val adventure by lazy { MiniMessage.miniMessage() }
+
+fun ProxyCommandSender.sendMsg(message: String) {
+    val component = adventure.deserialize(message)
+    if (SplendidConfig.useMiniMessage) {
+        if (this is ProxyPlayer) {
+            castSafely<Player>()?.sendMessage(component)
+        } else {
+            // 不是玩家就是控制台, 故不做判断了
+            Bukkit.getConsoleSender().sendMessage(component)
+        }
+    } else {
+        sendMessage(message)
+    }
+}
 
 fun ProxyCommandSender.sendLang(node: String, vararg args: Any) {
     val file = getLocaleFile()

@@ -35,7 +35,7 @@ class TypeText : Type {
 
     override fun send(sender: ProxyCommandSender, vararg args: Any) {
         if (text != null) {
-            sender.sendMessage(text!!.translate(sender, *args).replaceWithOrder(*args))
+            sender.sendMsg(text!!.translate(sender, *args).replaceWithOrder(*args))
         }
     }
 
