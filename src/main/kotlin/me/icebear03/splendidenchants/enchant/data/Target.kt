@@ -1,26 +1,21 @@
 package me.icebear03.splendidenchants.enchant.data
 
 import org.bukkit.Material
+import org.bukkit.inventory.EquipmentSlot
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * SplendidEnchants
- * me.icebear03.splendidenchants.enchant.data.Target
- *
- * @author HamsterYDS
- * @since 2023/6/19 9:57 PM
- */
 data class Target(
     val id: String,
     val name: String,
     val capability: Int,
+    val slot: EquipmentSlot,
     val typeNames: List<String>
 ) {
 
     val types = typeNames.map { Material.valueOf(it) }
 
     init {
-        TODO("INITIALIZE from targets.yml")
+        TODO("INITIALIZE from target.yml")
     }
 
     fun maxCapability(type: Material): Int {
@@ -33,8 +28,5 @@ data class Target(
         return ans
     }
 
-    companion object {
-
-        val targets = ConcurrentHashMap<String, Target>()
-    }
+    val targets = ConcurrentHashMap<String, Target>()
 }

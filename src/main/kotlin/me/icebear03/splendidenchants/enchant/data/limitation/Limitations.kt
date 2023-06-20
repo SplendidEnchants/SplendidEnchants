@@ -1,5 +1,10 @@
 package me.icebear03.splendidenchants.enchant.data.limitation
 
+import me.icebear03.splendidenchants.api.EnchantAPI
+import me.icebear03.splendidenchants.api.ItemAPI
+import me.icebear03.splendidenchants.enchant.EnchantGroup
+import me.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
 
@@ -15,39 +20,87 @@ class Limitations(vararg lines: String) {
     // item 就是跟操作直接有关的物品（如正在被附魔的书、正在使用的剑、生成的新交易中卖出的附魔书等）
     fun checkAvailable(checkType: CheckType, creature: LivingEntity, item: ItemStack): Pair<Boolean, String> {
         for (limitation in limitations) {
+            if (!checkType.containsType(limitation.first))
+                continue
+
             val limitType = limitation.first
             val value = limitation.second
-            return when (limitType) {
-                LimitType.PAPI_EXPRESSION ->
+            when (limitType) {
+                PAPI_EXPRESSION ->
                     //TODO papi 表达式的处理
                     //TODO 返回信息记得 replace 中文，比如 %player_level%>=30 应当翻译为 "经验等级>=30"
-                    false to "{limit.papi_expression}"
+                    return false to "{limit.papi_expression}"
 
-                LimitType.PERMISSION -> {
+                PERMISSION -> {
                     if (!creature.hasPermission(value))
-                        false to "{limit.permission} || permission=$value"
-                    else false to "{limit.conflict} || enchant=$value"
+                        return false to "{limit.permission} || permission=$value"
                 }
 
-                //TODO
-                LimitType.CONFLICT_ENCHANT -> false to "{limit.conflict} || enchant=$value"
-
-                //TODO
-                LimitType.DEPENDENCE_ENCHANT -> false to "{limit.dependence} || enchant=$value"
-
-                //TODO
-                LimitType.CONFLICT_GROUP -> false to "{limit.conflict} || enchant=$value"
-
-                //TODO
-                LimitType.DEPENDENCE_GROUP -> false to "{limit.dependence} || enchant=$value"
+                CONFLICT_ENCHANT, DEPENDENCE_ENCHANT, CONFLICT_GROUP, DEPENDENCE_GROUP -> {
+                    var result: Pair<Boolean, String> = checkAvailable(item)
+                    if (!result.first)
+                        return result
+                }
             }
         }
         return true to ""
     }
 
-    fun addLimitation(limitType: LimitType,value: String){
-        limitations.add(limitType to value)
+    fun checkAvailable(item: ItemStack): Pair<Boolean, String> {
+        for (limitation in limitations) {
+            val limitType = limitation.first
+            val value = limitation.second
+            when (limitType) {
+                CONFLICT_ENCHANT -> {
+                    if (ItemAPI.containsEnchant(item, EnchantAPI.getSplendidEnchant(value)))
+                        return false to "{limit.conflict} || enchant=$value"
+                }
+
+                DEPENDENCE_ENCHANT -> {
+                    if (!ItemAPI.containsEnchant(item, EnchantAPI.getSplendidEnchant(value)))
+                        return false to "{limit.conflict} || enchant=$value"
+                }
+
+                CONFLICT_GROUP -> {
+                    ItemAPI.getEnchants(item).keys.forEach { enchant ->
+                        if (EnchantGroup.isIn(enchant, value))
+                            return false to "{limit.conflict} || enchant=$value"
+                    }
+                }
+
+                DEPENDENCE_GROUP -> {
+                    var flag: Boolean = false
+                    ItemAPI.getEnchants(item).keys.forEach { enchant ->
+                        if (EnchantGroup.isIn(enchant, value))
+                            flag = true
+                    }
+                    if (!flag)
+                        return false to "{limit.dependence} || enchant=$value"
+                }
+
+                PAPI_EXPRESSION, PERMISSION -> {}
+            }
+        }
+        return true to ""
     }
 
-    // TODO: 根据 limitation生成附魔介绍（GUI（附属中）、文字输出等）
+    fun conflictWith(enchant: Enchantment): Boolean {
+        for (limitation in limitations) {
+            val limitType = limitation.first
+            val value = limitation.second
+            if (limitType == CONFLICT_GROUP) {
+                if (value == EnchantAPI.getName(enchant))
+                    return true
+            }
+            if (limitType == CONFLICT_ENCHANT) {
+                if (EnchantGroup.isIn(enchant, value))
+                    return true
+            }
+        }
+        return false
+    }
+
+    fun addLimitation(limitType: LimitType, value: String) {
+        limitations.add(limitType to value)
+    }
 }

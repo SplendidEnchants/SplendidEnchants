@@ -1,0 +1,32 @@
+common:
+  name: 普通
+  color: §7
+  weight: 500
+uncommon:
+  name: 罕见
+  color: §a
+  weight: 500
+rare:
+  name: 精良
+  color: §b
+  weight: 250
+epic:
+  name: 史诗
+  color: §d
+  weight: 50
+legendary:
+  name: 传奇
+  color: §6
+  weight: 10
+splendid:
+  name: 稀世
+  color: §e
+  weight: 5
+curse:
+  name: 诅咒
+  color: §c
+  weight: 25
+artifact:
+  name: 皮肤
+  color: §7
+  weight: 1
