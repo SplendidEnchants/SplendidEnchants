@@ -1,6 +1,7 @@
 package me.icebear03.splendidenchants.enchant.data.limitation
 
 enum class CheckType(vararg types: LimitType) {
+
     //TODO 应当改为可配置 就像2.7那样
     ATTAIN(
         LimitType.PAPI_EXPRESSION,

@@ -1,6 +1,7 @@
 package me.icebear03.splendidenchants.enchant.data.limitation
 
 enum class LimitType(val typeName: String) {
+
     // TODO: 应当自定义语言
     PAPI_EXPRESSION("表达式"), // 如 %player_level%>=30
     PERMISSION("权限"), // 如 splendidenchants.use

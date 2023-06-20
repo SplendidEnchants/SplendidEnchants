@@ -21,6 +21,7 @@ class SplendidEnchant(val key: NamespacedKey) : Enchantment(key) {
     lateinit var rarity: Rarity
     lateinit var target: Target
     lateinit var limitations: Limitations
+
     override fun translationKey(): String = basicData.id
 
     override fun getName(): String = basicData.id
@@ -51,5 +52,5 @@ class SplendidEnchant(val key: NamespacedKey) : Enchantment(key) {
 
     override fun getDamageIncrease(level: Int, entityCategory: EntityCategory): Float = 0.0f
 
-    override fun getActiveSlots(): MutableSet<EquipmentSlot> = HashSet()
+    override fun getActiveSlots(): MutableSet<EquipmentSlot> = hashSetOf()
 }

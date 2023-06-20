@@ -7,5 +7,6 @@ data class BasicData(
     val name: String,
     val maxLevel: Int
 ) {
+
     val key: NamespacedKey = NamespacedKey.fromString(id, null) ?: error("minecraft")
 }

@@ -8,11 +8,13 @@ data class Rarity(
     val color: String,
     val weight: Double
 ) {
+
     init {
         TODO("INITIALIZE from rarity.yml")
     }
 
     companion object {
+
         val rarities = ConcurrentHashMap<String, Rarity>()
     }
 }
