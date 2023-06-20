@@ -30,6 +30,6 @@ object YamlUpdater {
     }
 }
 
-fun Configuration.loadAndUpdate(path: String, whitelist: List<String>): Configuration {
+fun Configuration.Companion.loadAndUpdate(path: String, whitelist: List<String>): Configuration {
     return YamlUpdater.loadAndUpdate(path, whitelist)
 }
