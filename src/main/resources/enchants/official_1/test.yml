@@ -10,8 +10,7 @@ rarity: epic
 limitations:
   #- "PAPI_EXPRESSION:%player_level%>=30"
   #- "PERMISSION:splendidenchants.enchant.test.use"
-  - "CONFLICT:锋利"
-  - "DEPENDENCE: 亡灵杀手"
+  - "CONFLICT_GROUP:原版增伤附魔"
 
 #TODO 创造共同默认的display设置处
 description:
