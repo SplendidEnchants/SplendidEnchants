@@ -1,6 +1,6 @@
 package taboolib.module.lang
 
-import me.icebear03.splendidenchants.SplendidConfig
+import me.icebear03.splendidenchants.Config
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -11,7 +11,7 @@ val adventure by lazy { MiniMessage.miniMessage() }
 
 fun ProxyCommandSender.sendMsg(message: String) {
     val component = adventure.deserialize(message)
-    if (SplendidConfig.useMiniMessage) {
+    if (Config.useMiniMessage) {
         if (this is ProxyPlayer) {
             castSafely<Player>()?.sendMessage(component)
         } else {
@@ -59,9 +59,11 @@ fun ProxyCommandSender.asLangTextList(node: String, vararg args: Any): List<Stri
                 val text = type.asText(this, *args)
                 if (text != null) listOf(text) else emptyList()
             }
+
             is TypeList -> {
                 type.asTextList(this, *args)
             }
+
             else -> {
                 listOf("{$node}")
             }
