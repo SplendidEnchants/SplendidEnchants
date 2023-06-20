@@ -20,7 +20,6 @@ taboolib {
     install("module-nms")
     install("module-kether")
     install("module-configuration")
-    install("module-lang")
     install("module-ui")
     install("platform-bukkit")
     install("expansion-command-helper")
