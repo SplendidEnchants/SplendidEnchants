@@ -1,6 +1,7 @@
 package me.icebear03.splendidenchants.enchant.data
 
 import me.icebear03.splendidenchants.Config
+import me.icebear03.splendidenchants.util.loadAndUpdate
 import org.bukkit.Material
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.function.info
@@ -28,23 +29,19 @@ data class Target(
     }
 
     companion object {
+
         val targets = ConcurrentHashMap<String, Target>()
 
         fun initialize() {
-            val targetConfig: Configuration = Config.updateAndGetResource("enchants/target.yml")
-            for (id in targetConfig.getKeys(false)) run {
-                val activeSlots = HashSet<EquipmentSlot>()
-                for (string in targetConfig.getStringList("$id.active_slots")) {
-                    activeSlots.add(EquipmentSlot.valueOf(string))
-                }
-                val target = Target(
-                    id,
-                    targetConfig.getString("$id.name")!!,
-                    targetConfig.getInt("$id.max")!!,
-                    activeSlots,
-                    targetConfig.getStringList("$id.types")
+            val targetConfig = Configuration.loadAndUpdate("enchants/target.yml", listOf()) // TODO: 白名单列表
+            targetConfig.getKeys(false).forEach {
+                targets[it] = Target(
+                    it,
+                    targetConfig.getString("$it.name")!!,
+                    targetConfig.getInt("$it.max"),
+                    targetConfig.getStringList("$it.active_slots").map { s -> EquipmentSlot.valueOf(s) }.toSet(),
+                    targetConfig.getStringList("$it.types")
                 )
-                targets.put(id, target)
             }
             info("调试信息：加载附魔对象成功，共${Rarity.rarities.size}种对象！")
         }

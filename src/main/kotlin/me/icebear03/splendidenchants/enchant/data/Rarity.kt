@@ -1,6 +1,6 @@
 package me.icebear03.splendidenchants.enchant.data
 
-import me.icebear03.splendidenchants.Config
+import me.icebear03.splendidenchants.util.loadAndUpdate
 import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
 import java.util.concurrent.ConcurrentHashMap
@@ -16,15 +16,14 @@ data class Rarity(
         val rarities = ConcurrentHashMap<String, Rarity>()
 
         fun initialize() {
-            val rarityConfig: Configuration = Config.updateAndGetResource("enchants/rarity.yml")
-            for (id in rarityConfig.getKeys(false)) run {
-                var rarity = Rarity(
-                    id,
-                    rarityConfig.getString("$id.name")!!,
-                    rarityConfig.getString("$id.color")!!,
-                    rarityConfig.getDouble("$id.weight")
+            val rarityConfig = Configuration.loadAndUpdate("enchants/rarity.yml", listOf()) // TODO: 白名单列表
+            rarityConfig.getKeys(false).forEach {
+                rarities[it] = Rarity(
+                    it,
+                    rarityConfig.getString("$it.name")!!,
+                    rarityConfig.getString("$it.color")!!,
+                    rarityConfig.getDouble("$it.weight")
                 )
-                rarities.put(id, rarity)
             }
             info("调试信息：加载品质成功，共${rarities.size}个品质！")
         }
