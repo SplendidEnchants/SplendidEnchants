@@ -1,4 +1,4 @@
-package me.icebear03.splendidenchants.utils.lang
+package taboolib.module.lang
 
 import me.icebear03.splendidenchants.SplendidConfig
 import net.kyori.adventure.text.minimessage.MiniMessage

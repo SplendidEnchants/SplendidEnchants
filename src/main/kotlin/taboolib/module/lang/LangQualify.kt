@@ -1,6 +1,6 @@
 @file:Isolated
 
-package me.icebear03.splendidenchants.utils.lang
+package taboolib.module.lang
 
 import taboolib.common.Isolated
 import taboolib.common.platform.ProxyCommandSender

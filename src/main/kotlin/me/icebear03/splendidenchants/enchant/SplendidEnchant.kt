@@ -14,7 +14,7 @@ import org.bukkit.entity.EntityCategory
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
-class SplendidEnchant(val key: NamespacedKey) : Enchantment(key) {
+class SplendidEnchant(val namespacedKey: NamespacedKey) : Enchantment(namespacedKey) {
 
     lateinit var basicData: BasicData
     lateinit var alternativeData: AlternativeData

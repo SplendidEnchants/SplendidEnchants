@@ -1,4 +1,4 @@
-package me.icebear03.splendidenchants.utils.lang.event
+package taboolib.module.lang.event
 
 import taboolib.common.platform.ProxyPlayer
 import taboolib.common.platform.event.ProxyEvent

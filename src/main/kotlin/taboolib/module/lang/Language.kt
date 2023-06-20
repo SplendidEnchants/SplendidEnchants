@@ -1,4 +1,4 @@
-package me.icebear03.splendidenchants.utils.lang
+package taboolib.module.lang
 
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake

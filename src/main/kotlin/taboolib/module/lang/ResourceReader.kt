@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package me.icebear03.splendidenchants.utils.lang
+package taboolib.module.lang
 
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.common.platform.function.submit
