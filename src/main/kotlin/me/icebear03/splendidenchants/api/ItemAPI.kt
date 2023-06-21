@@ -1,8 +1,10 @@
 package me.icebear03.splendidenchants.api
 
 import me.icebear03.splendidenchants.enchant.SplendidEnchant
+import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 
 object ItemAPI {
 
@@ -21,5 +23,16 @@ object ItemAPI {
         if (item.itemMeta == null) return false
         val meta = item.itemMeta
         return meta.getEnchantLevel(enchant) > 0
+    }
+
+    fun <T, Z> getItemData(item: ItemStack?, dataKey: String, type: PersistentDataType<T, Z>): Z? {
+        if (item == null) return null
+        if (item.itemMeta == null) return null
+        val meta = item.itemMeta
+        val pdc = meta.persistentDataContainer
+        val key = NamespacedKey.fromString("splendidenchant_$dataKey")!!
+        if (!pdc.has(key, type))
+            return null
+        return pdc.get(key, type)
     }
 }

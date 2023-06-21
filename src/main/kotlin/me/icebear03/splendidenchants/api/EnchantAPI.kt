@@ -16,4 +16,10 @@ object EnchantAPI {
     fun getName(enchant: Enchantment): String {
         return getSplendidEnchant(enchant).basicData.name
     }
+
+    fun getId(enchant: Enchantment): String {
+        return getSplendidEnchant(enchant).basicData.id
+    }
+
+    fun isSame(a: Enchantment, b: Enchantment): Boolean = getId(a) == getId(b)
 }

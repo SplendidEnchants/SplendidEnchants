@@ -3,16 +3,21 @@ package me.icebear03.splendidenchants.enchant.data.limitation
 import me.icebear03.splendidenchants.api.EnchantAPI
 import me.icebear03.splendidenchants.api.ItemAPI
 import me.icebear03.splendidenchants.enchant.EnchantGroup
+import me.icebear03.splendidenchants.enchant.SplendidEnchant
 import me.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
 
-class Limitations(vararg lines: String) {
+class Limitations(enchant: SplendidEnchant, vararg lines: String) {
+
+    //TODO 有没有更好的方法从limitation反找splendidenchant
+    var belonging: SplendidEnchant
 
     var limitations = arrayListOf<Pair<LimitType, String>>()
 
     init {
+        belonging = enchant
         lines.forEach { limitations.add(LimitType.valueOf(it.split(":")[0]) to it.split(":")[1]) }
     }
 
@@ -63,7 +68,7 @@ class Limitations(vararg lines: String) {
 
                 CONFLICT_GROUP -> {
                     ItemAPI.getEnchants(item).keys.forEach { enchant ->
-                        if (EnchantGroup.isIn(enchant, value))
+                        if (!EnchantAPI.isSame(enchant, belonging) && EnchantGroup.isIn(enchant, value))
                             return false to "{limit.conflict} || enchant=$value"
                     }
                 }
@@ -71,7 +76,7 @@ class Limitations(vararg lines: String) {
                 DEPENDENCE_GROUP -> {
                     var flag: Boolean = false
                     ItemAPI.getEnchants(item).keys.forEach { enchant ->
-                        if (EnchantGroup.isIn(enchant, value))
+                        if (!EnchantAPI.isSame(enchant, belonging) && EnchantGroup.isIn(enchant, value))
                             flag = true
                     }
                     if (!flag)

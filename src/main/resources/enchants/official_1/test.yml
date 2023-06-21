@@ -13,9 +13,13 @@ limitations:
   - "CONFLICT_GROUP:原版增伤附魔"
 
 #TODO 创造共同默认的display设置处
-description:
-  general: "每击杀若干只怪物后，下一次攻击伤害增加"
-  leveled: "每击杀 $击杀累计 只怪物后，下一次攻击伤害增加 $伤害提升百分比%"
+display:
+  #若无format，自动跟从
+  format: "$default_previous &7当前(§e$当前累计}§7/§a$击杀累计}§7) $default_subsequent"
+  description:
+    general: "每击杀若干只怪物后，下一次攻击伤害增加"
+    #若无specific，自动跟从general
+    specific: "每击杀 $击杀累计 只怪物后，下一次攻击伤害增加 $伤害提升百分比%"
 
 ###以下是可选的配置
 #可选，默认为true
@@ -31,16 +35,23 @@ is_tradeable: false
 #可选，默认为true
 is_discoverable: true
 #可选，默认跟从大配置中的默认
-display_format: "$default &7当前(§e$当前累计}§7/§a$击杀累计}§7)"
 
 #TODO 创造共同默认的display设置处
-params:
-  击杀累计: 3-level
-  伤害提升百分比: 30*level
+variables:
+  #跟等级有关的
+  leveled:
+    击杀累计: 3-level
+    伤害提升百分比: 30*level
+  #跟玩家有关的
+  player_related:
+    等级: %player_level%
+  #跟物品数据有关的 key=初始值
+  #规范：key=附魔id_变量英文翻译
+  #注意小写，空格由下划线代替
+  modifiable:
+    当前累计: test_current_total=0
 
 #TODO 这里是初始值，应支持int、double、String等类型
-variable:
-  当前累计: 0
 
 mechanisms:
   listeners:
