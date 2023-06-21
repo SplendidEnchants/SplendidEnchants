@@ -56,8 +56,8 @@ variables:
 mechanisms:
   listeners:
     KILLMOB:
-      - "$当前累计=$当前累计+1"
+      - "[赋值]$当前累计=$当前累计+1"
     ATTACK:
-      - "$当前累计>=$击杀累计"
-      - "$当前累计=0"
-      - "damage=damage*(1+$伤害提升百分比/100)"
+      - "[条件]$当前累计>=$击杀累计"
+      - "[赋值]$当前累计=0"
+      - "[赋值]damage_high=damage_high*(1+$伤害提升百分比/100)"
