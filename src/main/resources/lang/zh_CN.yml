@@ -1,7 +1,6 @@
-limit_type:
-  papi_expression: "表达式"
-  permission: "权限"
-  conflict_enchant: "冲突"
-  conflict_group: "冲突"
-  dependent_enchant: "依赖"
-  dependent_group: "依赖"
+limit_type_papi_expression: "表达式"
+limit_type_permission: "权限"
+limit_type_conflict_enchant: "冲突"
+limit_type_conflict_group: "冲突"
+limit_type_dependent_enchant: "依赖"
+limit_type_dependent_group: "依赖"

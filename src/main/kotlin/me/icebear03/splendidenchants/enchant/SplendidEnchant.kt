@@ -18,7 +18,7 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import taboolib.common.util.replaceWithOrder
-import taboolib.module.configuration.ConfigSection
+import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.kether.compileToJexl
 import java.util.concurrent.ConcurrentHashMap
 
@@ -64,9 +64,8 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
 
     override fun getActiveSlots(): MutableSet<EquipmentSlot> = hashSetOf()
 
-    data class Displayer(
-        val displayerConfig: ConfigSection
-    ) {
+    inner class Displayer(val displayerConfig: ConfigurationSection) {
+
         val displayFormat = displayerConfig.getString("format")!!
         private val generalDescription = displayerConfig.getString("description.general")!!
         private val specificDescription =
@@ -76,8 +75,8 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
 
         fun getSpecificDescription(level: Int, player: Player?, item: ItemStack?): String {
             return specificDescription.replaceWithOrder(
-                SplendidEnchant.this.variable.generateReplaceMap(level, player, item)
-                //TODO ? 怎么改成Kotlin
+                variable.generateReplaceMap(level, player, item)
+                // 也可以为: this@SplendidEnchant.variable.generateReplaceMap(level, player, item)
             )
         }
         // TODO: 读取 display.yml 中的 $default
@@ -85,7 +84,7 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
     }
 
     data class Variable(
-        val variableConfig: ConfigSection
+        val variableConfig: ConfigurationSection
     ) {
         //所有变量 变量名 - 类型(leveled,player_related,modifiable)
         val variableSet = ConcurrentHashMap<String, String>()
@@ -119,13 +118,11 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
         }
 
         private fun leveled(variable: String, level: Int?): String {
-            if (level == null) return variable
-            return leveled[variable]!!.compileToJexl().eval(mapOf("level" to level)).toString()
+            return if (level == null) variable else leveled[variable]!!.compileToJexl().eval(mapOf("level" to level)).toString()
         }
 
         private fun playerRelated(variable: String, player: Player?): String {
-            if (player == null) return variable
-            return PlayerAPI.convertPlaceHolders(variable, player)
+            return if (player == null) variable else PlayerAPI.convertPlaceHolders(variable, player)
         }
 
         private fun modifiable(variable: String, item: ItemStack?): String {
@@ -135,8 +132,8 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
         }
 
         fun generateReplaceMap(level: Int?, player: Player?, item: ItemStack?): List<Pair<String, String>> {
-            val list = ArrayList<Pair<String, String>>()
-            variableSet.forEach() {
+            val list = arrayListOf<Pair<String, String>>()
+            variableSet.forEach {
                 when (it.value) {
                     "leveled" -> {
                         list.add(it.key to leveled(it.key, level))

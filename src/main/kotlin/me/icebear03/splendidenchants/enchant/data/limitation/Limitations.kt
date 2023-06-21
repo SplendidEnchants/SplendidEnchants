@@ -9,14 +9,14 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
 
-class Limitations(enchant: SplendidEnchant, vararg lines: String) {
+class Limitations {
 
     //TODO 有没有更好的方法从limitation反找splendidenchant
     var belonging: SplendidEnchant
 
     var limitations = arrayListOf<Pair<LimitType, String>>()
 
-    init {
+    constructor(enchant: SplendidEnchant, vararg lines: String) {
         belonging = enchant
         lines.forEach { limitations.add(LimitType.valueOf(it.split(":")[0]) to it.split(":")[1]) }
     }
@@ -74,7 +74,7 @@ class Limitations(enchant: SplendidEnchant, vararg lines: String) {
                 }
 
                 DEPENDENCE_GROUP -> {
-                    var flag: Boolean = false
+                    var flag = false
                     ItemAPI.getEnchants(item).keys.forEach { enchant ->
                         if (!EnchantAPI.isSame(enchant, belonging) && EnchantGroup.isIn(enchant, value))
                             flag = true
