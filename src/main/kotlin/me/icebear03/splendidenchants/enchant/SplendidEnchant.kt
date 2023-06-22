@@ -113,26 +113,20 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         init {
             if (variableConfig != null) {
                 var section = variableConfig.getConfigurationSection("leveled")
-                if (section != null) {
-                    section.getKeys(false).forEach {
-                        leveled[it] = section!!.getString(it)!!
-                        variableSet[it] = "leveled"
-                    }
+                section?.getKeys(false)?.forEach {
+                    leveled[it] = section!!.getString(it)!!
+                    variableSet[it] = "leveled"
                 }
                 section = variableConfig.getConfigurationSection("player_related")
-                if (section != null) {
-                    section.getKeys(false).forEach {
-                        playerRelated[it] = section!!.getString(it)!!
-                        variableSet[it] = "player_related"
-                    }
+                section?.getKeys(false)?.forEach {
+                    playerRelated[it] = section!!.getString(it)!!
+                    variableSet[it] = "player_related"
                 }
                 section = variableConfig.getConfigurationSection("modifiable")
-                if (section != null) {
-                    section.getKeys(false).forEach {
-                        val tmp = section.getString(it)!!
-                        modifiable[it] = tmp.split("=")[0] to tmp.split("=")[1]
-                        variableSet[it] = "modifiable"
-                    }
+                section?.getKeys(false)?.forEach {
+                    val tmp = section.getString(it)!!
+                    modifiable[it] = tmp.split("=")[0] to tmp.split("=")[1]
+                    variableSet[it] = "modifiable"
                 }
             }
         }
