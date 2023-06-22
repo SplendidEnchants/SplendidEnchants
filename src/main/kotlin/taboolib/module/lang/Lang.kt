@@ -19,6 +19,13 @@ fun ProxyCommandSender.sendMsg(message: String) {
             Bukkit.getConsoleSender().sendMessage(component)
         }
     } else {
+        var msg = message
+        val lowercase = message.lowercase()
+        when {
+            lowercase.startsWith("[actionbar]") -> {
+                msg = message.substring(message.indexOf("]"), message.length)
+            }
+        }
         sendMessage(message)
     }
 }

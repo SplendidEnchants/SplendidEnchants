@@ -42,8 +42,11 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
 
     compileOnly("ink.ptms:nms-all:1.0.0")
-    compileOnly("ink.ptms.core:v11902:11902-minimize:mapped")
-    compileOnly("ink.ptms.core:v11902:11902-minimize:universal")
+    compileOnly("ink.ptms.core:v11605:11605")
+    compileOnly("ink.ptms.core:v11904:11904:mapped")
+    compileOnly("ink.ptms.core:v11904:11904:universal")
+    compileOnly("ink.ptms.core:v12001:12001:mapped")
+    compileOnly("ink.ptms.core:v12001:12001:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }
