@@ -29,7 +29,7 @@ data class Rarity(
             }
             info("调试信息：加载品质成功，共${rarities.size}个品质！")
 
-            defaultRarity = rarities[""]!!
+            defaultRarity = rarities["common"]!! //TODO
         }
 
         fun fromIdOrName(idOrName: String): Rarity {
