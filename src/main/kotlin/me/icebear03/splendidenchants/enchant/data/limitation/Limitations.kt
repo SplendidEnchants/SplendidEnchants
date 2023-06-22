@@ -16,7 +16,7 @@ class Limitations {
 
     var limitations = arrayListOf<Pair<LimitType, String>>()
 
-    constructor(enchant: SplendidEnchant, vararg lines: String) {
+    constructor(enchant: SplendidEnchant, lines: List<String>) {
         belonging = enchant
         lines.forEach { limitations.add(LimitType.valueOf(it.split(":")[0]) to it.split(":")[1]) }
     }

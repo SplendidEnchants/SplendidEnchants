@@ -1,18 +1,23 @@
 #以下是每个附魔都应有的配置
-id: test
-name: "测试附魔"
-max_level: 2
+basic:
+  id: test
+  name: "测试附魔"
+  max_level: 2
+
+#若无此项，则自动匹配到default rarity
+rarity: epic
+#若无此项，则自动匹配到“未定义”
 targets:
   - swords
 
-rarity: epic
-
+#可无此项
 limitations:
   #- "PAPI_EXPRESSION:%player_level%>=30"
   #- "PERMISSION:splendidenchants.enchant.test.use"
   - "CONFLICT_GROUP:原版增伤附魔"
 
 #TODO 创造共同默认的display设置处
+#必须有此项
 display:
   #若无format，自动跟从
   format: "$default_previous &7当前(§e$当前累计}§7/§a$击杀累计}§7) $default_subsequent"
@@ -21,22 +26,24 @@ display:
     #若无specific，自动跟从general
     specific: "每击杀 $击杀累计 只怪物后，下一次攻击伤害增加 $伤害提升百分比%"
 
-###以下是可选的配置
-#可选，默认为true
-grindstoneable: false
-#可选，默认为1
-weight: 0.85
-#可选，默认为false
-is_treasure: true
-#可选，默认为false
-is_cursed: true
-#可选，默认为true
-is_tradeable: false
-#可选，默认为true
-is_discoverable: true
-#可选，默认跟从大配置中的默认
+###以下是可选的其它配置
+alternative:
+  #默认为true
+  grindstoneable: false
+  #默认为1
+  weight: 0.85
+  #默认为false
+  is_treasure: true
+  #默认为false
+  is_cursed: false
+  #默认为true
+  is_tradeable: false
+  #默认为true
+  is_discoverable: true
+  #可选，默认跟从大配置中的默认
 
 #TODO 创造共同默认的display设置处
+#可无此项
 variables:
   #跟等级有关的
   leveled:
@@ -52,7 +59,7 @@ variables:
     当前累计: test_current_total=0
 
 #TODO 这里是初始值，应支持int、double、String等类型
-
+#可无此项
 mechanisms:
   listeners:
     KILLMOB:
