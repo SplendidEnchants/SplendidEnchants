@@ -3,6 +3,7 @@ package me.icebear03.splendidenchants.enchant
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import taboolib.common.platform.function.getDataFolder
+import taboolib.library.reflex.Reflex.Companion.setProperty
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -11,6 +12,7 @@ object EnchantLoader {
 
     //enchants文件夹应该为若干文件夹，每个文件夹内为各个附魔配置
     fun initialize() {
+        Enchantment::class.java.setProperty("acceptingNew", value = true, isStatic = true)
         val directory = File(getDataFolder(), "enchants/")
         if (!directory.exists()) directory.mkdirs()
         getListFiles(directory).forEach {
