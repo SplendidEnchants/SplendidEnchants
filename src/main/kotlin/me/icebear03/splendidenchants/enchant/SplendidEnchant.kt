@@ -3,8 +3,6 @@ package me.icebear03.splendidenchants.enchant
 import io.papermc.paper.enchantments.EnchantmentRarity
 import me.icebear03.splendidenchants.api.ItemAPI
 import me.icebear03.splendidenchants.api.PlayerAPI
-import me.icebear03.splendidenchants.enchant.data.AlternativeData
-import me.icebear03.splendidenchants.enchant.data.BasicData
 import me.icebear03.splendidenchants.enchant.data.Rarity
 import me.icebear03.splendidenchants.enchant.data.Target
 import me.icebear03.splendidenchants.enchant.data.limitation.Limitations
@@ -19,18 +17,35 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import taboolib.common.util.replaceWithOrder
 import taboolib.library.configuration.ConfigurationSection
+import taboolib.module.configuration.Configuration
 import taboolib.module.kether.compileToJexl
+import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
-class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey) {
+class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
-    lateinit var basicData: BasicData
-    lateinit var alternativeData: AlternativeData
-    lateinit var rarity: Rarity
-    lateinit var target: Target
-    lateinit var limitations: Limitations
-    lateinit var displayer: Displayer
-    lateinit var variable: Variable
+    var basicData: BasicData
+    var rarity: Rarity
+    var targets: List<Target>
+    var limitations: Limitations
+    var displayer: Displayer
+    var alternativeData: AlternativeData
+    var variable: Variable
+
+    init {
+        val config: Configuration = Configuration.loadFromFile(file)
+        basicData = BasicData(config.getConfigurationSection("basic")!!)
+        rarity = Rarity.fromIdOrName(config.getString("rarity", "null")!!)
+        targets = ArrayList()
+        config.getStringList("targets").forEach {
+            targets += Target.fromIdOrName(it)
+        }
+        limitations = Limitations(this, config.getStringList("limitations"))
+        displayer = Displayer(config.getConfigurationSection("display")!!)
+        alternativeData = AlternativeData(config.getConfigurationSection("alternative"))
+        variable = Variable(config.getConfigurationSection("variables"))
+    }
+
 
     override fun translationKey(): String = basicData.id
 
@@ -50,9 +65,7 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
 
     override fun canEnchantItem(item: ItemStack): Boolean = limitations.checkAvailable(item).first
 
-    override fun displayName(level: Int): Component {
-        TODO("Displayer")
-    }
+    override fun displayName(level: Int): Component = Component.text(basicData.name)
 
     override fun isTradeable(): Boolean = alternativeData.isTradeable
 
@@ -83,9 +96,8 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
         // TODO: 根据不同等级、不同状态（TODO-ItemStack PDC储存）生成 display
     }
 
-    data class Variable(
-        val variableConfig: ConfigurationSection
-    ) {
+    inner class Variable(val variableConfig: ConfigurationSection?) {
+
         //所有变量 变量名 - 类型(leveled,player_related,modifiable)
         val variableSet = ConcurrentHashMap<String, String>()
 
@@ -99,26 +111,35 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
         private val modifiable = ConcurrentHashMap<String, Pair<String, String>>()
 
         init {
-            var section = variableConfig.getConfigurationSection("leveled")!!
-            section.getKeys(false).forEach {
-                leveled[it] = section.getString(it)!!
-                variableSet[it] = "leveled"
-            }
-            section = variableConfig.getConfigurationSection("player_related")!!
-            section.getKeys(false).forEach {
-                playerRelated[it] = section.getString(it)!!
-                variableSet[it] = "player_related"
-            }
-            section = variableConfig.getConfigurationSection("modifiable")!!
-            section.getKeys(false).forEach {
-                val tmp = section.getString(it)!!
-                modifiable[it] = tmp.split("=")[0] to tmp.split("=")[1]
-                variableSet[it] = "modifiable"
+            if (variableConfig != null) {
+                var section = variableConfig.getConfigurationSection("leveled")
+                if (section != null) {
+                    section.getKeys(false).forEach {
+                        leveled[it] = section!!.getString(it)!!
+                        variableSet[it] = "leveled"
+                    }
+                }
+                section = variableConfig.getConfigurationSection("player_related")
+                if (section != null) {
+                    section.getKeys(false).forEach {
+                        playerRelated[it] = section!!.getString(it)!!
+                        variableSet[it] = "player_related"
+                    }
+                }
+                section = variableConfig.getConfigurationSection("modifiable")
+                if (section != null) {
+                    section.getKeys(false).forEach {
+                        val tmp = section.getString(it)!!
+                        modifiable[it] = tmp.split("=")[0] to tmp.split("=")[1]
+                        variableSet[it] = "modifiable"
+                    }
+                }
             }
         }
 
         private fun leveled(variable: String, level: Int?): String {
-            return if (level == null) variable else leveled[variable]!!.compileToJexl().eval(mapOf("level" to level)).toString()
+            return if (level == null) variable else leveled[variable]!!.compileToJexl().eval(mapOf("level" to level))
+                .toString()
         }
 
         private fun playerRelated(variable: String, player: Player?): String {
@@ -149,6 +170,41 @@ class SplendidEnchant(namespacedKey: NamespacedKey) : Enchantment(namespacedKey)
                 }
             }
             return list
+        }
+    }
+
+    inner class AlternativeData(config: ConfigurationSection?) {
+
+        var grindstoneable: Boolean = true
+        var weight: Double = 1.0
+        var isTreasure: Boolean = false
+        var isCursed: Boolean = false
+        var isTradeable: Boolean = true
+        var isDiscoverable: Boolean = true
+
+        init {
+            if (config != null) {
+                grindstoneable = config.getBoolean("grindstoneable", true)
+                weight = config.getDouble("weight", 1.0)
+                isTreasure = config.getBoolean("is_treasure", false)
+                isCursed = config.getBoolean("is_cursed", false)
+                isTradeable = config.getBoolean("is_tradeable", true)
+                isDiscoverable = config.getBoolean("is_discoverable", true)
+            }
+        }
+    }
+
+    inner class BasicData(config: ConfigurationSection) {
+        var id: String
+        var name: String
+        var maxLevel: Int
+        private val key: NamespacedKey
+
+        init {
+            id = config.getString("id")!!
+            name = config.getString("name")!!
+            maxLevel = config.getInt("max_level")!!
+            key = NamespacedKey.fromString(id, null) ?: error("minecraft")
         }
     }
 }

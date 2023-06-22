@@ -15,6 +15,8 @@ data class Rarity(
 
         val rarities = ConcurrentHashMap<String, Rarity>()
 
+        lateinit var defaultRarity: Rarity
+
         fun initialize() {
             val rarityConfig = Configuration.loadAndUpdate("enchants/rarity.yml", listOf()) // TODO: 白名单列表
             rarityConfig.getKeys(false).forEach {
@@ -26,6 +28,18 @@ data class Rarity(
                 )
             }
             info("调试信息：加载品质成功，共${rarities.size}个品质！")
+
+            defaultRarity = rarities[""]!!
+        }
+
+        fun fromIdOrName(idOrName: String): Rarity {
+            if (rarities[idOrName] != null)
+                return rarities[idOrName]!!
+            for (rarity in rarities.values) {
+                if (rarity.name == idOrName)
+                    return rarity
+            }
+            return defaultRarity
         }
     }
 }
