@@ -3,6 +3,7 @@ package me.icebear03.splendidenchants.enchant
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import taboolib.common.platform.function.getDataFolder
+import taboolib.library.reflex.Reflex.Companion.getProperty
 import taboolib.library.reflex.Reflex.Companion.setProperty
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
@@ -25,6 +26,15 @@ object EnchantLoader {
                 Enchantment.registerEnchantment(enchant)
                 enchantById[id] = enchant
             }
+        }
+    }
+
+    fun unregister() {
+        enchantById.values.forEach {
+            val keyMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byKey", true)
+            val nameMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byName", true)
+            keyMap?.remove(it.key)
+            nameMap?.remove(it.name)
         }
     }
 
