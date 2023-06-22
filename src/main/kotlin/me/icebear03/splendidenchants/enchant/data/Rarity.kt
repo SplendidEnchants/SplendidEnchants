@@ -33,13 +33,7 @@ data class Rarity(
         }
 
         fun fromIdOrName(idOrName: String): Rarity {
-            if (rarities[idOrName] != null)
-                return rarities[idOrName]!!
-            for (rarity in rarities.values) {
-                if (rarity.name == idOrName)
-                    return rarity
-            }
-            return defaultRarity
+            return rarities[idOrName] ?: rarities.values.firstOrNull { it.name == idOrName } ?: defaultRarity
         }
     }
 }

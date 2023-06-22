@@ -33,6 +33,7 @@ data class Target(
 
         fun initialize() {
             val targetConfig = Configuration.loadAndUpdate("enchants/target.yml", listOf()) // TODO: 白名单列表
+            targetConfig
             targetConfig.getKeys(false).forEach {
                 targets[it] = Target(
                     it,
@@ -42,14 +43,14 @@ data class Target(
                     targetConfig.getStringList("$it.types")
                 )
             }
-            targets["unknown"] = Target("unknown", "未定义", 16, HashSet(), ArrayList())
-            info("调试信息：加载附魔对象成功，共${Target.targets.size}种对象！")
+            targets["unknown"] = Target("unknown", "未定义", 16, hashSetOf(), arrayListOf())
+            info("调试信息：加载附魔对象成功，共${targets.size}种对象！")
         }
 
         fun fromIdOrName(idOrName: String): Target {
-            if (Target.targets[idOrName] != null)
-                return Target.targets[idOrName]!!
-            for (target in Target.targets.values) {
+            if (targets[idOrName] != null)
+                return targets[idOrName]!!
+            for (target in targets.values) {
                 if (target.name == idOrName)
                     return target
             }

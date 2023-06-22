@@ -18,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType
 import taboolib.common.util.replaceWithOrder
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.util.asMap
 import taboolib.module.kether.compileToJexl
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
@@ -33,10 +34,10 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
     var variable: Variable
 
     init {
-        val config: Configuration = Configuration.loadFromFile(file)
+        val config = Configuration.loadFromFile(file)
         basicData = BasicData(config.getConfigurationSection("basic")!!)
         rarity = Rarity.fromIdOrName(config.getString("rarity", "null")!!)
-        targets = ArrayList()
+        targets = arrayListOf()
         config.getStringList("targets").forEach {
             targets += Target.fromIdOrName(it)
         }
@@ -45,7 +46,6 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         alternativeData = AlternativeData(config.getConfigurationSection("alternative"))
         variable = Variable(config.getConfigurationSection("variables"))
     }
-
 
     override fun translationKey(): String = basicData.id
 
@@ -77,7 +77,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     override fun getActiveSlots(): MutableSet<EquipmentSlot> = hashSetOf()
 
-    inner class Displayer(val displayerConfig: ConfigurationSection) {
+    inner class Displayer(displayerConfig: ConfigurationSection) {
 
         val displayFormat = displayerConfig.getString("format")!!
         private val generalDescription = displayerConfig.getString("description.general")!!
@@ -96,7 +96,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         // TODO: 根据不同等级、不同状态（TODO-ItemStack PDC储存）生成 display
     }
 
-    inner class Variable(val variableConfig: ConfigurationSection?) {
+    inner class Variable(variableConfig: ConfigurationSection?) {
 
         //所有变量 变量名 - 类型(leveled,player_related,modifiable)
         val variableSet = ConcurrentHashMap<String, String>()
@@ -111,22 +111,19 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         private val modifiable = ConcurrentHashMap<String, Pair<String, String>>()
 
         init {
-            if (variableConfig != null) {
-                var section = variableConfig.getConfigurationSection("leveled")
-                section?.getKeys(false)?.forEach {
-                    leveled[it] = section!!.getString(it)!!
-                    variableSet[it] = "leveled"
+            variableConfig?.run {
+                getConfigurationSection("leveled").asMap().forEach { (key, value) ->
+                    leveled[key] = value as String
+                    variableSet[key] = "leveled"
                 }
-                section = variableConfig.getConfigurationSection("player_related")
-                section?.getKeys(false)?.forEach {
-                    playerRelated[it] = section!!.getString(it)!!
-                    variableSet[it] = "player_related"
+                getConfigurationSection("player_related").asMap().forEach { (key, value) ->
+                    playerRelated[key] = value as String
+                    variableSet[key] = "player_related"
                 }
-                section = variableConfig.getConfigurationSection("modifiable")
-                section?.getKeys(false)?.forEach {
-                    val tmp = section.getString(it)!!
-                    modifiable[it] = tmp.split("=")[0] to tmp.split("=")[1]
-                    variableSet[it] = "modifiable"
+                getConfigurationSection("modifiable").asMap().forEach { (key, value) ->
+                    val parts = (value as String).split('=')
+                    modifiable[key] = parts[0] to parts[1]
+                    variableSet[key] = "modifiable"
                 }
             }
         }
@@ -141,8 +138,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
 
         private fun modifiable(variable: String, item: ItemStack?): String {
-            if (item == null) return variable
-            return ItemAPI.getItemData(item, modifiable[variable]!!.first, PersistentDataType.STRING)
+            return if (item == null) variable else ItemAPI.getItemData(item, modifiable[variable]!!.first, PersistentDataType.STRING)
                 ?: modifiable[variable]!!.second
         }
 
@@ -177,18 +173,19 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         var isDiscoverable: Boolean = true
 
         init {
-            if (config != null) {
-                grindstoneable = config.getBoolean("grindstoneable", true)
-                weight = config.getDouble("weight", 1.0)
-                isTreasure = config.getBoolean("is_treasure", false)
-                isCursed = config.getBoolean("is_cursed", false)
-                isTradeable = config.getBoolean("is_tradeable", true)
-                isDiscoverable = config.getBoolean("is_discoverable", true)
+            config?.run {
+                grindstoneable = getBoolean("grindstoneable", true)
+                weight = getDouble("weight", 1.0)
+                isTreasure = getBoolean("is_treasure", false)
+                isCursed = getBoolean("is_cursed", false)
+                isTradeable = getBoolean("is_tradeable", true)
+                isDiscoverable = getBoolean("is_discoverable", true)
             }
         }
     }
 
     inner class BasicData(config: ConfigurationSection) {
+
         var id: String
         var name: String
         var maxLevel: Int
@@ -197,7 +194,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         init {
             id = config.getString("id")!!
             name = config.getString("name")!!
-            maxLevel = config.getInt("max_level")!!
+            maxLevel = config.getInt("max_level")
             key = NamespacedKey.fromString(id, null) ?: error("minecraft")
         }
     }
