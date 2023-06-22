@@ -27,6 +27,7 @@ object EnchantLoader {
                 enchantById[id] = enchant
             }
         }
+        Enchantment::class.java.setProperty("acceptingNew", value = false, isStatic = true)
     }
 
     fun unregister() {
