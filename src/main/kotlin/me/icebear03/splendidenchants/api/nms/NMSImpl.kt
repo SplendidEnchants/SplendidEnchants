@@ -1,5 +1,6 @@
 package me.icebear03.splendidenchants.api.nms
 
+import me.icebear03.splendidenchants.`object`.Overlay
 import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player
 import taboolib.common.io.getClass
@@ -20,7 +21,7 @@ import java.util.UUID
  */
 class NMSImpl : NMS() {
 
-    override fun sendBossBar(player: Player, message: String, time: Int, overlay: String, color: BarColor) {
+    override fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor) {
         val uuid = UUID.randomUUID()
         when (MinecraftVersion.major) {
             // 1.16
@@ -31,9 +32,9 @@ class NMSImpl : NMS() {
                     "a" to uuid,
                     "b" to NMS16PacketPlayOutBossAction.ADD,
                     "c" to CraftChatMessage16.fromString(message.colored()).first(),
-                    "d" to 1f,
+                    "d" to progress,
                     "e" to NMS16BossBattleBarColor.valueOf(color.name.uppercase()),
-                    "f" to NMS16BossBattleBarStyle.valueOf(overlay),
+                    "f" to NMS16BossBattleBarStyle.valueOf(overlay.name.uppercase()),
                     "g" to false,
                     "h" to false,
                     "i" to false
@@ -55,9 +56,9 @@ class NMSImpl : NMS() {
                     "id" to uuid,
                     "operation" to getClass("net.minecraft.network.protocol.game.PacketPlayOutBoss\$a").unsafeInstance().also {
                         it.setProperty("name", CraftChatMessage19.fromString(message.colored()).first())
-                        it.setProperty("progress", 1f)
+                        it.setProperty("progress", progress)
                         it.setProperty("color", NMSBossBattleBarColor.valueOf(color.name.uppercase()))
-                        it.setProperty("overlay", NMSBossBattleBarStyle.valueOf(overlay))
+                        it.setProperty("overlay", NMSBossBattleBarStyle.valueOf(overlay.name.uppercase()))
                         it.setProperty("darkenScreen", false)
                         it.setProperty("playMusic", false)
                         it.setProperty("createWorldFog", false)
