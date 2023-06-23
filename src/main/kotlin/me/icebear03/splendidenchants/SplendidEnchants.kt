@@ -14,6 +14,8 @@ object SplendidEnchants : Plugin() {
         plugin = this
         info("Loading SplendidEnchants...")
 
+        Config.initialize()
+
         Rarity.initialize()
         Target.initialize()
         EnchantLoader.initialize()

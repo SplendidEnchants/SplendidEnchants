@@ -20,11 +20,12 @@ limitations:
 #必须有此项
 display:
   #若无format，自动跟从
-  format: "$default_previous &7当前(§e$当前累计}§7/§a$击杀累计}§7) $default_subsequent"
+  format:
+    previous: "{default_previous} §7当前(§e{当前累计}§7/§a{击杀累计}§7)"
   description:
     general: "每击杀若干只怪物后，下一次攻击伤害增加"
     #若无specific，自动跟从general
-    specific: "每击杀 $击杀累计 只怪物后，下一次攻击伤害增加 $伤害提升百分比%"
+    specific: "每击杀 {击杀累计} 只怪物后，下一次攻击伤害增加 {伤害提升百分比}%"
 
 ###以下是可选的其它配置
 alternative:
@@ -51,8 +52,8 @@ variables:
     伤害提升百分比: 30*level
   #跟玩家有关的
   player_related:
-    等级: %player_level%
-  #跟物品数据有关的 key=初始值
+    等级: "%player_level%"
+  #存储于物品上的数据 key=初始值
   #规范：key=附魔id_变量英文翻译
   #注意小写，空格由下划线代替
   modifiable:
@@ -63,8 +64,8 @@ variables:
 mechanisms:
   listeners:
     KILLMOB:
-      - "[赋值]$当前累计=$当前累计+1"
+      - "[赋值]{当前累计}={当前累计}+1"
     ATTACK:
-      - "[条件]$当前累计>=$击杀累计"
-      - "[赋值]$当前累计=0"
-      - "[赋值]damage_high=damage_high*(1+$伤害提升百分比/100)"
+      - "[条件]{当前累计}>={击杀累计}"
+      - "[赋值]{当前累计}=0"
+      - "[赋值]damage_high=damage_high*(1+{伤害提升百分比}/100)"

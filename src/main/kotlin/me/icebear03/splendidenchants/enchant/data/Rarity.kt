@@ -1,5 +1,6 @@
 package me.icebear03.splendidenchants.enchant.data
 
+import me.icebear03.splendidenchants.Config
 import me.icebear03.splendidenchants.util.loadAndUpdate
 import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
@@ -18,7 +19,7 @@ data class Rarity(
         lateinit var defaultRarity: Rarity
 
         fun initialize() {
-            val rarityConfig = Configuration.loadAndUpdate("enchants/rarity.yml", listOf()) // TODO: 白名单列表
+            val rarityConfig = Configuration.loadAndUpdate("enchants/rarity.yml", listOf())
             rarityConfig.getKeys(false).forEach {
                 rarities[it] = Rarity(
                     it,
@@ -29,7 +30,7 @@ data class Rarity(
             }
             info("调试信息：加载品质成功，共${rarities.size}个品质！")
 
-            defaultRarity = rarities["common"]!! //TODO
+            defaultRarity = rarities[Config.config.getString("default_rarity", "common")]!!
         }
 
         fun fromIdOrName(idOrName: String): Rarity {
@@ -37,4 +38,3 @@ data class Rarity(
         }
     }
 }
-// TODO: attainsources -> Tradable / Discoverable

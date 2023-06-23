@@ -79,21 +79,34 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     inner class Displayer(displayerConfig: ConfigurationSection) {
 
-        val displayFormat = displayerConfig.getString("format")!!
+        val previousFormat = displayerConfig.getString("format.previous", "{default_previous}")!!
+        val subsequentFormat = displayerConfig.getString("format.subsequent", "{default_subsequent}")!!
         private val generalDescription = displayerConfig.getString("description.general")!!
         private val specificDescription =
             if (displayerConfig.contains("description.specific"))
                 displayerConfig.getString("description.specific")!!
             else generalDescription
 
-        fun getSpecificDescription(level: Int, player: Player?, item: ItemStack?): String {
-            return specificDescription.replaceWithOrder(
-                variable.generateReplaceMap(level, player, item)
-                // 也可以为: this@SplendidEnchant.variable.generateReplaceMap(level, player, item)
-            )
+        fun getSpecificDescription(replaceMap: List<Pair<String, String>>): String {
+            return specificDescription.replaceWithOrder(replaceMap)
         }
-        // TODO: 读取 display.yml 中的 $default
-        // TODO: 根据不同等级、不同状态（TODO-ItemStack PDC储存）生成 display
+
+        fun getSpecificFormat(level: Int, player: Player?, item: ItemStack?): String {
+            val tmp = variable.generateReplaceMap(level, player, item).toMutableList()
+            val l = (level ?: basicData.maxLevel)
+            tmp += "{id}" to basicData.id
+            tmp += "{name}" to basicData.name
+            tmp += "{level}" to "" + level
+            tmp += "{roman_level}" to "" + level //TODO TO ROMAN
+            tmp += "{max_level}" to "" + basicData.maxLevel
+            tmp += "{color}" to rarity.color
+            tmp += "{rarity}" to rarity.name
+            tmp += "{description}" to getSpecificDescription(tmp)
+            val result = (
+                    previousFormat.replace("{default_previous}", "TODO")
+                            + subsequentFormat.replace("{default_subsequent}", "TODO")
+                    ).replaceWithOrder(tmp)
+        }
     }
 
     inner class Variable(variableConfig: ConfigurationSection?) {
@@ -138,7 +151,11 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
 
         private fun modifiable(variable: String, item: ItemStack?): String {
-            return if (item == null) variable else ItemAPI.getItemData(item, modifiable[variable]!!.first, PersistentDataType.STRING)
+            return if (item == null) variable else ItemAPI.getItemData(
+                item,
+                modifiable[variable]!!.first,
+                PersistentDataType.STRING
+            )
                 ?: modifiable[variable]!!.second
         }
 

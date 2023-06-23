@@ -2,3 +2,42 @@
 # 若此项配置为 true, 则对语言文本解析 MiniMessage, 且不允许出现原版颜色符号
 # 默认为 false
 use_mini_message: false
+
+#默认的品质
+default_rarity: common
+
+display:
+  #默认的格式，分为前部和后部
+  format:
+    default_previous: "{color}{name} {roman_level}"
+    default_subsequent: "\n§8| §7{description}"
+  #显示排序
+  sort:
+    #按照等级排序，从高到低
+    level: true
+    #按照品质排序
+    rarity:
+      #是否开启
+      enable: true
+      #顺序
+      order:
+        - common
+        - uncommon
+        - rare
+        - epic
+        - legendary
+        - unknown
+        - curse
+  #合并显示
+  combine:
+    #是否开启
+    enable: false
+    #当物品附魔超过这个值将会开启合并显示
+    min: 8
+    #每次合并几个附魔
+    amount: 2
+    #合并的布局
+    layout:
+      - "{previous_1}§7, {previous_2}\n "
+      - "{subsequent_1}"
+      - "{subsequent_2}"

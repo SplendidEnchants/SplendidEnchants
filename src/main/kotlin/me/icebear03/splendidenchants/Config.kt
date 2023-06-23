@@ -1,5 +1,6 @@
 package me.icebear03.splendidenchants
 
+import me.icebear03.splendidenchants.util.YamlUpdater
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.ConfigNode
 import taboolib.module.configuration.Configuration
@@ -15,4 +16,8 @@ object Config {
 
     @ConfigNode("use_mini_message")
     var useMiniMessage: Boolean = false
+
+    fun initialize() {
+        config = YamlUpdater.loadAndUpdate("config.yml", arrayListOf())
+    }
 }

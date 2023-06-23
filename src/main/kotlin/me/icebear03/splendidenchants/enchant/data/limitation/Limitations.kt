@@ -7,11 +7,13 @@ import me.icebear03.splendidenchants.enchant.SplendidEnchant
 import me.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.common.util.replaceWithOrder
+import taboolib.module.kether.compileToJexl
 
 class Limitations {
 
-    //TODO 有没有更好的方法从limitation反找splendidenchant
     var belonging: SplendidEnchant
 
     var limitations = arrayListOf<Pair<LimitType, String>>()
@@ -31,10 +33,19 @@ class Limitations {
             val limitType = limitation.first
             val value = limitation.second
             when (limitType) {
-                PAPI_EXPRESSION ->
-                    //TODO papi 表达式的处理
+                PAPI_EXPRESSION -> {
+                    val player = if (creature is Player) creature else null
+                    val currentExpression = value.replaceWithOrder(
+                        belonging.variable.generateReplaceMap(
+                            ItemAPI.getLevel(item, belonging), player, item
+                        )
+                    )
+                    val result = value.compileToJexl().eval() as Boolean
+
                     //TODO 返回信息记得 replace 中文，比如 %player_level%>=30 应当翻译为 "经验等级>=30"
-                    return false to "{limit.papi_expression}"
+                    //TODO 等待语言文件写完
+                    return result to currentExpression //TODO 翻译
+                }
 
                 PERMISSION -> {
                     if (!creature.hasPermission(value))
