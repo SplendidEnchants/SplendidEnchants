@@ -17,8 +17,6 @@ display:
     level: true
     #按照品质排序
     rarity:
-      #是否开启
-      enable: true
       #顺序
       order:
         - common
