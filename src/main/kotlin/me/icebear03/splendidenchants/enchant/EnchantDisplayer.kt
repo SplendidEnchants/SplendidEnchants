@@ -46,4 +46,7 @@ object EnchantDisplayer {
     //TODO 生成lore模块，此处包含combine
 
     //TODO 修改物品模块，注意PDC
+
+    //TODO 回退物品模块，注意PDC，防止NBT堆叠造成卡顿
+    //TODO 应注意创造模式的转换
 }

@@ -2,6 +2,7 @@ package me.icebear03.splendidenchants.enchant
 
 import io.papermc.paper.enchantments.EnchantmentRarity
 import me.icebear03.splendidenchants.api.ItemAPI
+import me.icebear03.splendidenchants.api.MathAPI
 import me.icebear03.splendidenchants.api.PlayerAPI
 import me.icebear03.splendidenchants.enchant.data.Rarity
 import me.icebear03.splendidenchants.enchant.data.Target
@@ -97,14 +98,13 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             tmp += "{id}" to basicData.id
             tmp += "{name}" to basicData.name
             tmp += "{level}" to "" + level
-            tmp += "{roman_level}" to "" + level //TODO TO ROMAN
+            tmp += "{roman_level}" to MathAPI.numToRoman(level, true)
             tmp += "{max_level}" to "" + basicData.maxLevel
             tmp += "{color}" to rarity.color
             tmp += "{rarity}" to rarity.name
             tmp += "{description}" to getSpecificDescription(tmp)
-            val result = (
-                    previousFormat.replace("{default_previous}", "TODO")
-                            + subsequentFormat.replace("{default_subsequent}", "TODO")
+            return (previousFormat.replace("{default_previous}", "TODO")
+                    + subsequentFormat.replace("{default_subsequent}", "TODO")
                     ).replaceWithOrder(tmp)
         }
     }
