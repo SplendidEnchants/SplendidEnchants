@@ -8,10 +8,8 @@ import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.info
 
 object SplendidEnchants : Plugin() {
-    var plugin: SplendidEnchants? = null
 
     override fun onEnable() {
-        plugin = this
         info("Loading SplendidEnchants...")
 
         Config.initialize()

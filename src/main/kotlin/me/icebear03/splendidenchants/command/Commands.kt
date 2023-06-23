@@ -1,6 +1,7 @@
 package me.icebear03.splendidenchants.command
 
 import me.icebear03.splendidenchants.api.nms.NMS
+import me.icebear03.splendidenchants.`object`.Overlay
 import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
@@ -20,7 +21,7 @@ object Commands {
     @CommandBody
     val testBossBar = subCommand {
         execute<Player> { sender, _, _ ->
-            NMS.INSTANCE.sendBossBar(sender, "你妈死了", 10, "PROGRESS", BarColor.BLUE)
+            NMS.INSTANCE.sendBossBar(sender, "你妈死了", 1f, 10, Overlay.PROGRESS, BarColor.BLUE)
         }
     }
 }

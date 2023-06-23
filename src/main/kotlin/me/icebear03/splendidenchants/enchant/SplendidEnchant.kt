@@ -92,13 +92,13 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             return specificDescription.replaceWithOrder(replaceMap)
         }
 
-        fun getSpecificFormat(level: Int, player: Player?, item: ItemStack?): String {
+        fun getSpecificFormat(level: Int?, player: Player?, item: ItemStack?): String {
             val tmp = variable.generateReplaceMap(level, player, item).toMutableList()
             val l = (level ?: basicData.maxLevel)
             tmp += "{id}" to basicData.id
             tmp += "{name}" to basicData.name
-            tmp += "{level}" to "" + level
-            tmp += "{roman_level}" to MathAPI.numToRoman(level, true)
+            tmp += "{level}" to "" + l
+            tmp += "{roman_level}" to MathAPI.numToRoman(l, true)
             tmp += "{max_level}" to "" + basicData.maxLevel
             tmp += "{color}" to rarity.color
             tmp += "{rarity}" to rarity.name
