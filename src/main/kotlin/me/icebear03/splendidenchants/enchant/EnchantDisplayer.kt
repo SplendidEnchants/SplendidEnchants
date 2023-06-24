@@ -4,6 +4,7 @@ import me.icebear03.splendidenchants.Config
 import me.icebear03.splendidenchants.enchant.data.Rarity
 
 object EnchantDisplayer {
+
     var defaultPrevious: String
     var defaultSubsequent: String
 
@@ -35,12 +36,10 @@ object EnchantDisplayer {
     //TODO 妈的，下面是巨量工程
 
     fun sortEnchants(enchants: Map<SplendidEnchant, Int>): LinkedHashMap<SplendidEnchant, Int> {
-        val sorted = LinkedHashMap<SplendidEnchant, Int>(enchants)
-        sorted.toSortedMap(Comparator.comparing {
+        return LinkedHashMap(enchants.toSortedMap(Comparator.comparing {
             return@comparing rarityOrder.indexOf(it.rarity.id) * 100000 +
                     (if (sortByLevel) enchants[it]!! else 0)
-        })
-        return sorted
+        }))
     }
 
     //TODO 生成lore模块，此处包含combine

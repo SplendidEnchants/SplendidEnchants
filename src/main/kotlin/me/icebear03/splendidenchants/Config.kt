@@ -1,7 +1,6 @@
 package me.icebear03.splendidenchants
 
 import me.icebear03.splendidenchants.util.YamlUpdater
-import taboolib.module.configuration.Config
 import taboolib.module.configuration.ConfigNode
 import taboolib.module.configuration.Configuration
 
@@ -10,7 +9,6 @@ import taboolib.module.configuration.Configuration
  */
 object Config {
 
-    @Config
     lateinit var config: Configuration
         private set
 

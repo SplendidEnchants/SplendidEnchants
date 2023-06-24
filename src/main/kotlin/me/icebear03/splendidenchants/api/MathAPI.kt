@@ -1,6 +1,7 @@
 package me.icebear03.splendidenchants.api
 
 object MathAPI {
+
     fun numToRoman(num: Int, ignoreI: Boolean): String {
         var number = num
         var rNumber = StringBuilder()

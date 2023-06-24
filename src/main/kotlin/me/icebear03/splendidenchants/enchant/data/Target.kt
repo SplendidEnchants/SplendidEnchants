@@ -33,7 +33,6 @@ data class Target(
 
         fun initialize() {
             val targetConfig = Configuration.loadAndUpdate("enchants/target.yml", listOf()) // TODO: 白名单列表
-            targetConfig
             targetConfig.getKeys(false).forEach {
                 targets[it] = Target(
                     it,
@@ -48,13 +47,7 @@ data class Target(
         }
 
         fun fromIdOrName(idOrName: String): Target {
-            if (targets[idOrName] != null)
-                return targets[idOrName]!!
-            for (target in targets.values) {
-                if (target.name == idOrName)
-                    return target
-            }
-            return targets["unknown"]!!
+            return targets[idOrName] ?: targets.values.firstOrNull { it.name == idOrName } ?: targets["unknown"]!!
         }
     }
 }
