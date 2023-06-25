@@ -14,7 +14,7 @@ object ItemAPI {
         if (item.itemMeta == null) return result
         val meta = item.itemMeta!!
         meta.enchants.keys.forEach { enchant ->
-            result[EnchantAPI.getSplendidEnchant(enchant.key.key)] = meta.getEnchantLevel(enchant)
+            result[EnchantAPI.getSplendidEnchant(enchant)] = meta.getEnchantLevel(enchant)
         }
         return result
     }
