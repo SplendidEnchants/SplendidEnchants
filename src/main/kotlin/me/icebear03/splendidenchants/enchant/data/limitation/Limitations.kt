@@ -66,14 +66,15 @@ class Limitations {
         for (limitation in limitations) {
             val limitType = limitation.first
             val value = limitation.second
+            val enchant = EnchantAPI.getSplendidEnchant(value) ?: continue
             when (limitType) {
                 CONFLICT_ENCHANT -> {
-                    if (ItemAPI.containsEnchant(item, EnchantAPI.getSplendidEnchant(value)))
+                    if (ItemAPI.containsEnchant(item, enchant))
                         return false to "{limit.conflict} || enchant=$value"
                 }
 
                 DEPENDENCE_ENCHANT -> {
-                    if (!ItemAPI.containsEnchant(item, EnchantAPI.getSplendidEnchant(value)))
+                    if (!ItemAPI.containsEnchant(item, enchant))
                         return false to "{limit.conflict} || enchant=$value"
                 }
 
