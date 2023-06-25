@@ -1,7 +1,12 @@
 package me.icebear03.splendidenchants.enchant
 
 import me.icebear03.splendidenchants.Config
+import me.icebear03.splendidenchants.api.ItemAPI
 import me.icebear03.splendidenchants.enchant.data.Rarity
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import taboolib.common.util.replaceWithOrder
+import kotlin.math.min
 
 object EnchantDisplayer {
 
@@ -14,7 +19,7 @@ object EnchantDisplayer {
     var combine: Boolean
     var minimal: Int
     var amount: Int
-    var layout: List<String>
+    var layouts: List<String>
 
     init {
         val config = Config.config.getConfigurationSection("display")!!
@@ -30,11 +35,10 @@ object EnchantDisplayer {
         combine = config.getBoolean("combine.enable", false)
         minimal = config.getInt("combine.min", 8)
         amount = config.getInt("combine.amount", 2)
-        layout = config.getStringList("combine.layout")
+        layouts = config.getStringList("combine.layout")
     }
 
-    //TODO 妈的，下面是巨量工程
-
+    //对附魔排序
     fun sortEnchants(enchants: Map<SplendidEnchant, Int>): LinkedHashMap<SplendidEnchant, Int> {
         return LinkedHashMap(enchants.toSortedMap(Comparator.comparing {
             return@comparing rarityOrder.indexOf(it.rarity.id) * 100000 +
@@ -42,7 +46,44 @@ object EnchantDisplayer {
         }))
     }
 
-    //TODO 生成lore模块，此处包含combine
+    //插入附魔对应的lore
+    fun adaptItem(item: ItemStack?, player: Player?): ItemStack? {
+        if (item == null) return item
+
+        val enchants = sortEnchants(ItemAPI.getEnchants(item))
+        val enchantLore = mutableListOf<String>()
+        val combineMode = combine && enchants.size >= minimal
+
+        if (!combineMode) {
+            //未开启合并模式
+            enchants.forEach {
+                enchantLore += it.key.displayer.getSpecificFormat(it.value, player, item).split("\n")
+            }
+        } else {
+            //开启合并模式
+            val enchantPairs = enchants.toList()
+            for (i in 0 until enchants.size step amount) {
+                //这一组有几个，并选取对应的layout布局模式
+                val total = min(amount, enchants.size - i)
+                var layout = layouts[total - 1]
+                //替换变量
+                for (j in 0 until total) {
+                    val enchantPair = enchantPairs[i + j]
+                    layout = layout.replaceWithOrder(
+                        enchantPair.first.displayer.getSpecificFormatMap(
+                            enchantPair.second,
+                            player,
+                            item,
+                            j + 1
+                        )
+                    )
+                }
+                enchantLore += layout.split("\n")
+            }
+        }
+
+        return ItemAPI.setLore(item, enchantLore + "§7" + ItemAPI.getLore(item))
+    }
 
     //TODO 修改物品模块，注意PDC
 

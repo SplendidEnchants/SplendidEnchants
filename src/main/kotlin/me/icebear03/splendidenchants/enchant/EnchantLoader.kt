@@ -12,6 +12,12 @@ import java.util.concurrent.ConcurrentHashMap
 object EnchantLoader {
 
     val enchantById = ConcurrentHashMap<String, SplendidEnchant>()
+    val enchantByName = ConcurrentHashMap<String, SplendidEnchant>()
+
+    //TODO 分类！ 按品质/targets/packet，仅仅中文 便于做Filter
+    val enchantsByPacket = ConcurrentHashMap<String, Set<SplendidEnchant>>()
+    val enchantsByRarity = ConcurrentHashMap<String, Set<SplendidEnchant>>()
+    val enchantsByTarget = ConcurrentHashMap<String, Set<SplendidEnchant>>()
 
     //enchants文件夹应该为若干文件夹，每个文件夹内为各个附魔配置
     fun initialize() {
@@ -27,6 +33,7 @@ object EnchantLoader {
                 // 注册附魔
                 Enchantment.registerEnchantment(enchant)
                 enchantById[id] = enchant
+                enchantByName[enchant.basicData.name] = enchant
             }
         }
         Enchantment::class.java.setProperty("acceptingNew", value = false, isStatic = true)

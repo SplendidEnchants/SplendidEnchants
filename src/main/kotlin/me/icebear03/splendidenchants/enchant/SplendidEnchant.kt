@@ -93,6 +93,31 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
 
         fun getSpecificFormat(level: Int?, player: Player?, item: ItemStack?): String {
+            return (previousFormat.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
+                    + subsequentFormat.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent)
+                    ).replaceWithOrder(getReplaceMap(level, player, item))
+        }
+
+        fun getSpecificFormatMap(
+            level: Int?,
+            player: Player?,
+            item: ItemStack?,
+            order: Int?
+        ): List<Pair<String, String>> {
+            val suffix = if (order == null) "" else "_$order"
+            val tmp = mutableListOf<Pair<String, String>>()
+            val replaceMap = getReplaceMap(level, player, item)
+            tmp += "previous$suffix" to previousFormat.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
+                .replaceWithOrder(replaceMap)
+            tmp += "subsequent$suffix" to subsequentFormat.replace(
+                "{default_subsequent}",
+                EnchantDisplayer.defaultSubsequent
+            )
+                .replaceWithOrder(replaceMap)
+            return tmp
+        }
+
+        fun getReplaceMap(level: Int?, player: Player?, item: ItemStack?): List<Pair<String, String>> {
             val tmp = variable.generateReplaceMap(level, player, item).toMutableList()
             val l = (level ?: basicData.maxLevel)
             tmp += "{id}" to basicData.id
@@ -103,9 +128,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             tmp += "{color}" to rarity.color
             tmp += "{rarity}" to rarity.name
             tmp += "{description}" to getSpecificDescription(tmp)
-            return (previousFormat.replace("{default_previous}", "TODO")
-                    + subsequentFormat.replace("{default_subsequent}", "TODO")
-                    ).replaceWithOrder(tmp)
+            return tmp
         }
     }
 

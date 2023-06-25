@@ -1,5 +1,6 @@
 package me.icebear03.splendidenchants.command
 
+import me.icebear03.splendidenchants.enchant.EnchantDisplayer
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
@@ -7,7 +8,7 @@ import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.subCommand
 import taboolib.expansion.createHelper
 
-@CommandHeader("splendidenchant", aliases = ["se"])
+@CommandHeader("splendidenchants", aliases = ["se", "附魔", "spe"])
 object Commands {
 
     @CommandBody
@@ -15,10 +16,14 @@ object Commands {
         createHelper(true)
     }
 
-    @CommandBody
-    val testBossBar = subCommand {
-        execute<Player> { sender, _, _ ->
-//            NMS.INSTANCE.sendBossBar(sender, "你妈死了", 10f, "PROGRESS", BarColor.BLUE)
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["展示"])
+    val displayEnchants = subCommand {
+        execute<Player> { sender, context, argument ->
+            run {
+                val item = EnchantDisplayer.adaptItem(sender.inventory.itemInMainHand, sender)
+                sender.inventory.setItemInMainHand(item)
+                sender.sendMessage("展示成功")
+            }
         }
     }
 }

@@ -44,4 +44,20 @@ object ItemAPI {
         if (meta.hasEnchant(enchant)) return meta.getEnchantLevel(enchant)
         return 0
     }
+
+    fun getLore(item: ItemStack?): MutableList<String> {
+        if (item == null) return mutableListOf()
+        if (item.itemMeta == null) return mutableListOf()
+        val meta = item.itemMeta!!
+        //TODO 注意这里不符合advanture api
+        if (meta.lore == null) return mutableListOf()
+        return meta.lore!!
+    }
+
+    fun setLore(item: ItemStack, lore: List<String>): ItemStack {
+        val meta = item.itemMeta
+        meta.lore = lore
+        item.itemMeta = meta
+        return item
+    }
 }

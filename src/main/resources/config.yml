@@ -36,6 +36,5 @@ display:
     amount: 2
     #合并的布局
     layout:
-      - "{previous_1}§7, {previous_2}\n "
-      - "{subsequent_1}"
-      - "{subsequent_2}"
+      - "{previous_1}\n{subsequent_1}" #只有一个的情况
+      - "{previous_1}§7, {previous_2}\n{subsequent_1}\n{subsequent_2}\n" #有两个的情况
