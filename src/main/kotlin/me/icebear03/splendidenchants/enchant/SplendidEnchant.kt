@@ -187,15 +187,15 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             variableSet.forEach {
                 when (it.value) {
                     "leveled" -> {
-                        list.add(it.key to leveled(it.key, level))
+                        list.add("{$it.key}" to leveled(it.key, level))
                     }
 
                     "player_related" -> {
-                        list.add(it.key to playerRelated(it.key, player))
+                        list.add("{$it.key}" to playerRelated(it.key, player))
                     }
 
                     "modifiable" -> {
-                        list.add(it.key to modifiable(it.key, item))
+                        list.add("{$it.key}" to modifiable(it.key, item))
                     }
                 }
             }

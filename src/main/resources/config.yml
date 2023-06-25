@@ -10,7 +10,7 @@ display:
   #默认的格式，分为前部和后部
   format:
     default_previous: "{color}{name} {roman_level}"
-    default_subsequent: "\n§8| §7{description}"
+    default_subsequent: "\n§8| §r{description}"
   #显示排序
   sort:
     #按照等级排序，从高到低
