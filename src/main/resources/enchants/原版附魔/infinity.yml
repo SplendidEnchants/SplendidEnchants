@@ -1,0 +1,12 @@
+basic:
+  id: infinity
+  name: "无限"
+  max_level: 1
+
+rarity: 史诗
+targets:
+  - 弓
+
+display:
+  description:
+    general: "§7射箭时不会消耗普通箭矢"

@@ -1,0 +1,12 @@
+basic:
+  id: knockback
+  name: "击退"
+  max_level: 2
+
+rarity: 稀有
+targets:
+  - 剑
+
+display:
+  description:
+    general: "§7增加击退距离"
