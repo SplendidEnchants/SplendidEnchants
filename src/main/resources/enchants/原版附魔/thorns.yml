@@ -1,0 +1,15 @@
+basic:
+  id: thorns
+  name: "荆棘"
+  max_level: 3
+
+rarity: 精良
+targets:
+  - 头盔
+  - 胸甲
+  - 护腿
+  - 靴子
+
+display:
+  description:
+    general: "§7受到攻击时对攻击者造成伤害，并消耗盔甲耐久"

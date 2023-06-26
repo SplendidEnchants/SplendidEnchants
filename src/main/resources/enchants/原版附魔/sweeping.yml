@@ -1,0 +1,13 @@
+basic:
+  id: sweeping
+  name: "横扫之刃"
+  max_level: 3
+
+rarity: 稀有
+targets:
+  - 剑
+
+
+display:
+  description:
+    general: "§7增加横扫攻击伤害"

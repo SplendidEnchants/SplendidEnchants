@@ -25,7 +25,7 @@ display:
   description:
     general: "每击杀若干只怪物后，下一次攻击伤害增加"
     #若无specific，自动跟从general
-    specific: "每击杀 {击杀累计} 只怪物后，下一次攻击伤害增加 {伤害提升百分比}%"
+    specific: "每击杀 {击杀累计} 只怪物后，下一次攻击伤害增加 {伤害增加百分比}%"
 
 ###以下是可选的其它配置
 alternative:
@@ -49,7 +49,7 @@ variables:
   #跟等级有关的
   leveled:
     击杀累计: 3-level
-    伤害提升百分比: 30*level
+    伤害增加百分比: 30*level
   #跟玩家有关的
   player_related:
     等级: "%player_level%"
@@ -68,4 +68,4 @@ mechanisms:
     ATTACK:
       - "[条件]{当前累计}>={击杀累计}"
       - "[赋值]{当前累计}=0"
-      - "[赋值]damage_high=damage_high*(1+{伤害提升百分比}/100)"
+      - "[赋值]damage_high=damage_high*(1+{伤害增加百分比}/100)"

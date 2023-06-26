@@ -1,0 +1,12 @@
+basic:
+  id: unbreaking
+  name: "耐久"
+  max_level: 3
+
+rarity: 稀有
+targets:
+  - 可损坏物品
+
+display:
+  description:
+    general: "§7减少物品掉耐久的概率"
