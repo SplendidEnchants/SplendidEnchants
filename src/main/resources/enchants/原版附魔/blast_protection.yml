@@ -1,9 +1,9 @@
 basic:
-  id: protection
-  name: "保护"
+  id: blast_protection
+  name: "爆炸保护"
   max_level: 5
 
-rarity: 精良
+rarity: 普通
 targets:
   - 头盔
   - 胸甲
@@ -15,10 +15,10 @@ limitations:
 
 display:
   description:
-    general: "§7减少受到的伤害"
-    specific: "§7每级减少§a{减伤百分比}%§7伤害 (总上限§a20级§7)"
+    general: "§7减少受到的爆炸伤害"
+    specific: "§7每级减少§a{减伤百分比}%§7爆炸伤害 (总上限§a20级§7)"
 
 #原版附魔机制本插件不提供修改，因此此处改了也没有效果
 variables:
   leveled:
-    减伤百分比: 4*level
+    减伤百分比: 8*level

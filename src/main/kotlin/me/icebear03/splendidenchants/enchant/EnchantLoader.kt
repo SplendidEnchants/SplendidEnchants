@@ -31,7 +31,8 @@ object EnchantLoader {
                 val enchant = SplendidEnchant(file, key)
 
                 // 注册附魔
-                Enchantment.registerEnchantment(enchant)
+                if (!folder.name.equals("原版附魔"))
+                    Enchantment.registerEnchantment(enchant)
                 enchantById[id] = enchant
                 enchantByName[enchant.basicData.name] = enchant
             }
@@ -41,10 +42,12 @@ object EnchantLoader {
 
     fun unregister() {
         enchantById.values.forEach {
-            val keyMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byKey", true)
-            val nameMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byName", true)
-            keyMap?.remove(it.key)
-            nameMap?.remove(it.name)
+            if (!EnchantGroup.isIn(it, "原版附魔")) {
+                val keyMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byKey", true)
+                val nameMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byName", true)
+                keyMap?.remove(it.key)
+                nameMap?.remove(it.name)
+            }
         }
     }
 }

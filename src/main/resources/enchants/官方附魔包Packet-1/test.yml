@@ -5,7 +5,7 @@ basic:
   max_level: 2
 
 #若无此项，则自动匹配到default rarity
-rarity: epic
+rarity: 史诗
 #若无此项，则自动匹配到“未定义”
 targets:
   - swords

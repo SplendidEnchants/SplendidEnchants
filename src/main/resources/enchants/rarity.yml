@@ -3,7 +3,7 @@ common:
   color: §7
   weight: 500
 uncommon:
-  name: 罕见
+  name: 稀有
   color: §a
   weight: 500
 rare:

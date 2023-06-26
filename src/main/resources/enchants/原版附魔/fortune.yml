@@ -1,0 +1,15 @@
+basic:
+  id: fortune
+  name: "时运"
+  max_level: 3
+
+rarity: 史诗
+targets:
+  - 斧
+  - 镐
+  - 铲
+  - 锄
+
+display:
+  description:
+    general: "§7增加破坏方块时物品的掉落数量或掉落概率"

@@ -1,0 +1,20 @@
+basic:
+  id: binding_curse
+  name: "绑定诅咒"
+  max_level: 1
+
+rarity: 诅咒
+targets:
+  - 头盔
+  - 胸甲
+  - 护腿
+  - 靴子
+  - 头饰
+
+display:
+  description:
+    general: "§7被诅咒物品穿在身上后无法卸下"
+
+alternatives:
+  grindstoneable: false
+  is_cursed: true

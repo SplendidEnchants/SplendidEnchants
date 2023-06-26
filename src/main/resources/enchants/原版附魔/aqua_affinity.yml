@@ -1,0 +1,12 @@
+basic:
+  id: aqua_affinity
+  name: "水下速掘"
+  max_level: 1
+
+rarity: 稀有
+targets:
+  - 头盔
+
+display:
+  description:
+    general: "§7提升在水下的挖掘速度"
