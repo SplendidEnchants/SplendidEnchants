@@ -1,0 +1,12 @@
+basic:
+  id: respiration
+  name: "水下呼吸"
+  max_level: 3
+
+rarity: 稀有
+targets:
+  - 头盔
+
+display:
+  description:
+    general: "§7降低水下氧气消耗速率"

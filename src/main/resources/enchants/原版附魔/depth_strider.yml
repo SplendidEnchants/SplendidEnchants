@@ -8,7 +8,7 @@ targets:
   - 靴子
 
 limitations:
-  - "CONFLICT_ENCHANT:原版移动机制类附魔"
+  - "CONFLICT_GROUP:原版移动机制类附魔"
 
 display:
   description:

@@ -12,4 +12,4 @@ limitations:
 
 display:
   description:
-    general: "§7在雨天召唤闪电攻击生物，仅在雷暴时生效"
+    general: "§7在雨天召唤闪电攻击生物，仅在雷暴天气时生效"

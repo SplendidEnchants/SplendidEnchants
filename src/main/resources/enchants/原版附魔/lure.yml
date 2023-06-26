@@ -1,0 +1,12 @@
+basic:
+  id: lure
+  name: "铒钓"
+  max_level: 3
+
+rarity: 稀有
+targets:
+  - 钓鱼竿
+
+display:
+  description:
+    general: "§7减少钓鱼所需的时间"

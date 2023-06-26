@@ -3,7 +3,7 @@ basic:
   name: "保护"
   max_level: 5
 
-rarity: 精良
+rarity: 稀有
 targets:
   - 头盔
   - 胸甲

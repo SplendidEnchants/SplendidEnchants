@@ -1,0 +1,16 @@
+basic:
+  id: riptide
+  name: "激流"
+  max_level: 3
+
+rarity: 稀有
+targets:
+  - 三叉戟
+
+limitations:
+  - "CONFLICT_ENCHANT:引雷"
+  - "CONFLICT_ENCHANT:忠诚"
+
+display:
+  description:
+    general: "§7将玩家向掷出三叉戟的方向发射，仅在水中或雨中生效"

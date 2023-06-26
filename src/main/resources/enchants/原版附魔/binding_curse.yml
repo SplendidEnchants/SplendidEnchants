@@ -13,7 +13,7 @@ targets:
 
 display:
   description:
-    general: "§7被诅咒物品穿在身上后无法卸下"
+    general: "§7被诅咒的物品穿在身上后无法卸下"
 
 alternatives:
   grindstoneable: false

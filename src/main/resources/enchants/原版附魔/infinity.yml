@@ -7,6 +7,9 @@ rarity: 史诗
 targets:
   - 弓
 
+limitations:
+  - "CONFLICT_ENCHANT:经验修补"
+
 display:
   description:
     general: "§7射箭时不会消耗普通箭矢"
