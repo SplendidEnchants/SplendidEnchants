@@ -6,6 +6,7 @@ import me.icebear03.splendidenchants.enchant.data.Rarity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.util.replaceWithOrder
+import taboolib.platform.util.modifyLore
 import kotlin.math.min
 
 object EnchantDisplayer {
@@ -82,7 +83,12 @@ object EnchantDisplayer {
             }
         }
 
-        return ItemAPI.setLore(item, enchantLore + "§7" + ItemAPI.getLore(item))
+        val origin = item.itemMeta.lore ?: emptyList()
+
+        return item.modifyLore {
+            clear()
+            enchantLore + "§7" + origin
+        }
     }
 
     //TODO 修改物品模块，注意PDC

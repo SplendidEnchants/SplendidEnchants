@@ -7,11 +7,7 @@ import org.bukkit.enchantments.Enchantment
 object EnchantAPI {
 
     fun getSplendidEnchant(idOrName: String): SplendidEnchant? {
-        if (EnchantLoader.enchantById.contains(idOrName))
-            return EnchantLoader.enchantById[idOrName]!!
-        if (EnchantLoader.enchantByName.contains(idOrName))
-            return EnchantLoader.enchantByName[idOrName]!!
-        return null
+        return EnchantLoader.enchantById[idOrName] ?: EnchantLoader.enchantByName[idOrName]
     }
 
     fun getSplendidEnchant(enchant: Enchantment): SplendidEnchant {

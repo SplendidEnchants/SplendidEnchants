@@ -18,12 +18,10 @@ object Commands {
 
     @CommandBody(permission = "splendidenchants.admin", aliases = ["展示"])
     val displayEnchants = subCommand {
-        execute<Player> { sender, context, argument ->
-            run {
-                val item = EnchantDisplayer.adaptItem(sender.inventory.itemInMainHand, sender)
-                sender.inventory.setItemInMainHand(item)
-                sender.sendMessage("展示成功")
-            }
+        execute<Player> { sender, _, _ ->
+            val item = EnchantDisplayer.adaptItem(sender.inventory.itemInMainHand, sender)
+            sender.inventory.setItemInMainHand(item)
+            sender.sendMessage("展示成功")
         }
     }
 }
