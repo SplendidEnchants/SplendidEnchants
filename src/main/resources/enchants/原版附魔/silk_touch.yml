@@ -1,0 +1,18 @@
+basic:
+  id: silk_touch
+  name: "精准采集"
+  max_level: 1
+
+rarity: 稀有
+targets:
+  - 斧
+  - 镐
+  - 铲
+  - 锄
+
+limitations:
+  - "CONFLICT_ENCHANT:时运"
+
+display:
+  description:
+    general: "§7使破坏方块时掉落其本身"

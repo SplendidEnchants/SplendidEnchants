@@ -1,0 +1,16 @@
+basic:
+  id: sharpness
+  name: "锋利"
+  max_level: 5
+
+rarity: 普通
+targets:
+  - 剑
+  - 斧
+
+limitations:
+  - "CONFLICT_GROUP:原版增伤类附魔"
+
+display:
+  description:
+    general: "§7增加近战攻击伤害"

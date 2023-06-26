@@ -1,0 +1,12 @@
+basic:
+  id: power
+  name: "力量"
+  max_level: 5
+
+rarity: 精良
+targets:
+  - 弓
+
+display:
+  description:
+    general: "§7增加射出的箭的伤害"
