@@ -25,6 +25,8 @@ taboolib {
     install("expansion-command-helper")
     classifier = null
     version = "6.0.11-13"
+
+    relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
 }
 
 repositories {
@@ -47,6 +49,8 @@ dependencies {
     compileOnly("ink.ptms.core:v11904:11904:universal")
     compileOnly("ink.ptms.core:v12001:12001:mapped")
     compileOnly("ink.ptms.core:v12001:12001:universal")
+
+    taboo("org.tabooproject.taboolib:module-parrotx:1.4.20")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }
