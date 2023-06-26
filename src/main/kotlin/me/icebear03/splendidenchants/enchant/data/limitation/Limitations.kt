@@ -78,11 +78,14 @@ class Limitations {
                         return false to "{limit.conflict} || enchant=$value"
                 }
 
-                CONFLICT_GROUP -> {
-                    ItemAPI.getEnchants(item).keys.forEach { enchant ->
-                        if (!EnchantAPI.isSame(enchant, belonging) && EnchantGroup.isIn(enchant, value))
-                            return false to "{limit.conflict} || enchant=$value"
-                    }
+                CONFLICT_GROUP -> { //特殊规则：多个共存机制 TODO 待完成
+//                    ItemAPI.getEnchants(item).keys.forEach { it ->
+//                        var amount = 0
+//                        if (!EnchantAPI.isSame(it, belonging) && EnchantGroup.isIn(it, value))
+//                            amount++
+//                        if (amount > EnchantGroup.maxCoexist(value))
+//                            return false to "{limit.conflict} || enchant=$value"
+//                    }
                 }
 
                 DEPENDENCE_GROUP -> {

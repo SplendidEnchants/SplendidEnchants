@@ -9,7 +9,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 data class EnchantGroup(
     val name: String,
-    val ids: List<String>
+    val enchantNames: List<String>,
+    val maxCoexist: Int
 ) {
 
     companion object {
@@ -21,14 +22,21 @@ data class EnchantGroup(
             groupConfig.getKeys(false).forEach {
                 groups[it] = EnchantGroup(
                     it,
-                    groupConfig.getStringList(it)
+                    groupConfig.getStringList("$it.enchants"),
+                    groupConfig.getInt("$it.max_coexist", 1)
                 )
             }
             info("调试信息：加载附魔组成功，共${groups.size}个组！")
         }
 
         fun isIn(enchant: Enchantment, group: String): Boolean {
-            return groups[group]?.ids?.contains(EnchantAPI.getName(enchant)) == true
+            return if (groups[group] == null) false
+            else groups[group]!!.enchantNames.contains(EnchantAPI.getName(enchant))
+        }
+
+        fun maxCoexist(group: String): Int {
+            return if (groups[group] == null) 1
+            else groups[group]!!.maxCoexist
         }
     }
 }
