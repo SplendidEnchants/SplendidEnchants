@@ -1,6 +1,6 @@
 package taboolib.module.lang
 
-import me.icebear03.splendidenchants.Config
+import world.icebear03.splendidenchants.Config
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
