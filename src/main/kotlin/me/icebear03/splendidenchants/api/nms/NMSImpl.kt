@@ -24,7 +24,7 @@ class NMSImpl : NMS() {
     override fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor) {
         val uuid = UUID.randomUUID()
         when (MinecraftVersion.major) {
-            // 1.16
+            // 1.16, 其实 1.9-1.15 应该也可以用, 如果其他用户您有需要的话可以在您那里把这个 major 判断增加到 1.9。
             8 -> {
                 sendPacket(
                     player,
