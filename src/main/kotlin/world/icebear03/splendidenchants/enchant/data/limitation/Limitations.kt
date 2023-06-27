@@ -36,8 +36,7 @@ class Limitations {
                 PAPI_EXPRESSION -> {
                     val player = if (creature is Player) creature else null
                     val currentExpression = value.replaceWithOrder(
-                        *
-                        belonging.variable.generateReplaceMap(
+                        *belonging.variable.generateReplaceMap(
                             ItemAPI.getLevel(item, belonging), player, item
                         )
                     )

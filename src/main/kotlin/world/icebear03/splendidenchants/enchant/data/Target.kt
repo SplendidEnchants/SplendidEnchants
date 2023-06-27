@@ -32,7 +32,7 @@ data class Target(
         val targets = ConcurrentHashMap<String, Target>()
 
         fun initialize() {
-            val targetConfig = Configuration.loadAndUpdate("enchants/target.yml", listOf()) // TODO: 白名单列表
+            val targetConfig = Configuration.loadAndUpdate("enchants/target.yml")
             targetConfig.getKeys(false).forEach {
                 targets[it] = Target(
                     it,

@@ -15,12 +15,16 @@ import java.nio.charset.StandardCharsets
  */
 object YamlUpdater {
 
-    fun loadAndUpdate(path: String, whitelist: List<String>): Configuration {
+    fun loadAndUpdate(path: String, whitelist: List<String> = emptyList()): Configuration {
         val resource = YamlUpdater::class.java.classLoader.getResourceAsStream(path) ?: return Configuration.empty()
         val source = resource.readBytes().toString(StandardCharsets.UTF_8)
         val sourceConfig = Configuration.loadFromString(source, Type.YAML)
         val file = releaseResourceFile(path)
         val config = Configuration.loadFromFile(file)
+        if (whitelist.isEmpty() && config.saveToString() != sourceConfig.saveToString()) {
+            sourceConfig.saveToFile(file)
+            return Configuration.loadFromFile(file)
+        }
         var pass = true
         for (key in whitelist) {
             if (!config.contains(key) && sourceConfig.contains(key)) {
@@ -67,6 +71,6 @@ object YamlUpdater {
     }
 }
 
-fun Configuration.Companion.loadAndUpdate(path: String, whitelist: List<String>): Configuration {
+fun Configuration.Companion.loadAndUpdate(path: String, whitelist: List<String> = emptyList()): Configuration {
     return YamlUpdater.loadAndUpdate(path, whitelist)
 }

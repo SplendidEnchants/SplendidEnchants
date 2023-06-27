@@ -123,14 +123,14 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         fun getReplaceMap(level: Int?, player: Player?, item: ItemStack?): Array<Pair<String, String>> {
             var tmp = variable.generateReplaceMap(level, player, item)
             val l = (level ?: basicData.maxLevel)
-            tmp += basicData.id to "{id}"
-            tmp += basicData.name to "{name}"
-            tmp += "" + l to "{level}"
-            tmp += MathAPI.numToRoman(l, true) to "{roman_level}"
-            tmp += "" + basicData.maxLevel to "{max_level}"
-            tmp += rarity.color to "{color}"
-            tmp += rarity.name to "{rarity}"
-            tmp += getSpecificDescription(tmp) to "{description}"
+            tmp += basicData.id to "id"
+            tmp += basicData.name to "name"
+            tmp += "" + l to "level"
+            tmp += MathAPI.numToRoman(l, true) to "roman_level"
+            tmp += "" + basicData.maxLevel to "max_level"
+            tmp += rarity.color to "color"
+            tmp += rarity.name to "rarity"
+            tmp += getSpecificDescription(tmp) to "description"
             println(tmp)
             return tmp
         }
@@ -191,15 +191,15 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             variableSet.forEach {
                 when (it.value) {
                     "leveled" -> {
-                        list.add(leveled(it.key, level) to "{$it.key}")
+                        list.add(leveled(it.key, level) to "$it.key")
                     }
 
                     "player_related" -> {
-                        list.add(playerRelated(it.key, player) to "{$it.key}")
+                        list.add(playerRelated(it.key, player) to "$it.key")
                     }
 
                     "modifiable" -> {
-                        list.add(modifiable(it.key, item) to "{$it.key}")
+                        list.add(modifiable(it.key, item) to "$it.key")
                     }
                 }
             }

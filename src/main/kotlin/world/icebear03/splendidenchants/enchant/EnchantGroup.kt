@@ -18,7 +18,7 @@ data class EnchantGroup(
         val groups = ConcurrentHashMap<String, EnchantGroup>()
 
         fun initialize() {
-            val groupConfig = Configuration.loadAndUpdate("enchants/group.yml", listOf())
+            val groupConfig = Configuration.loadAndUpdate("enchants/group.yml")
             groupConfig.getKeys(false).forEach {
                 groups[it] = EnchantGroup(
                     it,
