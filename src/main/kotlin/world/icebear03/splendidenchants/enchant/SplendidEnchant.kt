@@ -1,12 +1,6 @@
 package world.icebear03.splendidenchants.enchant
 
 import io.papermc.paper.enchantments.EnchantmentRarity
-import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.api.MathAPI
-import world.icebear03.splendidenchants.api.PlayerAPI
-import world.icebear03.splendidenchants.enchant.data.Rarity
-import world.icebear03.splendidenchants.enchant.data.Target
-import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import net.kyori.adventure.text.Component
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
@@ -21,6 +15,12 @@ import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
 import taboolib.module.kether.compileToJexl
+import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.MathAPI
+import world.icebear03.splendidenchants.api.PlayerAPI
+import world.icebear03.splendidenchants.enchant.data.Rarity
+import world.icebear03.splendidenchants.enchant.data.Target
+import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -88,46 +88,50 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                 displayerConfig.getString("description.specific")!!
             else generalDescription
 
-        fun getSpecificDescription(replaceMap: List<Pair<String, String>>): String {
-            return specificDescription.replaceWithOrder(replaceMap)
+        //生成本附魔在当前状态下的介绍
+        fun getSpecificDescription(replaceMap: Array<Pair<String, String>>): String {
+            return specificDescription.replaceWithOrder(*replaceMap)
         }
 
-        fun getSpecificFormat(level: Int?, player: Player?, item: ItemStack?): String {
+        //生成本附魔在当前状态下的显示（在物品lore中）
+        fun getSpecificDisplay(level: Int?, player: Player?, item: ItemStack?): String {
             return (previousFormat.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
                     + subsequentFormat.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent)
-                    ).replaceWithOrder(getReplaceMap(level, player, item))
+                    ).replaceWithOrder(*getReplaceMap(level, player, item))
         }
 
-        fun getSpecificFormatMap(
+        //生成{previous_1}等的替换map
+        fun getSpecificDisplayMap(
             level: Int?,
             player: Player?,
             item: ItemStack?,
             order: Int?
-        ): List<Pair<String, String>> {
+        ): Array<Pair<String, String>> {
             val suffix = if (order == null) "" else "_$order"
             val tmp = mutableListOf<Pair<String, String>>()
             val replaceMap = getReplaceMap(level, player, item)
             tmp += "previous$suffix" to previousFormat.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
-                .replaceWithOrder(replaceMap)
+                .replaceWithOrder(*replaceMap)
             tmp += "subsequent$suffix" to subsequentFormat.replace(
                 "{default_subsequent}",
                 EnchantDisplayer.defaultSubsequent
-            )
-                .replaceWithOrder(replaceMap)
-            return tmp
+            ).replaceWithOrder(*replaceMap)
+            return tmp.toTypedArray()
         }
 
-        fun getReplaceMap(level: Int?, player: Player?, item: ItemStack?): List<Pair<String, String>> {
-            val tmp = variable.generateReplaceMap(level, player, item).toMutableList()
+        //生成可能存在的占位符和对应值
+        fun getReplaceMap(level: Int?, player: Player?, item: ItemStack?): Array<Pair<String, String>> {
+            var tmp = variable.generateReplaceMap(level, player, item)
             val l = (level ?: basicData.maxLevel)
-            tmp += "{id}" to basicData.id
-            tmp += "{name}" to basicData.name
-            tmp += "{level}" to "" + l
-            tmp += "{roman_level}" to MathAPI.numToRoman(l, true)
-            tmp += "{max_level}" to "" + basicData.maxLevel
-            tmp += "{color}" to rarity.color
-            tmp += "{rarity}" to rarity.name
-            tmp += "{description}" to getSpecificDescription(tmp)
+            tmp += basicData.id to "{id}"
+            tmp += basicData.name to "{name}"
+            tmp += "" + l to "{level}"
+            tmp += MathAPI.numToRoman(l, true) to "{roman_level}"
+            tmp += "" + basicData.maxLevel to "{max_level}"
+            tmp += rarity.color to "{color}"
+            tmp += rarity.name to "{rarity}"
+            tmp += getSpecificDescription(tmp) to "{description}"
+            println(tmp)
             return tmp
         }
     }
@@ -182,24 +186,24 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                 ?: modifiable[variable]!!.second
         }
 
-        fun generateReplaceMap(level: Int?, player: Player?, item: ItemStack?): List<Pair<String, String>> {
+        fun generateReplaceMap(level: Int?, player: Player?, item: ItemStack?): Array<Pair<String, String>> {
             val list = arrayListOf<Pair<String, String>>()
             variableSet.forEach {
                 when (it.value) {
                     "leveled" -> {
-                        list.add("{$it.key}" to leveled(it.key, level))
+                        list.add(leveled(it.key, level) to "{$it.key}")
                     }
 
                     "player_related" -> {
-                        list.add("{$it.key}" to playerRelated(it.key, player))
+                        list.add(playerRelated(it.key, player) to "{$it.key}")
                     }
 
                     "modifiable" -> {
-                        list.add("{$it.key}" to modifiable(it.key, item))
+                        list.add(modifiable(it.key, item) to "{$it.key}")
                     }
                 }
             }
-            return list
+            return list.toTypedArray()
         }
     }
 

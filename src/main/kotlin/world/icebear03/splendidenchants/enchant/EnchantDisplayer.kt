@@ -1,12 +1,12 @@
 package world.icebear03.splendidenchants.enchant
 
-import world.icebear03.splendidenchants.Config
-import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.data.Rarity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.util.replaceWithOrder
 import taboolib.platform.util.modifyLore
+import world.icebear03.splendidenchants.Config
+import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.enchant.data.Rarity
 import kotlin.math.min
 
 object EnchantDisplayer {
@@ -58,7 +58,7 @@ object EnchantDisplayer {
         if (!combineMode) {
             //未开启合并模式
             enchants.forEach {
-                enchantLore += it.key.displayer.getSpecificFormat(it.value, player, item).split("\n")
+                enchantLore += it.key.displayer.getSpecificDisplay(it.value, player, item).split("\n")
             }
         } else {
             //开启合并模式
@@ -71,7 +71,7 @@ object EnchantDisplayer {
                 for (j in 0 until total) {
                     val enchantPair = enchantPairs[i + j]
                     layout = layout.replaceWithOrder(
-                        enchantPair.first.displayer.getSpecificFormatMap(
+                        *enchantPair.first.displayer.getSpecificDisplayMap(
                             enchantPair.second,
                             player,
                             item,
@@ -84,6 +84,7 @@ object EnchantDisplayer {
         }
 
         val origin = item.itemMeta.lore ?: emptyList()
+        println(enchantLore)
 
         return item.modifyLore {
             clear()

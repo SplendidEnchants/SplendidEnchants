@@ -1,10 +1,10 @@
 package world.icebear03.splendidenchants.enchant
 
-import world.icebear03.splendidenchants.api.EnchantAPI
-import world.icebear03.splendidenchants.util.loadAndUpdate
 import org.bukkit.enchantments.Enchantment
 import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
+import world.icebear03.splendidenchants.api.EnchantAPI
+import world.icebear03.splendidenchants.util.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
 
 data class EnchantGroup(
@@ -18,7 +18,7 @@ data class EnchantGroup(
         val groups = ConcurrentHashMap<String, EnchantGroup>()
 
         fun initialize() {
-            val groupConfig = Configuration.loadAndUpdate("enchants/group.yml", listOf()) // TODO: 白名单列表
+            val groupConfig = Configuration.loadAndUpdate("enchants/group.yml", listOf())
             groupConfig.getKeys(false).forEach {
                 groups[it] = EnchantGroup(
                     it,

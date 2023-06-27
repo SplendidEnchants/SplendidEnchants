@@ -1,16 +1,16 @@
 package world.icebear03.splendidenchants.enchant.data.limitation
 
-import world.icebear03.splendidenchants.api.EnchantAPI
-import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.EnchantGroup
-import world.icebear03.splendidenchants.enchant.SplendidEnchant
-import world.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
+import world.icebear03.splendidenchants.api.EnchantAPI
+import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.enchant.EnchantGroup
+import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
 
 class Limitations {
 
@@ -36,6 +36,7 @@ class Limitations {
                 PAPI_EXPRESSION -> {
                     val player = if (creature is Player) creature else null
                     val currentExpression = value.replaceWithOrder(
+                        *
                         belonging.variable.generateReplaceMap(
                             ItemAPI.getLevel(item, belonging), player, item
                         )

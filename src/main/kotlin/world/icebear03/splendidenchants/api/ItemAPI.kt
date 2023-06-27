@@ -1,10 +1,10 @@
 package world.icebear03.splendidenchants.api
 
-import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
 object ItemAPI {
 
@@ -14,7 +14,9 @@ object ItemAPI {
         if (item.itemMeta == null) return result
         val meta = item.itemMeta!!
         meta.enchants.keys.forEach { enchant ->
-            result[EnchantAPI.getSplendidEnchant(enchant)] = meta.getEnchantLevel(enchant)
+            run {
+                result[EnchantAPI.getSplendidEnchant(enchant)] = meta.getEnchantLevel(enchant)
+            }
         }
         return result
     }
