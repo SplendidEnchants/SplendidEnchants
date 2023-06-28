@@ -1,11 +1,11 @@
 package world.icebear03.splendidenchants
 
+import taboolib.common.platform.Plugin
+import taboolib.common.platform.function.info
 import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
-import taboolib.common.platform.Plugin
-import taboolib.common.platform.function.info
 
 object SplendidEnchants : Plugin() {
 
@@ -13,6 +13,12 @@ object SplendidEnchants : Plugin() {
         info("Loading SplendidEnchants...")
 
         Config.initialize()
+
+//        val list = arrayOf("awa" to "AWA", "qwq" to "QWQ")
+//        println("awa qwq".replaceWithOrder(*list)) ✖
+//        println("AWA QWQ".replaceWithOrder(*list)) ✖
+//        println("{awa} {qwq}".replaceWithOrder(*list)) ✖
+//        println("{AWA} {QWQ}".replaceWithOrder(*list))  ✔
 
         Rarity.initialize()
         Target.initialize()

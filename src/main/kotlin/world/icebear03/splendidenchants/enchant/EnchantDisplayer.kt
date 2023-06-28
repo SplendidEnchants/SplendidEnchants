@@ -1,15 +1,27 @@
 package world.icebear03.splendidenchants.enchant
 
+import org.bukkit.GameMode
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import taboolib.common.util.replaceWithOrder
-import taboolib.platform.util.modifyLore
 import world.icebear03.splendidenchants.Config
+import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import kotlin.math.min
 
 object EnchantDisplayer {
+
+    //物品已经处理过了
+    var displayMarkKey: NamespacedKey = NamespacedKey("splendidenchants", "display_mark")
+
+    //物品lore中额外添加的部分的下标(String "firstIndex-lastIndex")
+    val displayIndexKey: NamespacedKey = NamespacedKey("splendidenchants", "display_index")
+
+    //物品上附魔的序列化，便于在创造模式的还原(Map->String  "enchant_1_name:1|enchant_2_name:3……")
+    val itemEnchantKey: NamespacedKey = NamespacedKey("splendidenchants", "item_enchants")
 
     var defaultPrevious: String
     var defaultSubsequent: String
@@ -48,10 +60,13 @@ object EnchantDisplayer {
     }
 
     //插入附魔对应的lore
-    fun adaptItem(item: ItemStack?, player: Player?): ItemStack? {
-        if (item == null) return item
+    fun generateEnchantLore(item: ItemStack?, player: Player?): List<String> {
+        if (item == null) return listOf()
 
         val enchants = sortEnchants(ItemAPI.getEnchants(item))
+
+        if (enchants.size <= 0) return listOf()
+
         val enchantLore = mutableListOf<String>()
         val combineMode = combine && enchants.size >= minimal
 
@@ -83,16 +98,89 @@ object EnchantDisplayer {
             }
         }
 
-        val origin = item.itemMeta.lore ?: emptyList()
         println(enchantLore)
 
-        return item.modifyLore {
-            clear()
-            enchantLore + "§7" + origin
-        }
+        //TODO 应该增加自定义功能，enchantlore是在物品原来的lore前面还是后面
+        //TODO 是否需要空行（可以改为腐竹自己决定enchantlore和物品原来lore中间的东西）
+        return enchantLore + "§r "
     }
 
-    //TODO 修改物品模块，注意PDC
+    //展示是给玩家看的，玩家必须存在
+    fun display(item: ItemStack, player: Player): ItemStack {
+        var clone = item.clone()
+        val meta = clone.itemMeta
+        val pdc = meta.persistentDataContainer
+
+        //已经展示过了就重新展示（2.0遗留思路）（个人认为多余，可以尝试去除此处，节省性能）
+        if (pdc.has(displayMarkKey)) {
+            //return clone
+            clone = undisplay(clone, player)
+        }
+
+        //上标记
+        pdc.set(displayMarkKey, PersistentDataType.BOOLEAN, true)
+
+        //上lore
+        //TODO 同line103 104，自定义顺序
+        val enchantLore = generateEnchantLore(item, player).toMutableList()
+        val origin = if (meta.lore == null) listOf<String>() else meta.lore
+        meta.lore = enchantLore + origin
+        val first = 0
+        val last = enchantLore.size
+        pdc.set(displayIndexKey, PersistentDataType.STRING, "$first-$last")
+
+        //加附魔序列化数据
+        var data = ""
+        ItemAPI.getEnchants(item).forEach {
+            data += it.key.basicData.name + ":" + it.value + "|"
+        }
+        pdc.set(itemEnchantKey, PersistentDataType.STRING, data)
+
+        clone.itemMeta = meta
+
+        return clone
+    }
+
+    fun undisplay(item: ItemStack, player: Player): ItemStack {
+        val clone = item.clone()
+        var meta = clone.itemMeta
+        val pdc = meta.persistentDataContainer
+
+        if (player.gameMode == GameMode.CREATIVE) {
+            val enchantInfo = pdc.get(itemEnchantKey, PersistentDataType.STRING)!!
+            //清除附魔
+            ItemAPI.setEnchants(meta, mapOf())
+            //重新添加附魔
+            enchantInfo.split("|").forEach {
+                if (it.contains(":")) {
+                    val enchant = EnchantAPI.getSplendidEnchant(it.split(":")[0])
+                    val level = it.split(":")[1].toInt()
+                    if (enchant != null) {
+                        meta = ItemAPI.addEnchant(meta, enchant, level)
+                    }
+                }
+            }
+        }
+
+        //除去enchant lore
+        if (meta.lore != null) {
+            val indexInfo = pdc.get(displayIndexKey, PersistentDataType.STRING)!!
+            val first = indexInfo.split("-")[0].toInt()
+            val last = indexInfo.split("-")[1].toInt()
+            if (meta.lore!!.size >= last) {
+                meta.lore = meta.lore!!.subList(first, last)
+            }
+        }
+
+        //除去PDC数据
+        pdc.remove(displayMarkKey)
+        pdc.remove(displayIndexKey)
+        pdc.remove(itemEnchantKey)
+
+        clone.itemMeta = meta
+
+        return clone
+    }
 
     //TODO 回退物品模块，注意PDC，防止NBT堆叠造成卡顿
     //TODO 应注意创造模式的转换

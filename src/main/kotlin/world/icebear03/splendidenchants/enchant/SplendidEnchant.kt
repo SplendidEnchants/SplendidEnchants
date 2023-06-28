@@ -110,8 +110,10 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             val suffix = if (order == null) "" else "_$order"
             val tmp = mutableListOf<Pair<String, String>>()
             val replaceMap = getReplaceMap(level, player, item)
-            tmp += "previous$suffix" to previousFormat.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
-                .replaceWithOrder(*replaceMap)
+            tmp += "previous$suffix" to previousFormat.replace(
+                "{default_previous}",
+                EnchantDisplayer.defaultPrevious
+            ).replaceWithOrder(*replaceMap)
             tmp += "subsequent$suffix" to subsequentFormat.replace(
                 "{default_subsequent}",
                 EnchantDisplayer.defaultSubsequent
@@ -191,15 +193,15 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             variableSet.forEach {
                 when (it.value) {
                     "leveled" -> {
-                        list.add(leveled(it.key, level) to "$it.key")
+                        list.add(leveled(it.key, level) to it.key)
                     }
 
                     "player_related" -> {
-                        list.add(playerRelated(it.key, player) to "$it.key")
+                        list.add(playerRelated(it.key, player) to it.key)
                     }
 
                     "modifiable" -> {
-                        list.add(modifiable(it.key, item) to "$it.key")
+                        list.add(modifiable(it.key, item) to it.key)
                     }
                 }
             }
