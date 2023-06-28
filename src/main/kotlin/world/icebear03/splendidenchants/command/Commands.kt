@@ -19,8 +19,7 @@ object Commands {
     @CommandBody(permission = "splendidenchants.admin", aliases = ["展示"])
     val displayEnchants = subCommand {
         execute<Player> { sender, _, _ ->
-            val item = EnchantDisplayer.generateEnchantLore(sender.inventory.itemInMainHand, sender)
-            println(item)
+            val item = EnchantDisplayer.display(sender.inventory.itemInMainHand, sender)
             sender.inventory.setItemInMainHand(item)
             sender.sendMessage("展示成功")
         }
