@@ -17,8 +17,8 @@ object EnchantDisplayer {
     //物品已经处理过了
     var displayMarkKey: NamespacedKey = NamespacedKey("splendidenchants", "display_mark")
 
-    //物品lore中额外添加的部分的下标(String "firstIndex-lastIndex")
-    val displayIndexKey: NamespacedKey = NamespacedKey("splendidenchants", "display_index")
+    //物品lore中原来的部分的下标(String "firstIndex-lastIndex")
+    val loreIndexKey: NamespacedKey = NamespacedKey("splendidenchants", "lore_index")
 
     //物品上附魔的序列化，便于在创造模式的还原(Map->String  "enchant_1_name:1|enchant_2_name:3……")
     val itemEnchantKey: NamespacedKey = NamespacedKey("splendidenchants", "item_enchants")
@@ -33,6 +33,8 @@ object EnchantDisplayer {
     var minimal: Int
     var amount: Int
     var layouts: List<String>
+
+    var loreFormation: List<String>
 
     init {
         val config = Config.config.getConfigurationSection("display")!!
@@ -49,6 +51,8 @@ object EnchantDisplayer {
         minimal = config.getInt("combine.min", 8)
         amount = config.getInt("combine.amount", 2)
         layouts = config.getStringList("combine.layout")
+
+        loreFormation = config.getStringList("lore_formation")
     }
 
     //对附魔排序
@@ -98,11 +102,7 @@ object EnchantDisplayer {
             }
         }
 
-        println(enchantLore)
-
-        //TODO 应该增加自定义功能，enchantlore是在物品原来的lore前面还是后面
-        //TODO 是否需要空行（可以改为腐竹自己决定enchantlore和物品原来lore中间的东西）
-        return enchantLore + "§r "
+        return enchantLore
     }
 
     //展示是给玩家看的，玩家必须存在
@@ -121,13 +121,26 @@ object EnchantDisplayer {
         pdc.set(displayMarkKey, PersistentDataType.BOOLEAN, true)
 
         //上lore
-        //TODO 同line103 104，自定义顺序
         val enchantLore = generateEnchantLore(item, player).toMutableList()
-        val origin = if (meta.lore == null) listOf<String>() else meta.lore
-        meta.lore = enchantLore + origin
-        val first = 0
-        val last = enchantLore.size
-        pdc.set(displayIndexKey, PersistentDataType.STRING, "$first-$last")
+        val origin = if (meta.lore != null) meta.lore!! else mutableListOf()
+
+        val lore = mutableListOf<String>()
+        var first = 0
+        var last = 0
+        loreFormation.forEach {
+            when (it) {
+                "{enchant_lore}" -> lore += enchantLore
+                "{item_lore}" -> {
+                    first = lore.size
+                    lore += origin
+                    last = lore.size
+                }
+
+                else -> lore += it
+            }
+        }
+        meta.lore = lore
+        pdc.set(loreIndexKey, PersistentDataType.STRING, "$first-$last")
 
         //加附魔序列化数据
         var data = ""
@@ -164,7 +177,7 @@ object EnchantDisplayer {
 
         //除去enchant lore
         if (meta.lore != null) {
-            val indexInfo = pdc.get(displayIndexKey, PersistentDataType.STRING)!!
+            val indexInfo = pdc.get(loreIndexKey, PersistentDataType.STRING)!!
             val first = indexInfo.split("-")[0].toInt()
             val last = indexInfo.split("-")[1].toInt()
             if (meta.lore!!.size >= last) {
@@ -174,7 +187,7 @@ object EnchantDisplayer {
 
         //除去PDC数据
         pdc.remove(displayMarkKey)
-        pdc.remove(displayIndexKey)
+        pdc.remove(loreIndexKey)
         pdc.remove(itemEnchantKey)
 
         clone.itemMeta = meta

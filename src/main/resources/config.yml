@@ -11,6 +11,11 @@ display:
   format:
     default_previous: "{color}{name} {roman_level}"
     default_subsequent: "\n§8| §r{description}"
+  #lore的顺序
+  lore_formation:
+    - "{enchant_lore}" #附魔描述
+    - "§r " #空一行美观
+    - "{item_lore}" #物品原来的lore
   #显示排序
   sort:
     #按照等级排序，从高到低
