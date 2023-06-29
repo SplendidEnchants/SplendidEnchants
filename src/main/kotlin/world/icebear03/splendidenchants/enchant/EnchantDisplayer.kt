@@ -1,3 +1,4 @@
+@file:Suppress("deprecation")
 package world.icebear03.splendidenchants.enchant
 
 import org.bukkit.GameMode
@@ -65,7 +66,7 @@ object EnchantDisplayer {
 
         val enchants = sortEnchants(ItemAPI.getEnchants(item))
 
-        if (enchants.size <= 0) return listOf()
+        if (enchants.isEmpty()) return listOf()
 
         val enchantLore = mutableListOf<String>()
         val combineMode = combine && enchants.size >= minimal
@@ -123,7 +124,7 @@ object EnchantDisplayer {
         //上lore
         //TODO 同line103 104，自定义顺序
         val enchantLore = generateEnchantLore(item, player).toMutableList()
-        val origin = if (meta.lore == null) listOf<String>() else meta.lore
+        val origin = meta.lore ?: emptyList()
         meta.lore = enchantLore + origin
         val first = 0
         val last = enchantLore.size

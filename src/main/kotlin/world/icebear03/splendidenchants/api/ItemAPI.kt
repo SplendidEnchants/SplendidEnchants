@@ -6,41 +6,31 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
+import taboolib.platform.util.modifyLore
+import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
 object ItemAPI {
+
     fun setLore(item: ItemStack?, lore: List<String>): ItemStack? {
-        if (item == null) return null
-        if (item.itemMeta == null) return item
-        val clone = item.clone()
-        val meta = clone.itemMeta!!
-        meta.lore = lore
-        clone.itemMeta = meta
-        return clone
+        return if (item?.itemMeta == null) null else item.clone().modifyLore {
+            clear()
+            addAll(lore)
+        }
     }
 
-    fun getEnchants(item: ItemStack?): HashMap<SplendidEnchant, Int> {
-        val result = hashMapOf<SplendidEnchant, Int>()
-        if (item == null) return result
-        if (item.itemMeta == null) return result
-        val meta = item.itemMeta!!
-        if (meta is EnchantmentStorageMeta) {
-            meta.storedEnchants.keys.forEach {
-                result[EnchantAPI.getSplendidEnchant(it)] = meta.storedEnchants[it]!!
-            }
-        } else {
-            meta.enchants.keys.forEach {
-                result[EnchantAPI.getSplendidEnchant(it)] = meta.getEnchantLevel(it)
-            }
-        }
-        return result
+    fun getEnchants(item: ItemStack?): Map<SplendidEnchant, Int> {
+        return item?.itemMeta?.let { meta ->
+            if (meta is EnchantmentStorageMeta) {
+                meta.storedEnchants
+            } else {
+                meta.enchants
+            }.mapKeys { (key, _) -> EnchantAPI.getSplendidEnchant(key) }
+        } ?: emptyMap()
     }
 
     fun containsEnchant(item: ItemStack?, enchant: Enchantment): Boolean {
-        if (item == null) return false
-        if (item.itemMeta == null) return false
-        val meta = item.itemMeta!!
-        return meta.getEnchantLevel(enchant) > 0
+        return (item?.itemMeta?.getEnchantLevel(enchant) ?: 0) > 0
     }
 
     fun <T, Z> getItemData(item: ItemStack?, dataKey: String, type: PersistentDataType<T, Z>): Z? {
@@ -55,22 +45,18 @@ object ItemAPI {
     }
 
     fun getLevel(item: ItemStack?, enchant: Enchantment): Int {
-        if (item == null) return 0
-        if (item.itemMeta == null) return 0
-        val meta = item.itemMeta!!
-        if (meta is EnchantmentStorageMeta) {
-            if (meta.storedEnchants[enchant] != null)
-                return meta.storedEnchants[enchant]!!
-        } else {
-            if (meta.hasEnchant(enchant))
-                return meta.getEnchantLevel(enchant)
-        }
-        return 0
+        return item?.itemMeta?.let { meta ->
+            if (meta is EnchantmentStorageMeta) {
+                meta.storedEnchants[enchant]
+            } else {
+                meta.getEnchantLevel(enchant)
+            }
+        } ?: 0
     }
 
+    // FIXME: 这个方法有什么必要么?
     fun isBook(item: ItemStack): Boolean {
-        val meta = item.itemMeta
-        return meta is EnchantmentStorageMeta
+        return item.itemMeta is EnchantmentStorageMeta
     }
 
     //注意原meta会更改
@@ -84,11 +70,9 @@ object ItemAPI {
     }
 
     fun addEnchant(item: ItemStack, enchant: SplendidEnchant, level: Int): ItemStack {
-        if (item.itemMeta == null) return item
-        val clone = item.clone()
-        val meta = addEnchant(clone.itemMeta, enchant, level)
-        clone.itemMeta = meta
-        return clone
+        return if (item.itemMeta == null) item else item.modifyMeta<ItemMeta> {
+            addEnchant(this, enchant, level)
+        }
     }
 
     //注意原meta会更改
@@ -104,10 +88,8 @@ object ItemAPI {
     }
 
     fun setEnchants(item: ItemStack, enchants: Map<Enchantment, Int>): ItemStack {
-        if (item.itemMeta == null) return item
-        val clone = item.clone()
-        val meta = setEnchants(clone.itemMeta, enchants)
-        clone.itemMeta = meta
-        return clone
+        return if (item.itemMeta == null) item else item.clone().modifyMeta<ItemMeta> {
+            setEnchants(this, enchants)
+        }
     }
 }
