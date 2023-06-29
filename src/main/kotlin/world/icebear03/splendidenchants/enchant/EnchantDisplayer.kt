@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.enchant
 import org.bukkit.GameMode
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import taboolib.common.util.replaceWithOrder
@@ -111,6 +112,22 @@ object EnchantDisplayer {
         val meta = clone.itemMeta
         val pdc = meta.persistentDataContainer
 
+        //若本来就不需要显示附魔，就不显示了
+        //注意，附魔书对应的隐藏附魔flag是HIDE POTION EFFECTS而不是HIDE ENCHANTS（1.18-是这样，1.19+未知）
+        if (ItemAPI.isBook(item)) {
+            if (meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS) || meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS))
+                return item
+            else {
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS)
+            }
+        } else {
+            if (meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS))
+                return item
+            else {
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+            }
+        }
+
         //已经展示过了就重新展示（2.0遗留思路）（个人认为多余，可以尝试去除此处，节省性能）
         if (pdc.has(displayMarkKey)) {
             //return clone
@@ -159,6 +176,18 @@ object EnchantDisplayer {
         var meta = clone.itemMeta
         val pdc = meta.persistentDataContainer
 
+        if (!pdc.has(displayMarkKey)) {
+            return item
+        }
+        if (ItemAPI.isBook(item)) {
+            meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS)
+        } else {
+            meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS)
+        }
+
+        //创造模式的额外处理，需要重新给物品附魔
+        //这是因为创造模式下客户端会重新设置背包物品，而重新设置的物品中非原版附魔会消失
+        //这是由于客户端没有注册更多附魔
         if (player.gameMode == GameMode.CREATIVE) {
             val enchantInfo = pdc.get(itemEnchantKey, PersistentDataType.STRING)!!
             //清除附魔
