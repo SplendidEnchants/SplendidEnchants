@@ -1,3 +1,4 @@
+@file:Suppress("deprecation")
 package world.icebear03.splendidenchants.enchant
 
 import org.bukkit.GameMode
@@ -70,7 +71,7 @@ object EnchantDisplayer {
 
         val enchants = sortEnchants(ItemAPI.getEnchants(item))
 
-        if (enchants.size <= 0) return listOf()
+        if (enchants.isEmpty()) return listOf()
 
         val enchantLore = mutableListOf<String>()
         val combineMode = combine && enchants.size >= minimal
@@ -112,6 +113,7 @@ object EnchantDisplayer {
         val meta = clone.itemMeta
         val pdc = meta.persistentDataContainer
 
+        //TODO 此处Mical未优化
         //若本来就不需要显示附魔，就不显示了
         //注意，附魔书对应的隐藏附魔flag是HIDE POTION EFFECTS而不是HIDE ENCHANTS（1.18-是这样，1.19+未知）
         if (ItemAPI.isBook(item)) {
@@ -139,8 +141,8 @@ object EnchantDisplayer {
 
         //上lore
         val enchantLore = generateEnchantLore(item, player).toMutableList()
-        val origin = if (meta.lore != null) meta.lore!! else mutableListOf()
-
+        val origin = meta.lore ?: emptyList()
+        //TODO 此处未优化
         val lore = mutableListOf<String>()
         var first = 0
         var last = 0
@@ -176,6 +178,7 @@ object EnchantDisplayer {
         var meta = clone.itemMeta
         val pdc = meta.persistentDataContainer
 
+        //TODO 此处未优化
         if (!pdc.has(displayMarkKey)) {
             return item
         }
@@ -223,7 +226,4 @@ object EnchantDisplayer {
 
         return clone
     }
-
-    //TODO 回退物品模块，注意PDC，防止NBT堆叠造成卡顿
-    //TODO 应注意创造模式的转换
 }
