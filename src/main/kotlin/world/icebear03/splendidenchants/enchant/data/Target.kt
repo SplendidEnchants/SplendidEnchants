@@ -17,16 +17,6 @@ data class Target(
 
     val types = typeNames.map { Material.valueOf(it) }
 
-    fun maxCapability(type: Material): Int {
-        var ans = 99 /*TODO max in config.yml*/
-        for (target in targets.values) {
-            if (target.types.contains(type)) {
-                ans = ans.coerceAtMost(target.capability)
-            }
-        }
-        return ans
-    }
-
     companion object {
 
         val targets = ConcurrentHashMap<String, Target>()
@@ -48,6 +38,16 @@ data class Target(
 
         fun fromIdOrName(idOrName: String): Target {
             return targets[idOrName] ?: targets.values.firstOrNull { it.name == idOrName } ?: targets["unknown"]!!
+        }
+
+        fun maxCapability(type: Material): Int {
+            var ans = 32
+            for (target in targets.values) {
+                if (target.types.contains(type)) {
+                    ans = ans.coerceAtMost(target.capability)
+                }
+            }
+            return ans
         }
     }
 }

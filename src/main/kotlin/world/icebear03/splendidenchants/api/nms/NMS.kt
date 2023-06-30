@@ -1,5 +1,6 @@
 package world.icebear03.splendidenchants.api.nms
 
+import net.minecraft.world.item.ItemStack
 import world.icebear03.splendidenchants.`object`.Overlay
 import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player
@@ -17,11 +18,13 @@ import taboolib.module.nms.sendPacket
 abstract class NMS {
 
     abstract fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor)
+    abstract fun toBukkitItemStack(item:ItemStack):org.bukkit.inventory.ItemStack
 
     fun sendPacket(player: Player, packet: Any, vararg fields: Pair<Any, Any>) {
         fields.forEach { packet.setProperty(it.first.toString(), it.second) }
         player.sendPacket(packet)
     }
+
 
     companion object {
 

@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.api
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
@@ -91,5 +92,41 @@ object ItemAPI {
         return if (item.itemMeta == null) item else item.clone().modifyMeta<ItemMeta> {
             setEnchants(this, enchants)
         }
+    }
+
+    fun getName(item: ItemStack?): String? {
+        if (item == null) return null
+        if (item.itemMeta == null) return null
+        val meta = item.itemMeta!!
+        return meta.displayName
+    }
+
+    fun setName(item: ItemStack?, name: String?): ItemStack? {
+        if (item == null) return null
+        if (item.itemMeta == null) return null
+        val meta = item.itemMeta!!
+        meta.setDisplayName(name)
+        item.setItemMeta(meta)
+        return item
+    }
+
+    fun getDamage(item: ItemStack?): Int? {
+        if (item == null) return null
+        if (item.itemMeta == null) return null
+        val meta = item.itemMeta!!
+        if (meta is Damageable)
+            return meta.damage
+        return null
+    }
+
+    fun setDamage(item: ItemStack?, damage: Int?): ItemStack? {
+        if (item == null) return null
+        if (item.itemMeta == null) return item
+        if (damage == null) return item
+        val meta = item.itemMeta!!
+        if (meta is Damageable) {
+            meta.damage = damage
+        }
+        return item
     }
 }

@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.enchant.data.limitation
 enum class LimitType(val typeName: String) {
 
     // TODO: 应当自定义语言
+    MAX_CAPABILITY("词条限制"), // 如 一把剑最多有12附魔（默认）
     PAPI_EXPRESSION("表达式"), // 如 %player_level%>=30
     PERMISSION("权限"), // 如 splendidenchants.use
     CONFLICT_ENCHANT("冲突"), // 如 锋利

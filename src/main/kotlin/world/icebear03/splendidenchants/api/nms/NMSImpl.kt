@@ -1,5 +1,6 @@
 package world.icebear03.splendidenchants.api.nms
 
+import net.minecraft.world.item.ItemStack
 import world.icebear03.splendidenchants.`object`.Overlay
 import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player
@@ -10,6 +11,7 @@ import taboolib.library.reflex.Reflex.Companion.setProperty
 import taboolib.library.reflex.Reflex.Companion.unsafeInstance
 import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
+import taboolib.module.ui.virtual.Craft16ItemStack
 import java.util.UUID
 
 /**
@@ -20,6 +22,10 @@ import java.util.UUID
  * @since 2023/6/21 10:28 PM
  */
 class NMSImpl : NMS() {
+
+    override fun toBukkitItemStack(item:ItemStack):org.bukkit.inventory.ItemStack{
+        //TODO
+    }
 
     override fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor) {
         val uuid = UUID.randomUUID()

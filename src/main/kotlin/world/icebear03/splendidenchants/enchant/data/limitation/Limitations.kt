@@ -10,6 +10,7 @@ import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
 
 class Limitations {
@@ -25,7 +26,7 @@ class Limitations {
 
     // 检查操作是否被允许（比如是否可以附魔到某个物品上、使用时是否可以生效、村民生成新交易等）
     // item 就是跟操作直接有关的物品（如正在被附魔的书、正在使用的剑、生成的新交易中卖出的附魔书等）
-    fun checkAvailable(checkType: CheckType, creature: LivingEntity, item: ItemStack): Pair<Boolean, String> {
+    fun checkAvailable(checkType: CheckType, creature: LivingEntity?, item: ItemStack): Pair<Boolean, String> {
         for (limitation in limitations) {
             if (!checkType.containsType(limitation.first))
                 continue
@@ -48,14 +49,23 @@ class Limitations {
                 }
 
                 PERMISSION -> {
+                    if (creature == null)
+                        return true to ""
                     if (!creature.hasPermission(value))
                         return false to "{limit.permission} || permission=$value"
                 }
 
                 CONFLICT_ENCHANT, DEPENDENCE_ENCHANT, CONFLICT_GROUP, DEPENDENCE_GROUP -> {
-                    var result: Pair<Boolean, String> = checkAvailable(item)
+                    val result: Pair<Boolean, String> = checkAvailable(item)
                     if (!result.first)
                         return result
+                }
+
+                MAX_CAPABILITY -> {
+                    val capability = Target.maxCapability(item.type)
+                    if (ItemAPI.getEnchants(item).size >= capability) {
+                        return false to "{limit.max_capability} || capability=$capability"
+                    }
                 }
             }
         }

@@ -1,0 +1,28 @@
+more_enchant_chance:
+  - "0.6" #一次性出俩附魔的概率
+  - "0.45" #在一次出俩附魔的基础上出第三个附魔的概率
+  - "0.3" #同理，第四个在出三个基础上的概率
+#计算出货的等级，最小为1
+level_formula: "{cost_level}/3*{max_level}-1.5*{random}"
+#玩家附魔出特定品质的物品，执行的操作
+#message，发送聊天栏信息
+#actionbar，发送行为栏信息
+#title，发送标题信息，大小标题用分号隔开
+#bossbar，发送boss血条信息 格式： 信息;颜色;秒数
+#command，发送后台指令
+celebrate_notice:
+  史诗:
+    - "[message]恭喜玩家{player}获得了史诗附魔{enchant}"
+  传奇:
+    - "[message]恭喜玩家{player}获得了传奇附魔{enchant}"
+    - "[title]恭喜玩家{player};获得了传奇附魔{enchant}"
+  稀世:
+    - "[message]恭喜玩家{player}获得了稀世附魔{enchant}"
+    - "[title]恭喜玩家{player};获得了稀世附魔{enchant}"
+    - "[bossbar]恭喜玩家{player}获得了稀世附魔{enchant};RED;10"
+privilege:
+  chance:
+    - "default:{chance}*1.0"
+    - "splendidenchants.privilege.table.vip:{chance}*1.2"
+    - "splendidenchants.privilege.table.svip:{chance}*1.4"
+  full_level: "splendidenchants.privilege.table.full"

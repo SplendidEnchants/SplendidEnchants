@@ -9,7 +9,8 @@ enum class CheckType(vararg types: LimitType) {
         LimitType.CONFLICT_GROUP,
         LimitType.CONFLICT_ENCHANT,
         LimitType.DEPENDENCE_GROUP,
-        LimitType.DEPENDENCE_ENCHANT
+        LimitType.DEPENDENCE_ENCHANT,
+        LimitType.MAX_CAPABILITY
     ), // 从战利品/附魔台中获得附魔物品时
     MERCHANT(
         LimitType.PAPI_EXPRESSION,
@@ -17,13 +18,15 @@ enum class CheckType(vararg types: LimitType) {
         LimitType.CONFLICT_GROUP,
         LimitType.CONFLICT_ENCHANT,
         LimitType.DEPENDENCE_GROUP,
-        LimitType.DEPENDENCE_ENCHANT
+        LimitType.DEPENDENCE_ENCHANT,
+        LimitType.MAX_CAPABILITY
     ), // 生成村民交易中的附魔时
     ANVIL(
         LimitType.CONFLICT_GROUP,
         LimitType.CONFLICT_ENCHANT,
         LimitType.DEPENDENCE_GROUP,
-        LimitType.DEPENDENCE_ENCHANT
+        LimitType.DEPENDENCE_ENCHANT,
+        LimitType.MAX_CAPABILITY
     ), // 进行铁砧拼合物品附魔时
     USE(
         LimitType.CONFLICT_GROUP,
