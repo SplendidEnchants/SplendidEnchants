@@ -1,7 +1,5 @@
 package world.icebear03.splendidenchants.api.nms
 
-import net.minecraft.world.item.ItemStack
-import world.icebear03.splendidenchants.`object`.Overlay
 import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player
 import taboolib.common.io.getClass
@@ -11,8 +9,8 @@ import taboolib.library.reflex.Reflex.Companion.setProperty
 import taboolib.library.reflex.Reflex.Companion.unsafeInstance
 import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
-import taboolib.module.ui.virtual.Craft16ItemStack
-import java.util.UUID
+import world.icebear03.splendidenchants.`object`.Overlay
+import java.util.*
 
 /**
  * SplendidEnchants
@@ -23,11 +21,18 @@ import java.util.UUID
  */
 class NMSImpl : NMS() {
 
-    override fun toBukkitItemStack(item:ItemStack):org.bukkit.inventory.ItemStack{
-        //TODO
-    }
+//    override fun toBukkitItemStack(item:ItemStack):org.bukkit.inventory.ItemStack{
+//        //TODO
+//    }
 
-    override fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor) {
+    override fun sendBossBar(
+        player: Player,
+        message: String,
+        progress: Float,
+        time: Int,
+        overlay: Overlay,
+        color: BarColor
+    ) {
         val uuid = UUID.randomUUID()
         when (MinecraftVersion.major) {
             // 1.16, 其实 1.9-1.15 应该也可以用, 如果其他用户您有需要的话可以在您那里把这个 major 判断增加到 1.9。
@@ -60,15 +65,16 @@ class NMSImpl : NMS() {
                     player,
                     NMSPacketPlayOutBoss::class.java.unsafeInstance(),
                     "id" to uuid,
-                    "operation" to getClass("net.minecraft.network.protocol.game.PacketPlayOutBoss\$a").unsafeInstance().also {
-                        it.setProperty("name", CraftChatMessage19.fromString(message.colored()).first())
-                        it.setProperty("progress", progress)
-                        it.setProperty("color", NMSBossBattleBarColor.valueOf(color.name.uppercase()))
-                        it.setProperty("overlay", NMSBossBattleBarStyle.valueOf(overlay.name.uppercase()))
-                        it.setProperty("darkenScreen", false)
-                        it.setProperty("playMusic", false)
-                        it.setProperty("createWorldFog", false)
-                    }
+                    "operation" to getClass("net.minecraft.network.protocol.game.PacketPlayOutBoss\$a").unsafeInstance()
+                        .also {
+                            it.setProperty("name", CraftChatMessage19.fromString(message.colored()).first())
+                            it.setProperty("progress", progress)
+                            it.setProperty("color", NMSBossBattleBarColor.valueOf(color.name.uppercase()))
+                            it.setProperty("overlay", NMSBossBattleBarStyle.valueOf(overlay.name.uppercase()))
+                            it.setProperty("darkenScreen", false)
+                            it.setProperty("playMusic", false)
+                            it.setProperty("createWorldFog", false)
+                        }
                 )
                 submit(delay = time * 20L) {
                     sendPacket(

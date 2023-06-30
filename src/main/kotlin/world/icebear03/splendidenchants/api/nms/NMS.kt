@@ -17,8 +17,16 @@ import taboolib.module.nms.sendPacket
  */
 abstract class NMS {
 
-    abstract fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor)
-    abstract fun toBukkitItemStack(item:ItemStack):org.bukkit.inventory.ItemStack
+    abstract fun sendBossBar(
+        player: Player,
+        message: String,
+        progress: Float,
+        time: Int,
+        overlay: Overlay,
+        color: BarColor
+    )
+
+//    abstract fun toBukkitItemStack(item: ItemStack): org.bukkit.inventory.ItemStack
 
     fun sendPacket(player: Player, packet: Any, vararg fields: Pair<Any, Any>) {
         fields.forEach { packet.setProperty(it.first.toString(), it.second) }

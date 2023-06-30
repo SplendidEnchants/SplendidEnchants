@@ -55,18 +55,15 @@ object ItemAPI {
         } ?: 0
     }
 
-    // FIXME: 这个方法有什么必要么?
-    fun isBook(item: ItemStack): Boolean {
-        return item.itemMeta is EnchantmentStorageMeta
-    }
-
     //注意原meta会更改
+    //TODO 存在问题： 无法附魔超出最大级，无论是true还是false
     fun addEnchant(meta: ItemMeta, enchant: SplendidEnchant, level: Int): ItemMeta {
         if (meta is EnchantmentStorageMeta) {
-            meta.storedEnchants[enchant] = level
+            meta.addEnchant(enchant, level, true)
         } else {
-            meta.enchants[enchant] = level
+            meta.addEnchant(enchant, level, true)
         }
+        println(meta.getEnchantLevel(enchant))
         return meta
     }
 

@@ -1,5 +1,6 @@
 package world.icebear03.splendidenchants.listener.mechanism
 
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.ItemStack
@@ -54,12 +55,13 @@ object AnvilListener {
         if (first == null)
             return
 
+
         //重命名
         if (second == null) {
             if (renameText == null)
                 return
             if (renameText != ItemAPI.getName(first)) {
-                inv.repairCost = renameCost
+                inv.repairCost = minOf(maxCost, renameCost)
                 //如果交给原版处理rename，则会丢附魔
                 inv.result = ItemAPI.setName(first.clone(), renameText)
             }
@@ -70,7 +72,7 @@ object AnvilListener {
         if (ItemAPI.getEnchants(second).isEmpty()) {
             if (result == null)
                 return
-            inv.repairCost = repairCost
+            inv.repairCost = minOf(maxCost, repairCost)
             //如果交给原版处理durability，则会丢附魔
             //所以我们先获取新的durability，然后再重新造一个物品
             inv.result = ItemAPI.setDamage(first.clone(), ItemAPI.getDamage(result))
@@ -79,27 +81,42 @@ object AnvilListener {
 
         //拼合附魔（重点！）
         val newResult = combine(first, second, player)
+        var cost = newResult.second
         if (newResult.second <= 0 || newResult.first == null) {
             inv.result = null
             return
         }
+
+        if (renameText != ItemAPI.getName(first)) {
+            cost += renameCost
+        } else {
+            inv.result = ItemAPI.setName(newResult.first!!.clone(), renameText)
+        }
         inv.result = newResult.first
 
         //特权减免等级消耗处理
-        var finalCost = privilege["default"]!!.compileToJexl().eval(mapOf("{cost_level}" to newResult.second)) as Double
+        var finalCost =
+
+            //TODO 写到eval里没用
+            privilege["default"]!!.replace("{cost_level}", cost.toString()).compileToJexl().eval() as Double
         privilege.forEach {
             if (it.key != "default" && player.hasPermission(it.value))
                 finalCost =
-                    minOf(finalCost, it.value.compileToJexl().eval(mapOf("{cost_level}" to newResult.second)) as Double)
+                    minOf(
+                        finalCost,
+
+                        //TODO 写到eval里没用
+                        it.value.replace("{cost_level}", cost.toString()).compileToJexl().eval() as Double
+                    )
         }
 
         //不能低于1级
-        inv.repairCost = maxOf(1, floor(finalCost).toInt())
+        inv.repairCost = minOf(maxCost, maxOf(1, floor(finalCost).toInt()))
     }
 
     //返回的是 拼合结果，耗费经验
     fun combine(first: ItemStack, second: ItemStack, player: Player): Pair<ItemStack?, Double> {
-        if (first.type != second.type) {
+        if (first.type != second.type && second.type != Material.ENCHANTED_BOOK) {
             return null to 0.0
         }
 
@@ -108,7 +125,10 @@ object AnvilListener {
         for (it in ItemAPI.getEnchants(second)) {
             if (it.key.limitations.checkAvailable(CheckType.ANVIL, player, first).first) {
                 var originLevel = ItemAPI.getLevel(result, it.key)
-                val perLevel = enchantCostPerLevel.compileToJexl().eval(mapOf("max_level" to it.key.maxLevel)) as Double
+                //TODO 写到eval里没用
+                val perLevel =
+                    enchantCostPerLevel.replace("{max_level}", it.key.maxLevel.toString()).compileToJexl()
+                        .eval() as Double
                 if (originLevel <= 0) {
                     originLevel = 0
                     costLevel += newEnchantExtraCost

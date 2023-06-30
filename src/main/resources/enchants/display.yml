@@ -1,0 +1,39 @@
+#默认的格式，分为前部和后部
+format:
+  default_previous: "{color}{name} {roman_level}"
+  default_subsequent: "\n§8| §r{description}"
+#lore的顺序
+lore_formation:
+  has_lore:
+    - "{enchant_lore}" #附魔描述
+    - "§r " #空一行美观
+    - "{item_lore}" #物品原来的lore
+  without_lore:
+    - "{enchant_lore}" #附魔描述
+#显示排序
+sort:
+  #按照等级排序，从高到低
+  level: true
+  #按照品质排序
+  rarity:
+    #顺序
+    order:
+      - common
+      - uncommon
+      - rare
+      - epic
+      - legendary
+      - unknown
+      - curse
+#合并显示
+combine:
+  #是否开启
+  enable: false
+  #当物品附魔超过这个值将会开启合并显示
+  min: 8
+  #每次合并几个附魔
+  amount: 2
+  #合并的布局
+  layout:
+    - "{previous_1}\n{subsequent_1}" #只有一个的情况
+    - "{previous_1}§7, {previous_2}\n{subsequent_1}\n{subsequent_2}\n" #有两个的情况
