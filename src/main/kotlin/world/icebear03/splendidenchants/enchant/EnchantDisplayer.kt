@@ -230,6 +230,8 @@ object EnchantDisplayer {
 
         clone.itemMeta = meta
 
+        println(clone)
+
         return clone
     }
 }

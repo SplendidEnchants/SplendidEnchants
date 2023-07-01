@@ -30,7 +30,8 @@ object Commands {
     @CommandBody(permission = "splendidenchants.admin", aliases = ["原版附魔兼容测试"])
     val testvanilla = subCommand {
         execute<Player> { sender, _, _ ->
-            val item = ItemAPI.addEnchant(sender.inventory.itemInMainHand, EnchantAPI.getSplendidEnchant("锋利")!!, 3)
+            val item =
+                ItemAPI.addEnchant(sender.inventory.itemInMainHand, EnchantAPI.getSplendidEnchant("测试附魔")!!, 3)
             sender.inventory.setItemInMainHand(item)
             sender.sendMessage("测试成功")
         }

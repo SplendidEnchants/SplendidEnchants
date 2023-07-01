@@ -43,7 +43,7 @@ object AnvilListener {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     fun event(event: PrepareAnvilEvent) {
         val inv = event.inventory
         val first = inv.firstItem
@@ -55,7 +55,6 @@ object AnvilListener {
         if (first == null)
             return
 
-
         //重命名
         if (second == null) {
             if (renameText == null)
@@ -63,7 +62,7 @@ object AnvilListener {
             if (renameText != ItemAPI.getName(first)) {
                 inv.repairCost = minOf(maxCost, renameCost)
                 //如果交给原版处理rename，则会丢附魔
-                inv.result = ItemAPI.setName(first.clone(), renameText)
+                event.result = ItemAPI.setName(first.clone(), renameText)
             }
             return
         }
@@ -75,27 +74,30 @@ object AnvilListener {
             inv.repairCost = minOf(maxCost, repairCost)
             //如果交给原版处理durability，则会丢附魔
             //所以我们先获取新的durability，然后再重新造一个物品
-            inv.result = ItemAPI.setDamage(first.clone(), ItemAPI.getDamage(result))
+            event.result = ItemAPI.setDamage(first.clone(), ItemAPI.getDamage(result))
             return
         }
 
         //拼合附魔（重点！）
         val resultAndCost = combine(first, second, player)
         var cost = resultAndCost.second
-        if (resultAndCost.second <= 0 || resultAndCost.first == null) {
-            inv.result = null
+        if (cost <= 0 || resultAndCost.first == null) {
+            event.result = null
             return
         }
+        println(first)
+        println(resultAndCost.first)
+        println(resultAndCost.first!!.isSimilar(first))
         if (resultAndCost.first!!.isSimilar(first)) {
-            inv.result = null
+            event.result = null
             return
         }
 
         if (renameText != ItemAPI.getName(first)) {
             cost += renameCost
-            inv.result = ItemAPI.setName(resultAndCost.first!!.clone(), renameText)
+            event.result = ItemAPI.setName(resultAndCost.first!!.clone(), renameText)
         } else {
-            inv.result = resultAndCost.first
+            event.result = resultAndCost.first
         }
         //特权减免等级消耗处理
         var finalCost =
