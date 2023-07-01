@@ -1,4 +1,5 @@
 @file:Suppress("deprecation")
+
 package world.icebear03.splendidenchants.enchant
 
 import org.bukkit.GameMode
@@ -8,10 +9,10 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import taboolib.common.util.replaceWithOrder
-import world.icebear03.splendidenchants.Config
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.data.Rarity
+import world.icebear03.splendidenchants.util.YamlUpdater
 import kotlin.math.min
 
 object EnchantDisplayer {
@@ -36,10 +37,10 @@ object EnchantDisplayer {
     var amount: Int
     var layouts: List<String>
 
-    var loreFormation: List<String>
+    var loreFormation = mutableMapOf<Boolean, List<String>>()
 
     init {
-        val config = Config.config.getConfigurationSection("display")!!
+        val config = YamlUpdater.loadAndUpdate("enchants/display.yml")
         defaultPrevious = config.getString("format.default_previous", "{color}{name} {roman_level}")!!
         defaultSubsequent = config.getString("format.default_subsequent", "\n§8| §7{description}")!!
         sortByLevel = config.getBoolean("sort.level", true)
@@ -49,20 +50,25 @@ object EnchantDisplayer {
                 rarityOrder += it
         }
 
-        combine = config.getBoolean("combine.enable", false)
+        combine = config.getBoolean("combine.enable", true)
         minimal = config.getInt("combine.min", 8)
         amount = config.getInt("combine.amount", 2)
         layouts = config.getStringList("combine.layout")
 
-        loreFormation = config.getStringList("lore_formation")
+        loreFormation[true] = config.getStringList("lore_formation.has_lore")
+        loreFormation[false] = config.getStringList("lore_formation.without_lore")
     }
 
     //对附魔排序
     fun sortEnchants(enchants: Map<SplendidEnchant, Int>): LinkedHashMap<SplendidEnchant, Int> {
-        return LinkedHashMap(enchants.toSortedMap(Comparator.comparing {
-            return@comparing rarityOrder.indexOf(it.rarity.id) * 100000 +
-                    (if (sortByLevel) enchants[it]!! else 0)
-        }))
+        val sorted = linkedMapOf<SplendidEnchant, Int>()
+        enchants.toList().sortedBy {
+            rarityOrder.indexOf(it.first.rarity.id) * 100000 +
+                    (if (sortByLevel) it.second else 0)
+        }.forEach {
+            sorted[it.first] = it.second
+        }
+        return sorted
     }
 
     //插入附魔对应的lore
@@ -146,7 +152,7 @@ object EnchantDisplayer {
         val lore = mutableListOf<String>()
         var first = 0
         var last = 0
-        loreFormation.forEach {
+        loreFormation[!origin.isEmpty()]!!.forEach {
             when (it) {
                 "{enchant_lore}" -> lore += enchantLore
                 "{item_lore}" -> {
@@ -223,6 +229,8 @@ object EnchantDisplayer {
         pdc.remove(itemEnchantKey)
 
         clone.itemMeta = meta
+//      TODO revert 不触发 bug
+//        println(clone)
 
         return clone
     }

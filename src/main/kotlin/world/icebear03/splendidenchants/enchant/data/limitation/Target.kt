@@ -1,10 +1,10 @@
-package world.icebear03.splendidenchants.enchant.data
+package world.icebear03.splendidenchants.enchant.data.limitation
 
-import world.icebear03.splendidenchants.util.loadAndUpdate
 import org.bukkit.Material
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
+import world.icebear03.splendidenchants.util.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
 
 data class Target(
@@ -48,6 +48,10 @@ data class Target(
                 }
             }
             return ans
+        }
+
+        fun isIn(it: Target, type: Material): Boolean {
+            return it.types.contains(type)
         }
     }
 }
