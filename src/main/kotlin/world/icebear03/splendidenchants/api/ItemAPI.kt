@@ -68,7 +68,6 @@ object ItemAPI {
         } else {
             meta.addEnchant(enchant, level, true)
         }
-        println(meta.getEnchantLevel(enchant))
         return meta
     }
 

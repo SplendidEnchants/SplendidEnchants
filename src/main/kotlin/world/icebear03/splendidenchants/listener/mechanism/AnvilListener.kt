@@ -80,20 +80,23 @@ object AnvilListener {
         }
 
         //拼合附魔（重点！）
-        val newResult = combine(first, second, player)
-        var cost = newResult.second
-        if (newResult.second <= 0 || newResult.first == null) {
+        val resultAndCost = combine(first, second, player)
+        var cost = resultAndCost.second
+        if (resultAndCost.second <= 0 || resultAndCost.first == null) {
+            inv.result = null
+            return
+        }
+        if (resultAndCost.first!!.isSimilar(first)) {
             inv.result = null
             return
         }
 
         if (renameText != ItemAPI.getName(first)) {
             cost += renameCost
+            inv.result = ItemAPI.setName(resultAndCost.first!!.clone(), renameText)
         } else {
-            inv.result = ItemAPI.setName(newResult.first!!.clone(), renameText)
+            inv.result = resultAndCost.first
         }
-        inv.result = newResult.first
-
         //特权减免等级消耗处理
         var finalCost =
 

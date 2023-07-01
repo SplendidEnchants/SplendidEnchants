@@ -19,8 +19,8 @@ import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.api.MathAPI
 import world.icebear03.splendidenchants.api.PlayerAPI
 import world.icebear03.splendidenchants.enchant.data.Rarity
-import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
+import world.icebear03.splendidenchants.enchant.data.limitation.Target
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -110,14 +110,13 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             val suffix = if (order == null) "" else "_$order"
             val tmp = mutableListOf<Pair<String, String>>()
             val replaceMap = getReplaceMap(level, player, item)
-            tmp += "previous$suffix" to previousFormat.replace(
-                "{default_previous}",
-                EnchantDisplayer.defaultPrevious
-            ).replaceWithOrder(*replaceMap)
-            tmp += "subsequent$suffix" to subsequentFormat.replace(
+            tmp += previousFormat.replace(
+                "{default_previous}", EnchantDisplayer.defaultPrevious
+            ).replaceWithOrder(*replaceMap) to "previous$suffix"
+            tmp += subsequentFormat.replace(
                 "{default_subsequent}",
                 EnchantDisplayer.defaultSubsequent
-            ).replaceWithOrder(*replaceMap)
+            ).replaceWithOrder(*replaceMap) to "subsequent$suffix"
             return tmp.toTypedArray()
         }
 
@@ -128,12 +127,12 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             tmp += basicData.id to "id"
             tmp += basicData.name to "name"
             tmp += "" + l to "level"
-            tmp += MathAPI.numToRoman(l, true) to "roman_level"
+            tmp += MathAPI.numToRoman(l, maxLevel == 1) to "roman_level"
+            tmp += MathAPI.numToRoman(l, maxLevel == 1, hasPreviousBlank = true) to "roman_level_with_a_blank"
             tmp += "" + basicData.maxLevel to "max_level"
             tmp += rarity.color to "color"
             tmp += rarity.name to "rarity"
             tmp += getSpecificDescription(tmp) to "description"
-            println(tmp)
             return tmp
         }
     }

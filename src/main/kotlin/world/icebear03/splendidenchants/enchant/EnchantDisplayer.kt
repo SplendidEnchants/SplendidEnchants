@@ -50,7 +50,7 @@ object EnchantDisplayer {
                 rarityOrder += it
         }
 
-        combine = config.getBoolean("combine.enable", false)
+        combine = config.getBoolean("combine.enable", true)
         minimal = config.getInt("combine.min", 8)
         amount = config.getInt("combine.amount", 2)
         layouts = config.getStringList("combine.layout")
@@ -61,10 +61,14 @@ object EnchantDisplayer {
 
     //对附魔排序
     fun sortEnchants(enchants: Map<SplendidEnchant, Int>): LinkedHashMap<SplendidEnchant, Int> {
-        return LinkedHashMap(enchants.toSortedMap(Comparator.comparing {
-            return@comparing rarityOrder.indexOf(it.rarity.id) * 100000 +
-                    (if (sortByLevel) enchants[it]!! else 0)
-        }))
+        val sorted = linkedMapOf<SplendidEnchant, Int>()
+        enchants.toList().sortedBy {
+            rarityOrder.indexOf(it.first.rarity.id) * 100000 +
+                    (if (sortByLevel) it.second else 0)
+        }.forEach {
+            sorted[it.first] = it.second
+        }
+        return sorted
     }
 
     //插入附魔对应的lore
@@ -148,7 +152,7 @@ object EnchantDisplayer {
         val lore = mutableListOf<String>()
         var first = 0
         var last = 0
-        loreFormation[origin.isEmpty()]!!.forEach {
+        loreFormation[!origin.isEmpty()]!!.forEach {
             when (it) {
                 "{enchant_lore}" -> lore += enchantLore
                 "{item_lore}" -> {

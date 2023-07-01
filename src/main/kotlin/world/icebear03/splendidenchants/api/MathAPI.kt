@@ -2,7 +2,9 @@ package world.icebear03.splendidenchants.api
 
 object MathAPI {
 
-    fun numToRoman(num: Int, ignoreI: Boolean): String {
+    fun numToRoman(num: Int, ignoreI: Boolean, hasPreviousBlank: Boolean = false): String {
+        if (num == 1 && ignoreI)
+            return ""
         var number = num
         var rNumber = StringBuilder()
         val aArray = intArrayOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
@@ -20,6 +22,9 @@ object MathAPI {
                 }
             }
         }
-        return if (rNumber.toString().equals("I", ignoreCase = true) && ignoreI) "" else rNumber.toString()
+        return (
+                if (hasPreviousBlank) " $rNumber"
+                else rNumber.toString()
+                )
     }
 }

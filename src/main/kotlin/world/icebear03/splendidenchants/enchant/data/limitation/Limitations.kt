@@ -10,18 +10,18 @@ import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
-import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
 
-class Limitations {
+class Limitations(enchant: SplendidEnchant, lines: List<String>) {
 
-    var belonging: SplendidEnchant
+    var belonging: SplendidEnchant = enchant
 
     var limitations = arrayListOf<Pair<LimitType, String>>()
 
-    constructor(enchant: SplendidEnchant, lines: List<String>) {
-        belonging = enchant
+    init {
         lines.forEach { limitations.add(LimitType.valueOf(it.split(":")[0]) to it.split(":")[1]) }
+        limitations.add(MAX_CAPABILITY to "")
+        limitations.add(TARGET to "")
     }
 
     // 检查操作是否被允许（比如是否可以附魔到某个物品上、使用时是否可以生效、村民生成新交易等）
@@ -66,6 +66,17 @@ class Limitations {
                     if (ItemAPI.getEnchants(item).size >= capability) {
                         return false to "{limit.max_capability} || capability=$capability"
                     }
+                }
+
+                TARGET -> {
+                    var flag = false
+                    belonging.targets.forEach {
+                        if (Target.isIn(it, item.type)) {
+                            flag = true
+                        }
+                    }
+                    if (!flag)
+                        return false to "{limit.target} || capability=${belonging.targets}"
                 }
             }
         }
