@@ -43,7 +43,6 @@ object EnchantLoader {
     fun unregister() {
         enchantById.values.forEach {
             if (!EnchantGroup.isIn(it, "原版附魔")) {
-                println(it)
                 val keyMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byKey", true)
                 val nameMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byName", true)
                 keyMap?.remove(it.key)

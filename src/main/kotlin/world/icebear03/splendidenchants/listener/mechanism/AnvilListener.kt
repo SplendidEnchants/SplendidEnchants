@@ -85,9 +85,6 @@ object AnvilListener {
             event.result = null
             return
         }
-        println(first)
-        println(resultAndCost.first)
-        println(resultAndCost.first!!.isSimilar(first))
         if (resultAndCost.first!!.isSimilar(first)) {
             event.result = null
             return

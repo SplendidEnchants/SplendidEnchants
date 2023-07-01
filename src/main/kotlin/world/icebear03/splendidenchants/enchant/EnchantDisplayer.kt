@@ -229,8 +229,8 @@ object EnchantDisplayer {
         pdc.remove(itemEnchantKey)
 
         clone.itemMeta = meta
-
-        println(clone)
+//      TODO revert 不触发 bug
+//        println(clone)
 
         return clone
     }
