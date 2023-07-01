@@ -16,7 +16,11 @@ typealias NMS16BossBattleBarColor = net.minecraft.server.v1_16_R3.BossBattle.Bar
 
 typealias NMS16BossBattleBarStyle = net.minecraft.server.v1_16_R3.BossBattle.BarStyle
 
+typealias NMS16ItemStack = net.minecraft.server.v1_16_R3.ItemStack
+
 typealias CraftChatMessage16 = org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage
+
+typealias CraftItemStack16 = org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
 
 // Universal
 typealias NMSPacketPlayOutBoss = net.minecraft.network.protocol.game.PacketPlayOutBoss
@@ -25,4 +29,8 @@ typealias NMSBossBattleBarColor = net.minecraft.world.BossBattle.BarColor
 
 typealias NMSBossBattleBarStyle = net.minecraft.world.BossBattle.BarStyle
 
+typealias NMSItemStack = net.minecraft.world.item.ItemStack
+
 typealias CraftChatMessage19 = org.bukkit.craftbukkit.v1_19_R3.util.CraftChatMessage
+
+typealias CraftItemStack19 = org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack

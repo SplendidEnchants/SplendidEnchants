@@ -1,3 +1,4 @@
+@file:Suppress("deprecation")
 package world.icebear03.splendidenchants.api
 
 import org.bukkit.NamespacedKey
@@ -95,38 +96,22 @@ object ItemAPI {
     }
 
     fun getName(item: ItemStack?): String? {
-        if (item == null) return null
-        if (item.itemMeta == null) return null
-        val meta = item.itemMeta!!
-        return meta.displayName
+        return item?.itemMeta?.displayName
     }
 
     fun setName(item: ItemStack?, name: String?): ItemStack? {
-        if (item == null) return null
-        if (item.itemMeta == null) return null
-        val meta = item.itemMeta!!
-        meta.setDisplayName(name)
-        item.setItemMeta(meta)
-        return item
+        return item?.modifyMeta<ItemMeta> {
+            setDisplayName(name)
+        }
     }
 
     fun getDamage(item: ItemStack?): Int? {
-        if (item == null) return null
-        if (item.itemMeta == null) return null
-        val meta = item.itemMeta!!
-        if (meta is Damageable)
-            return meta.damage
-        return null
+        return (item?.itemMeta as? Damageable)?.damage
     }
 
     fun setDamage(item: ItemStack?, damage: Int?): ItemStack? {
-        if (item == null) return null
-        if (item.itemMeta == null) return item
-        if (damage == null) return item
-        val meta = item.itemMeta!!
-        if (meta is Damageable) {
-            meta.damage = damage
+        return item?.modifyMeta<Damageable> {
+            this.damage = damage ?: return@modifyMeta
         }
-        return item
     }
 }
