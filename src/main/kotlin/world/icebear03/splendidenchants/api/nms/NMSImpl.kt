@@ -79,7 +79,7 @@ class NMSImpl : NMS() {
         }
     }
 
-    override fun toBukkitItemStack(item: Any): org.bukkit.inventory.ItemStack {
+    override fun toBukkitItemStack(item: Any): ItemStack {
         return when (MinecraftVersion.major) {
             // 1.16
             8 -> CraftItemStack16.asBukkitCopy(item as NMS16ItemStack)
