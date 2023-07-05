@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.api.nms
 import world.icebear03.splendidenchants.`object`.Overlay
 import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import taboolib.common.io.getClass
 import taboolib.common.platform.function.submit
 import taboolib.library.reflex.Reflex.Companion.getProperty
@@ -84,6 +85,22 @@ class NMSImpl : NMS() {
             8 -> CraftItemStack16.asBukkitCopy(item as NMS16ItemStack)
             // 1.17, 1.18, 1.19, 1.20
             9, 10, 11, 12 -> CraftItemStack19.asBukkitCopy(item as NMSItemStack)
+            // Unsupported
+            else -> error("Unsupported version.")
+        }
+    }
+
+    /**
+     * 需要强转
+     * 1.16 -> NMS16ItemStack
+     * 1.17, 1.18, 1.19, 1.20 -> NMSItemStack
+     */
+    override fun toNMSItemStack(item: ItemStack): Any {
+        return when (MinecraftVersion.major) {
+            // 1.16
+            8 -> CraftItemStack16.asNMSCopy(item)
+            // 1.17, 1.18, 1.19, 1.20
+            9, 10, 11, 12 -> CraftItemStack19.asNMSCopy(item)
             // Unsupported
             else -> error("Unsupported version.")
         }

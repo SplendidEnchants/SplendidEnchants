@@ -21,6 +21,8 @@ abstract class NMS {
 
     abstract fun toBukkitItemStack(item: Any): ItemStack
 
+    abstract fun toNMSItemStack(item: ItemStack): Any
+
     fun sendPacket(player: Player, packet: Any, vararg fields: Pair<Any, Any>) {
         fields.forEach { packet.setProperty(it.first.toString(), it.second) }
         player.sendPacket(packet)
