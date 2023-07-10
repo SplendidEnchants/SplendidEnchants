@@ -32,6 +32,7 @@ object Commands {
         execute<Player> { sender, _, _ ->
             val item =
                 ItemAPI.addEnchant(sender.inventory.itemInMainHand, EnchantAPI.getSplendidEnchant("测试附魔")!!, 3)
+            ItemAPI.addEnchant(item, EnchantAPI.getSplendidEnchant("播种机")!!, 2)
             sender.inventory.setItemInMainHand(item)
             sender.sendMessage("测试成功")
         }

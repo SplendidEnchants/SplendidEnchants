@@ -10,7 +10,7 @@ import world.icebear03.splendidenchants.api.nms.NMS16ItemStack
 import world.icebear03.splendidenchants.api.nms.NMSItemStack
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
-object PacketWindowItems {
+object PacketOpenWindowMerchant {
 
     @SubscribeEvent(priority = EventPriority.MONITOR)
     fun e(e: PacketSendEvent) {
@@ -38,6 +38,7 @@ object PacketWindowItems {
                     }
                     e.packet.write("c", slots.toList())
                 }
+
                 else -> error("Unsupported version.")
             }
         }

@@ -1,4 +1,5 @@
 @file:Suppress("deprecation")
+
 package world.icebear03.splendidenchants.api
 
 import org.bukkit.NamespacedKey
@@ -23,6 +24,16 @@ object ItemAPI {
 
     fun getEnchants(item: ItemStack?): Map<SplendidEnchant, Int> {
         return item?.itemMeta?.let { meta ->
+            if (meta is EnchantmentStorageMeta) {
+                meta.storedEnchants
+            } else {
+                meta.enchants
+            }.mapKeys { (key, _) -> EnchantAPI.getSplendidEnchant(key) }
+        } ?: emptyMap()
+    }
+
+    fun getEnchants(meta: ItemMeta?): Map<SplendidEnchant, Int> {
+        return meta?.let {
             if (meta is EnchantmentStorageMeta) {
                 meta.storedEnchants
             } else {
@@ -80,11 +91,9 @@ object ItemAPI {
     //注意原meta会更改
     fun setEnchants(meta: ItemMeta, enchants: Map<Enchantment, Int>): ItemMeta {
         if (meta is EnchantmentStorageMeta) {
-            meta.storedEnchants.clear()
-            meta.storedEnchants.putAll(enchants)
+            enchants.forEach { meta.addStoredEnchant(it.key, it.value, true); }
         } else {
-            meta.enchants.clear()
-            meta.enchants.putAll(enchants)
+            enchants.forEach { meta.addEnchant(it.key, it.value, true); }
         }
         return meta
     }
@@ -93,6 +102,25 @@ object ItemAPI {
         return if (item.itemMeta == null) item else item.clone().modifyMeta<ItemMeta> {
             setEnchants(this, enchants)
         }
+    }
+
+    fun clearEnchants(item: ItemStack): ItemStack {
+        return if (item.itemMeta == null) item else item.clone().modifyMeta<ItemMeta> {
+            setEnchants(this, enchants)
+        }
+    }
+
+    fun clearEnchants(meta: ItemMeta): ItemMeta {
+        if (meta is EnchantmentStorageMeta) {
+            getEnchants(meta).forEach {
+                meta.removeStoredEnchant(it.key)
+            }
+        } else {
+            getEnchants(meta).forEach {
+                meta.removeEnchant(it.key)
+            }
+        }
+        return meta
     }
 
     fun getName(item: ItemStack?): String? {

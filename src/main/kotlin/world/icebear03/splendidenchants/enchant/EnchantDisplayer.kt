@@ -115,7 +115,7 @@ object EnchantDisplayer {
 
     //展示是给玩家看的，玩家必须存在
     fun display(item: ItemStack, player: Player): ItemStack {
-        var clone = item.clone()
+        val clone = item.clone()
         val meta = clone.itemMeta
         val pdc = meta.persistentDataContainer
 
@@ -138,8 +138,11 @@ object EnchantDisplayer {
 
         //已经展示过了就重新展示（2.0遗留思路）（个人认为多余，可以尝试去除此处，节省性能）
         if (pdc.has(displayMarkKey)) {
-            //return clone
-            clone = undisplay(clone, player)
+            return clone
+        }
+
+        if (ItemAPI.getEnchants(clone).isEmpty()) {
+            return clone
         }
 
         //上标记
@@ -182,16 +185,17 @@ object EnchantDisplayer {
     fun undisplay(item: ItemStack, player: Player): ItemStack {
         val clone = item.clone()
         var meta = clone.itemMeta
+        if (meta == null)
+            return clone
+
         val pdc = meta.persistentDataContainer
 
-        //TODO 此处未优化
         if (!pdc.has(displayMarkKey)) {
             return item
         }
+        meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS)
         if (ItemAPI.isBook(item)) {
-            meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS)
-        } else {
-            meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS)
+            meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
         }
 
         //创造模式的额外处理，需要重新给物品附魔
@@ -229,8 +233,6 @@ object EnchantDisplayer {
         pdc.remove(itemEnchantKey)
 
         clone.itemMeta = meta
-//      TODO revert 不触发 bug
-//        println(clone)
 
         return clone
     }
