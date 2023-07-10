@@ -23,6 +23,8 @@ abstract class NMS {
 
     abstract fun toNMSItemStack(item: ItemStack): Any
 
+    abstract fun adaptMerchantRecipe(merchantRecipeList: Any, player: Player): Any
+
     fun sendPacket(player: Player, packet: Any, vararg fields: Pair<Any, Any>) {
         fields.forEach { packet.setProperty(it.first.toString(), it.second) }
         player.sendPacket(packet)

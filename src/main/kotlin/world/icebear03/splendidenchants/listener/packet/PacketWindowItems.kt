@@ -28,7 +28,7 @@ object PacketWindowItems {
                     e.packet.write("b", slots.toList())
                 }
                 // 1.17, 1.18, 1.19, 1.20 -> c
-                9, 10, 11, 12 -> {
+                in 9..12 -> {
                     val slots = e.packet.read<List<NMSItemStack>>("c")!!.toMutableList()
                     for (i in slots.indices) {
                         val bkItem = NMS.INSTANCE.toBukkitItemStack(slots[i])
@@ -38,7 +38,6 @@ object PacketWindowItems {
                     }
                     e.packet.write("c", slots.toList())
                 }
-
                 else -> error("Unsupported version.")
             }
         }

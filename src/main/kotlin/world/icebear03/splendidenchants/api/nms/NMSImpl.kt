@@ -11,6 +11,8 @@ import taboolib.library.reflex.Reflex.Companion.setProperty
 import taboolib.library.reflex.Reflex.Companion.unsafeInstance
 import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
+import taboolib.platform.util.isAir
+import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import java.util.UUID
 
 /**
@@ -25,7 +27,7 @@ class NMSImpl : NMS() {
     override fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor) {
         val uuid = UUID.randomUUID()
         when (MinecraftVersion.major) {
-            // 1.16, 其实 1.9-1.15 应该也可以用, 如果其他用户您有需要的话可以在您那里把这个 major 判断增加到 1.9。
+            // 1.16
             8 -> {
                 sendPacket(
                     player,
@@ -50,7 +52,7 @@ class NMSImpl : NMS() {
                 }
             }
             // 1.17, 1.18, 1.19, 1.20
-            9, 10, 11, 12 -> {
+            in 9..12 -> {
                 sendPacket(
                     player,
                     NMSPacketPlayOutBoss::class.java.unsafeInstance(),
@@ -84,7 +86,7 @@ class NMSImpl : NMS() {
             // 1.16
             8 -> CraftItemStack16.asBukkitCopy(item as NMS16ItemStack)
             // 1.17, 1.18, 1.19, 1.20
-            9, 10, 11, 12 -> CraftItemStack19.asBukkitCopy(item as NMSItemStack)
+            in 9..12 -> CraftItemStack19.asBukkitCopy(item as NMSItemStack)
             // Unsupported
             else -> error("Unsupported version.")
         }
@@ -100,7 +102,59 @@ class NMSImpl : NMS() {
             // 1.16
             8 -> CraftItemStack16.asNMSCopy(item)
             // 1.17, 1.18, 1.19, 1.20
-            9, 10, 11, 12 -> CraftItemStack19.asNMSCopy(item)
+            in 9..12 -> CraftItemStack19.asNMSCopy(item)
+            // Unsupported
+            else -> error("Unsupported version.")
+        }
+    }
+
+    override fun adaptMerchantRecipe(merchantRecipeList: Any, player: Player): Any {
+
+        fun adapt(item: Any, player: Player): Any {
+            val bkItem = toBukkitItemStack(item)
+            if (bkItem.isAir) return item
+            return toNMSItemStack(EnchantDisplayer.display(bkItem, player))
+        }
+
+        return when (MinecraftVersion.major) {
+            // 1.16
+            8 -> {
+                val previous = merchantRecipeList as NMS16MerchantRecipeList
+                val adapt = NMS16MerchantRecipeList()
+                for (i in 0 until previous.size) {
+                    val recipe = previous[i]!!
+                    adapt += NMS16MerchantRecipe(
+                        adapt(recipe.buyingItem1, player) as NMS16ItemStack,
+                        adapt(recipe.buyingItem2, player) as NMS16ItemStack,
+                        adapt(recipe.sellingItem, player) as NMS16ItemStack,
+                        recipe.uses,
+                        recipe.maxUses,
+                        recipe.xp,
+                        recipe.priceMultiplier,
+                        recipe.demand
+                    )
+                }
+                adapt
+            }
+            // 1.17, 1.18, 1.19, 1.20
+            in 9..12 -> {
+                val previous = merchantRecipeList as NMSMerchantRecipeList
+                val adapt = NMSMerchantRecipeList()
+                for (i in 0 until previous.size) {
+                    val recipe = previous[i]!!
+                    adapt += NMSMerchantRecipe(
+                        adapt(recipe.baseCostA, player) as NMSItemStack,
+                        adapt(recipe.costB, player) as NMSItemStack,
+                        adapt(recipe.result, player) as NMSItemStack,
+                        recipe.uses,
+                        recipe.maxUses,
+                        recipe.xp,
+                        recipe.priceMultiplier,
+                        recipe.demand
+                    )
+                }
+                adapt
+            }
             // Unsupported
             else -> error("Unsupported version.")
         }

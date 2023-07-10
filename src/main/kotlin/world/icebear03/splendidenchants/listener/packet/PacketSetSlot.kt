@@ -26,7 +26,7 @@ object PacketSetSlot {
                     e.packet.write("c", adapted)
                 }
                 // (1.17, 1.18)?, 1.19, 1.20 -> f
-                9, 10, 11, 12 -> {
+                in 9..12 -> {
                     val origin = e.packet.read<NMSItemStack>("f")!!
                     val bkItem = NMS.INSTANCE.toBukkitItemStack(origin)
                     if (bkItem.isAir) return
@@ -34,7 +34,6 @@ object PacketSetSlot {
                         NMS.INSTANCE.toNMSItemStack(EnchantDisplayer.display(bkItem, e.player)) as NMSItemStack
                     e.packet.write("f", adapted)
                 }
-
                 else -> error("Unsupported version.")
             }
         }
