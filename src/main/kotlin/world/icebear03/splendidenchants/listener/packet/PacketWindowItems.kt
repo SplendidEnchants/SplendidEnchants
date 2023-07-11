@@ -46,7 +46,7 @@ object PacketWindowItems {
                     if (!bkItem.isAir)
                         e.packet.write("d", NMS.INSTANCE.toNMSItemStack(EnchantDisplayer.display(bkItem, e.player)))
                 }
-
+                // Unsupported
                 else -> error("Unsupported version.")
             }
         }

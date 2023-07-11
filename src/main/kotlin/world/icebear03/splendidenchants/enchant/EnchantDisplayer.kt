@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import taboolib.common.util.replaceWithOrder
 import world.icebear03.splendidenchants.api.EnchantAPI
@@ -137,7 +138,7 @@ object EnchantDisplayer {
         }
 
         //已经展示过了就重新展示（2.0遗留思路）（个人认为多余，可以尝试去除此处，节省性能）
-        if (pdc.has(displayMarkKey)) {
+        if (pdc.has(displayMarkKey, PersistentDataType.INTEGER)) {
             return clone
         }
 
@@ -146,7 +147,7 @@ object EnchantDisplayer {
         }
 
         //上标记
-        pdc.set(displayMarkKey, PersistentDataType.BOOLEAN, true)
+        pdc.set(displayMarkKey, PersistentDataType.INTEGER, 1)
 
         //上lore
         val enchantLore = generateEnchantLore(item, player).toMutableList()
@@ -184,13 +185,11 @@ object EnchantDisplayer {
 
     fun undisplay(item: ItemStack, player: Player): ItemStack {
         val clone = item.clone()
-        var meta = clone.itemMeta
-        if (meta == null)
-            return clone
+        var meta: ItemMeta = clone.itemMeta ?: return clone
 
         val pdc = meta.persistentDataContainer
 
-        if (!pdc.has(displayMarkKey)) {
+        if (!pdc.has(displayMarkKey, PersistentDataType.INTEGER)) {
             return item
         }
         meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS)

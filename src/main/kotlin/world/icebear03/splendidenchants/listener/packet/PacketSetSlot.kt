@@ -34,6 +34,7 @@ object PacketSetSlot {
                         NMS.INSTANCE.toNMSItemStack(EnchantDisplayer.display(bkItem, e.player)) as NMSItemStack
                     e.packet.write("f", adapted)
                 }
+                // Unsupported
                 else -> error("Unsupported version.")
             }
         }
