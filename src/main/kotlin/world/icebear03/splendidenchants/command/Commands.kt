@@ -11,7 +11,7 @@ import taboolib.module.kether.isInt
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
 
-@CommandHeader("splendidenchants", aliases = ["se", "spe", "nereusopus", "no"])
+// @CommandHeader("splendidenchants", aliases = ["se", "spe", "nereusopus", "no"])
 object Commands {
 
     @CommandBody(permission = "splendidenchants.admin", aliases = ["help", "帮助"])
