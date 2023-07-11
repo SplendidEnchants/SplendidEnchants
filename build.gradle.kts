@@ -52,7 +52,7 @@ dependencies {
     compileOnly("ink.ptms.core:v12001:12001:mapped")
     compileOnly("ink.ptms.core:v12001:12001:universal")
 
-    taboo("org.tabooproject.taboolib:module-parrotx:1.4.20")
+    taboo("org.tabooproject.taboolib:module-parrotx:1.4.23")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }
