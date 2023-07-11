@@ -5,6 +5,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
+import world.icebear03.splendidenchants.enchant.mechanism.entry.`object`.ObjectPlayer
 
 object Attack {
 
@@ -21,6 +22,10 @@ object Attack {
             "设置伤害" -> {
                 event.damage = param.compileToJexl().eval() as Double
                 player.sendMessage("加伤害，新伤害：${event.damage}")
+            }
+
+            "玩家", "攻击者" -> {
+                ObjectPlayer.modifyPlayer(player, param, replacerMap)
             }
 
             else -> {}

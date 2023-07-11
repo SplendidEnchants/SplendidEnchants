@@ -1,15 +1,17 @@
 package world.icebear03.splendidenchants.command
 
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.subCommand
 import taboolib.expansion.createHelper
+import taboolib.module.kether.isInt
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
 
-@CommandHeader("splendidenchants", aliases = ["se", "spe", "nereusopus"])
+@CommandHeader("splendidenchants", aliases = ["se", "spe", "nereusopus", "no"])
 object Commands {
 
     @CommandBody(permission = "splendidenchants.admin", aliases = ["help", "帮助"])
@@ -19,8 +21,38 @@ object Commands {
 
     @CommandBody(permission = "splendidenchants.admin", aliases = ["et", "附魔"])
     val enchant = subCommand {
-        execute<Player> { sender, _, _ ->
+        dynamic("enchant") {
+            dynamic("level") {
+                execute<Player> { sender, args, _ ->
+                    val enchant = EnchantAPI.getSplendidEnchant(args["enchant"])
+                    if (enchant == null) {
+                        sender.sendMessage("附魔不存在")
+                        return@execute
+                    }
+                    if (!args["level"].isInt()) {
+                        sender.sendMessage("等级必须是整数")
+                        return@execute
+                    }
+                    val level = args["level"].toInt()
+                    if (level < 0) {
+                        sender.sendMessage("等级必须是正整数")
+                    }
 
+                    val item = sender.inventory.itemInMainHand
+                    if (item.type == Material.AIR) {
+                        sender.sendMessage("手上必须有物品")
+                        return@execute
+                    }
+                    if (level > 0) {
+                        ItemAPI.addEnchant(item, enchant, level)
+                        sender.sendMessage("附魔完成！")
+                    }
+                    if (level == 0) {
+                        ItemAPI.removeEnchant(item, enchant)
+                        sender.sendMessage("附魔已经清除！")
+                    }
+                }
+            }
         }
     }
 
@@ -56,21 +88,6 @@ object Commands {
     val info = subCommand {
         execute<Player> { sender, _, _ ->
 
-        }
-    }
-
-    @CommandBody(permission = "splendidenchants.admin", aliases = ["原版附魔兼容测试"])
-    val test = subCommand {
-        execute<Player> { sender, _, _ ->
-            val item =
-                ItemAPI.addEnchant(sender.inventory.itemInMainHand, EnchantAPI.getSplendidEnchant("测试附魔")!!, 2)
-            ItemAPI.addEnchant(
-                sender.inventory.itemInMainHand,
-                EnchantAPI.getSplendidEnchant("测试附魔(复杂机制)")!!,
-                2
-            )
-            sender.inventory.setItemInMainHand(item)
-            sender.sendMessage("添加测试附魔成功")
         }
     }
 }

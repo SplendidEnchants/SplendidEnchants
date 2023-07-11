@@ -67,7 +67,6 @@ object ItemAPI {
         } ?: 0
     }
 
-    // FIXME: 这个方法有什么必要么?
     fun isBook(item: ItemStack): Boolean {
         return item.itemMeta is EnchantmentStorageMeta
     }
@@ -141,5 +140,20 @@ object ItemAPI {
         return item?.modifyMeta<Damageable> {
             this.damage = damage ?: return@modifyMeta
         }
+    }
+
+    fun removeEnchant(item: ItemStack, enchant: SplendidEnchant): ItemStack {
+        return if (item.itemMeta == null) item else item.modifyMeta<ItemMeta> {
+            removeEnchant(this, enchant)
+        }
+    }
+
+    fun removeEnchant(meta: ItemMeta, enchant: SplendidEnchant): ItemMeta {
+        if (meta is EnchantmentStorageMeta) {
+            meta.removeStoredEnchant(enchant)
+        } else {
+            meta.removeEnchant(enchant)
+        }
+        return meta
     }
 }

@@ -2,7 +2,7 @@
 basic:
   id: test
   name: "测试附魔"
-  max_level: 3
+  max_level: 2
 
 #若无此项，则自动匹配到default rarity
 rarity: 史诗
@@ -47,7 +47,7 @@ variables:
   #跟等级有关的
   leveled:
     击杀累计: 4-level
-    伤害增加百分比: 15*level
+    伤害增加百分比: 15.0*level
   #跟玩家有关的
   player_related:
     等级: "%player_level%"
