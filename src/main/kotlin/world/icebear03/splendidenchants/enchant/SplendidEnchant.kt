@@ -16,6 +16,7 @@ import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
 import taboolib.module.kether.compileToJexl
+import taboolib.module.kether.isInt
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.api.MathAPI
@@ -174,6 +175,12 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             }
         }
 
+        private fun toDoubleFormat(origin: String): String {
+            if (origin.isInt())
+                return "$origin.0"
+            return origin
+        }
+
         private fun leveled(variable: String, level: Int?): String {
             return if (level == null) variable else leveled[variable]!!.compileToJexl().eval(mapOf("level" to level))
                 .toString()
@@ -197,15 +204,15 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             variableSet.forEach {
                 when (it.value) {
                     "leveled" -> {
-                        list.add(leveled(it.key, level) to it.key)
+                        list.add(toDoubleFormat(leveled(it.key, level)) to it.key)
                     }
 
                     "player_related" -> {
-                        list.add(playerRelated(it.key, player) to it.key)
+                        list.add(toDoubleFormat(playerRelated(it.key, player)) to it.key)
                     }
 
                     "modifiable" -> {
-                        list.add(modifiable(it.key, item) to it.key)
+                        list.add(toDoubleFormat(modifiable(it.key, item)) to it.key)
                     }
                 }
             }
