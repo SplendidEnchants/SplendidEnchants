@@ -26,6 +26,9 @@ object PacketWindowItems {
                         slots[i] = nmsItem as NMS16ItemStack
                     }
                     e.packet.write("b", slots.toList())
+
+                    //没有carried items？
+                    //TODO 待测试
                 }
                 // 1.17, 1.18, 1.19, 1.20 -> c
                 in 9..12 -> {
@@ -37,7 +40,13 @@ object PacketWindowItems {
                         slots[i] = nmsItem as NMSItemStack
                     }
                     e.packet.write("c", slots.toList())
+
+                    val carriedItem = e.packet.read<NMSItemStack>("d")!!
+                    val bkItem = NMS.INSTANCE.toBukkitItemStack(carriedItem)
+                    if (!bkItem.isAir)
+                        e.packet.write("d", NMS.INSTANCE.toNMSItemStack(EnchantDisplayer.display(bkItem, e.player)))
                 }
+
                 else -> error("Unsupported version.")
             }
         }
