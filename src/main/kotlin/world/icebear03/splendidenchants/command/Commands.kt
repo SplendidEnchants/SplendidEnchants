@@ -6,6 +6,8 @@ import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.subCommand
 import taboolib.expansion.createHelper
+import world.icebear03.splendidenchants.api.EnchantAPI
+import world.icebear03.splendidenchants.api.ItemAPI
 
 @CommandHeader("splendidenchants", aliases = ["se", "spe", "nereusopus"])
 object Commands {
@@ -54,6 +56,16 @@ object Commands {
     val info = subCommand {
         execute<Player> { sender, _, _ ->
 
+        }
+    }
+
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["原版附魔兼容测试"])
+    val test = subCommand {
+        execute<Player> { sender, _, _ ->
+            val item =
+                ItemAPI.addEnchant(sender.inventory.itemInMainHand, EnchantAPI.getSplendidEnchant("测试附魔")!!, 3)
+            sender.inventory.setItemInMainHand(item)
+            sender.sendMessage("添加测试附魔成功")
         }
     }
 }

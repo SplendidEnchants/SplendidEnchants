@@ -23,6 +23,7 @@ import world.icebear03.splendidenchants.api.PlayerAPI
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import world.icebear03.splendidenchants.enchant.data.limitation.Target
+import world.icebear03.splendidenchants.enchant.mechanism.Listeners
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -35,6 +36,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
     var displayer: Displayer
     var alternativeData: AlternativeData
     var variable: Variable
+    var listeners: Listeners
 
     init {
         val config = Configuration.loadFromFile(file)
@@ -48,6 +50,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         displayer = Displayer(config.getConfigurationSection("display")!!)
         alternativeData = AlternativeData(config.getConfigurationSection("alternative"))
         variable = Variable(config.getConfigurationSection("variables"))
+        listeners = Listeners(this, config.getConfigurationSection("mechanisms.listeners"))
     }
 
     override fun translationKey(): String = basicData.id
@@ -91,15 +94,15 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             else generalDescription
 
         //生成本附魔在当前状态下的介绍
-        fun getSpecificDescription(replaceMap: Array<Pair<String, String>>): String {
-            return specificDescription.replaceWithOrder(*replaceMap)
+        fun getSpecificDescription(replaceMap: ArrayList<Pair<String, String>>): String {
+            return specificDescription.replaceWithOrder(*replaceMap.toArray())
         }
 
         //生成本附魔在当前状态下的显示（在物品lore中）
         fun getSpecificDisplay(level: Int?, player: Player?, item: ItemStack?): String {
             return (previousFormat.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
                     + subsequentFormat.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent)
-                    ).replaceWithOrder(*getReplaceMap(level, player, item))
+                    ).replaceWithOrder(*getReplaceMap(level, player, item).toArray())
         }
 
         //生成{previous_1}等的替换map
@@ -108,22 +111,22 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             player: Player?,
             item: ItemStack?,
             order: Int?
-        ): Array<Pair<String, String>> {
+        ): ArrayList<Pair<String, String>> {
             val suffix = if (order == null) "" else "_$order"
-            val tmp = mutableListOf<Pair<String, String>>()
+            val tmp = arrayListOf<Pair<String, String>>()
             val replaceMap = getReplaceMap(level, player, item)
             tmp += previousFormat.replace(
                 "{default_previous}", EnchantDisplayer.defaultPrevious
-            ).replaceWithOrder(*replaceMap) to "previous$suffix"
+            ).replaceWithOrder(*replaceMap.toArray()) to "previous$suffix"
             tmp += subsequentFormat.replace(
                 "{default_subsequent}",
                 EnchantDisplayer.defaultSubsequent
-            ).replaceWithOrder(*replaceMap) to "subsequent$suffix"
-            return tmp.toTypedArray()
+            ).replaceWithOrder(*replaceMap.toArray()) to "subsequent$suffix"
+            return tmp
         }
 
         //生成可能存在的占位符和对应值
-        fun getReplaceMap(level: Int?, player: Player?, item: ItemStack?): Array<Pair<String, String>> {
+        fun getReplaceMap(level: Int?, player: Player?, item: ItemStack?): ArrayList<Pair<String, String>> {
             var tmp = variable.generateReplaceMap(level, player, item)
             val l = (level ?: basicData.maxLevel)
             tmp += basicData.id to "id"
@@ -189,7 +192,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                 ?: modifiable[variable]!!.second
         }
 
-        fun generateReplaceMap(level: Int?, player: Player?, item: ItemStack?): Array<Pair<String, String>> {
+        fun generateReplaceMap(level: Int?, player: Player?, item: ItemStack?): ArrayList<Pair<String, String>> {
             val list = arrayListOf<Pair<String, String>>()
             variableSet.forEach {
                 when (it.value) {
@@ -206,7 +209,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                     }
                 }
             }
-            return list.toTypedArray()
+            return list
         }
 
         fun modifyVariable(item: ItemStack, variable: String, value: String): ItemStack {

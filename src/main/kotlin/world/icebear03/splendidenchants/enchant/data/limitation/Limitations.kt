@@ -39,7 +39,7 @@ class Limitations(enchant: SplendidEnchant, lines: List<String>) {
                     val currentExpression = value.replaceWithOrder(
                         *belonging.variable.generateReplaceMap(
                             ItemAPI.getLevel(item, belonging), player, item
-                        )
+                        ).toArray()
                     )
                     val result = value.compileToJexl().eval() as Boolean
 

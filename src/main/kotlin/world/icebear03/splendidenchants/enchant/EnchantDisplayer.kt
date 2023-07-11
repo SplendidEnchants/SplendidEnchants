@@ -104,7 +104,7 @@ object EnchantDisplayer {
                             player,
                             item,
                             j + 1
-                        )
+                        ).toArray()
                     )
                 }
                 enchantLore += layout.split("\n")

@@ -4,12 +4,13 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.inventory.ItemStack
-import taboolib.module.configuration.ConfigSection
+import taboolib.library.configuration.ConfigurationSection
+import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.mechanism.chain.Chain
 import java.util.concurrent.ConcurrentHashMap
 
-data class Listeners(val enchant: SplendidEnchant, val config: ConfigSection) {
+data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSection?) {
 
     var belonging: SplendidEnchant = enchant
 
@@ -20,7 +21,7 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigSection) {
     val listenersByType = ConcurrentHashMap<EventType, MutableList<String>>()
 
     init {
-        config.getKeys(false).forEach {
+        config?.getKeys(false)?.forEach {
             val id = it
             val type = EventType.valueOf(config.getString("$id.type", "")!!)
             val priority = EventPriority.valueOf(config.getString("$id.priority", "HIGHEST")!!)
@@ -44,15 +45,18 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigSection) {
         eventPriority: EventPriority,
         player: Player,
         item: ItemStack,
-        replacerMap: Array<Pair<String, String>>
     ) {
-        if (listenersByType.contains(eventType))
-            listenersByType[eventType]!!.forEach {
-                if (listenersById[it]!!.first == eventPriority) {
-                    listenersById[it]!!.second.forEach { chain ->
-                        chain.trigger(event, player, item, replacerMap)
-                    }
+        listenersByType[eventType]?.forEach {
+            if (listenersById[it]!!.first == eventPriority) {
+                listenersById[it]!!.second.forEach { chain ->
+                    val canContinue = chain.trigger(
+                        event, eventType, player, item,
+                        belonging.variable.generateReplaceMap(ItemAPI.getLevel(item, belonging), player, item)
+                    )
+//                    if (!canContinue)
+//                        return
                 }
             }
+        }
     }
 }
