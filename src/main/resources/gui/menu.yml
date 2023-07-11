@@ -1,0 +1,41 @@
+title: "SplendidEnchants附魔插件"
+shape:
+  - 'BCFFFFFFF'
+  - 'FFFEEEEEE'
+  - 'WXFEEEEEE'
+  - 'YZFEEEEEE'
+  - 'FFFEEEEEE'
+  - 'PNEEEEEEE'
+
+template:
+  'F':
+    material: BLACK_STAINED_GLASS_PANE
+    name: "&7"
+  'C':
+    material: RED_STAINED_GLASS_PANE
+    name: "&c关闭"
+    feature:
+      - ==: Close
+  'B':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "&b回到上一层"
+    feature:
+      - ==: Control$back
+  'P':
+    material: ARROW
+    name: "&e上一页"
+    feature: Previous
+  'N':
+    material: ARROW
+    name: "&e下一页"
+    feature: Next
+  'E':
+    material: PLAYER_HEAD
+    name: "&f{name}"
+    lore:
+      - "&f性别: &a{sex}"
+      - "&f年龄: &a{age}"
+      - "&f出生日期: &a{birth}"
+      - ""
+      - "&f左键 打开偏好设置"
+    feature: Child$information

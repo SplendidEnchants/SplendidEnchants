@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.submit
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 import java.util.*
@@ -68,13 +69,19 @@ object EntityDamageByEntity {
             it.key.listeners.trigger(event, EventType.ATTACK, org.bukkit.event.EventPriority.HIGHEST, damager, weapon)
         }
 
-        //TODO DELAY
+        submit {
+            if (damagee.isDead) {
+                println("dead")
 
-        if (damagee.isDead) {
-            println("dead")
-
-            ItemAPI.getEnchants(weapon).forEach {
-                it.key.listeners.trigger(event, EventType.KILL, org.bukkit.event.EventPriority.HIGHEST, damager, weapon)
+                ItemAPI.getEnchants(weapon).forEach {
+                    it.key.listeners.trigger(
+                        event,
+                        EventType.KILL,
+                        org.bukkit.event.EventPriority.HIGHEST,
+                        damager,
+                        weapon
+                    )
+                }
             }
         }
     }

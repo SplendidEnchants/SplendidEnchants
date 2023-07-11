@@ -53,8 +53,8 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSect
                         event, eventType, player, item,
                         belonging.variable.generateReplaceMap(ItemAPI.getLevel(item, belonging), player, item)
                     )
-//                    if (!canContinue)
-//                        return
+                    if (!canContinue)
+                        return
                 }
             }
         }

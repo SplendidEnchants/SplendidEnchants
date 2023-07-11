@@ -63,7 +63,12 @@ object Commands {
     val test = subCommand {
         execute<Player> { sender, _, _ ->
             val item =
-                ItemAPI.addEnchant(sender.inventory.itemInMainHand, EnchantAPI.getSplendidEnchant("测试附魔")!!, 3)
+                ItemAPI.addEnchant(sender.inventory.itemInMainHand, EnchantAPI.getSplendidEnchant("测试附魔")!!, 2)
+            ItemAPI.addEnchant(
+                sender.inventory.itemInMainHand,
+                EnchantAPI.getSplendidEnchant("测试附魔(复杂机制)")!!,
+                2
+            )
             sender.inventory.setItemInMainHand(item)
             sender.sendMessage("添加测试附魔成功")
         }

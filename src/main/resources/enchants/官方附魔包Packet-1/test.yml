@@ -16,7 +16,6 @@ limitations:
   #- "PERMISSION:splendidenchants.enchant.test.use"
   - "CONFLICT_GROUP:原版增伤附魔"
 
-#TODO 创造共同默认的display设置处
 #必须有此项
 display:
   #若无format，自动跟从
@@ -43,7 +42,6 @@ alternative:
   is_discoverable: true
   #可选，默认跟从大配置中的默认
 
-#TODO 创造共同默认的display设置处
 #可无此项
 variables:
   #跟等级有关的
@@ -59,8 +57,8 @@ variables:
   modifiable:
     当前累计: test_current_total=0
     是否充能完毕: can_discharge=充能中
+    #这里是初始值，应支持int、double、String等类型
 
-#TODO 这里是初始值，应支持int、double、String等类型
 #可无此项
 mechanisms:
   listeners:
