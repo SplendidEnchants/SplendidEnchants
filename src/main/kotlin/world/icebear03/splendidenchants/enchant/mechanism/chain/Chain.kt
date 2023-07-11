@@ -31,13 +31,13 @@ data class Chain(val listeners: Listeners, val chainLine: String) {
                 //TODO 应当支持更多东西！
                 //比如字符串相等，contains等
                 val newLine = line.replaceWithOrder(*replacerMap.toArray())
-                println(newLine)
                 return newLine.compileToJexl().eval() as Boolean
             }
 
             ASSIGNMENT -> {
                 val variableName = line.split("=")[0].replace("{", "").replace("}", "")
                 val expression = line.split("=")[1].replaceWithOrder(*replacerMap.toArray())
+                //TODO 能不能不用try，就判断ta是不是数学表达式
                 val variableValue =
                     try {
                         expression.compileToJexl().eval().toString()

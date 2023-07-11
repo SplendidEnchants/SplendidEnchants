@@ -16,8 +16,6 @@ object Attack {
         //TODO 更多占位符...
 
         param = param.replaceWithOrder(*replacerMap.toArray())
-        
-        println(param)
 
         when (line.split(":")[0]) {
             "设置伤害" -> {
