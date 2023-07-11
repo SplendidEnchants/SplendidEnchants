@@ -30,7 +30,7 @@ object PacketWindowItems {
                     //没有carried items？
                     //TODO 待测试
                 }
-                // 1.17, 1.18, 1.19, 1.20 -> c
+                // (1.17, 1.18)?, 1.19, 1.20 -> c
                 in 9..12 -> {
                     val slots = e.packet.read<List<NMSItemStack>>("c")!!.toMutableList()
                     for (i in slots.indices) {
