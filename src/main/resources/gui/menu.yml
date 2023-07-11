@@ -1,41 +1,46 @@
 title: "SplendidEnchants附魔插件"
 shape:
-  - 'BCFFFFFFF'
-  - 'FFFEEEEEE'
-  - 'WXFEEEEEE'
-  - 'YZFEEEEEE'
-  - 'FFFEEEEEE'
-  - 'PNEEEEEEE'
+  - 'FFFFFFFFF'
+  - 'FAFBFCFDF'
+  - 'FFFFFFFFF'
 
 template:
   'F':
     material: BLACK_STAINED_GLASS_PANE
     name: "&7"
-  'C':
-    material: RED_STAINED_GLASS_PANE
-    name: "&c关闭"
-    feature:
-      - ==: Close
-  'B':
-    material: BLUE_STAINED_GLASS_PANE
-    name: "&b回到上一层"
-    feature:
-      - ==: Control$back
-  'P':
-    material: ARROW
-    name: "&e上一页"
-    feature: Previous
-  'N':
-    material: ARROW
-    name: "&e下一页"
-    feature: Next
-  'E':
-    material: PLAYER_HEAD
-    name: "&f{name}"
+  'A':
+    material: ENCHANTED_BOOK
+    name: "&b附魔大全"
     lore:
-      - "&f性别: &a{sex}"
-      - "&f年龄: &a{age}"
-      - "&f出生日期: &a{birth}"
-      - ""
-      - "&f左键 打开偏好设置"
-    feature: Child$information
+      - "&8| &7在这里查询所有附魔"
+      - "&8| &7你可以通过以下条件进行&e筛选"
+      - "     &7- 品质"
+      - "     &7- 中英文名"
+      - "     &7- 适合的物品"
+      - "     &7- 分类与定位"
+    feature: Menu$enchant_search
+  'B':
+    material: BOOKSHELF
+    name: "&b物品查询"
+    lore:
+      - "&8| &7在这里查询物品上的附魔"
+      - "&8| &7你可以点击附魔进入&e详细界面"
+    feature: Menu$item_check
+  'C':
+    material: ANVIL
+    name: "&c铁砧检查器"
+    lore:
+      - "&8| &7在这里预览铁砧拼合的结果"
+      - "&8| &7或得知&e为什么不能进行拼合"
+      - "     &7- 冲突"
+      - "     &7- 依赖"
+      - "     &7- 等级限制"
+      - "     &7- 词条限制"
+    feature: Menu$anvil
+  'D':
+    material: GRINDSTONE
+    name: "&c砂轮检查器"
+    lore:
+      - "&8| &7在这里预览砂轮磨砂的结果"
+      - "&8| &7或了解&e返还经验值的计算过程"
+    feature: Menu$grindstone

@@ -1,0 +1,46 @@
+title: "附魔大全 | 左侧按钮可筛选附魔"
+#W-按照品质筛选菜单
+#X-按照对象筛选
+#Y-按照附魔定位/类型筛选
+#Z-输入字符串搜索
+shape:
+  - 'BCFFFFFFF'
+  - 'FFFEEEEEE'
+  - 'WXFEEEEEE'
+  - 'YZFEEEEEE'
+  - 'FFFEEEEEE'
+  - 'PNEEEEEEE'
+
+template:
+  'F':
+    material: BLACK_STAINED_GLASS_PANE
+    name: "&7"
+  'C':
+    material: RED_STAINED_GLASS_PANE
+    name: "&c关闭"
+    feature:
+      - ==: Close
+  'B':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "&b回到上一层"
+    feature:
+      - ==: Control$back
+  'P':
+    material: ARROW
+    name: "&e上一页"
+    feature: Previous
+  'N':
+    material: ARROW
+    name: "&e下一页"
+    feature: Next
+  'E':
+    material: ENCHANTED_BOOK
+    name: "{color}{name} {roman_level}"
+    lore:
+      - "&8| &7附魔: {color}{name}"
+      - "&8| &7等级: &e{level} / &c{max_level}"
+      - "&8| &7品质: {color}{rarity}"
+      - "&8| &7简介: {description}"
+      - "&7"
+      - "&8| &7点击查看详细信息"
+    feature: EnchantSearch$information

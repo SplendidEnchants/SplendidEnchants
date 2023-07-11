@@ -16,7 +16,6 @@ import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
 import taboolib.module.kether.compileToJexl
-import taboolib.module.kether.isInt
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.api.MathAPI

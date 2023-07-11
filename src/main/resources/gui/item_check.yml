@@ -1,0 +1,42 @@
+title: "点击背包物品进行查询"
+#I 上传的物品的位置
+#E 物品附魔的简略信息，点击进入EnchantInfo界面查看详细信息
+
+#点击背包内的物品，复制一个物品上传到I位置，自动扫描物品的附魔
+#生成各个附魔对应的物品（简略信息），在E位置排列
+#考虑到附魔可能很多，所以可以翻页
+shape:
+  - 'FFFFFFFFF'
+  - 'F FEEEEEF'
+  - 'FIFEEEEEF'
+  - 'F FEEEEEF'
+  - 'FBFPFFFNF'
+
+template:
+  'F':
+    material: BLACK_STAINED_GLASS_PANE
+    name: "&7"
+  'B':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "&b回到上一层"
+    feature:
+      - ==: Control$back
+  'P':
+    material: ARROW
+    name: "&e上一页"
+    feature: Previous
+  'N':
+    material: ARROW
+    name: "&e下一页"
+    feature: Next
+  'E':
+    material: ENCHANTED_BOOK
+    name: "{color}{name} {roman_level}"
+    lore:
+      - "&8| &7附魔: {color}{name}"
+      - "&8| &7等级: &e{level} / &c{max_level}"
+      - "&8| &7品质: {color}{rarity}"
+      - "&8| &7简介: {description}"
+      - "&7"
+      - "&8| &7点击查看详细信息"
+    feature: ItemCheck$information
