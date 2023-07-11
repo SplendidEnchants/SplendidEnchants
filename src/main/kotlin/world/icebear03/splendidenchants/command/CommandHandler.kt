@@ -26,16 +26,15 @@ object CommandHandler {
 
     @CommandBody(aliases = ["help", "帮助"])
     val main = mainCommand {
-        execute<ProxyCommandSender> { sender, _, argument ->
-            if (argument.isEmpty()) {
-                generateMainHelper(sender)
-                return@execute
-            }
-            sender.sendMessage("§8[§6Splendid§aEnchants§8] §3| 指令 §6$argument §3不存在.")
-            val similar = getMostSimilarCommand(argument)
+        execute<ProxyCommandSender> { sender, _, _ ->
+            generateMainHelper(sender)
+        }
+        incorrectCommand { sender, ctx, _, _ ->
+            sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7不存在.")
+            val similar = getMostSimilarCommand(ctx.self())
             if (similar != null) {
-                sender.sendMessage("§8[§6Splendid§aEnchants§8] §3| 你可能想要:")
-                sender.sendMessage("§8[§6Splendid§aEnchants§8] §3| $similar")
+                sender.sendMessage("§8[§6SplendidEnchants§8] §7你可能想要:")
+                sender.sendMessage("§8[§6SplendidEnchants§8] §7$similar")
             }
         }
     }
