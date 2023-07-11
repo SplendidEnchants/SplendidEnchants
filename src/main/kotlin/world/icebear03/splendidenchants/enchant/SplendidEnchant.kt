@@ -175,12 +175,6 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             }
         }
 
-        private fun toDoubleFormat(origin: String): String {
-            if (origin.isInt())
-                return "$origin.0"
-            return origin
-        }
-
         private fun leveled(variable: String, level: Int?): String {
             return if (level == null) variable else leveled[variable]!!.compileToJexl().eval(mapOf("level" to level))
                 .toString()
@@ -204,15 +198,15 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             variableSet.forEach {
                 when (it.value) {
                     "leveled" -> {
-                        list.add(toDoubleFormat(leveled(it.key, level)) to it.key)
+                        list.add(leveled(it.key, level) to it.key)
                     }
 
                     "player_related" -> {
-                        list.add(toDoubleFormat(playerRelated(it.key, player)) to it.key)
+                        list.add(playerRelated(it.key, player) to it.key)
                     }
 
                     "modifiable" -> {
-                        list.add(toDoubleFormat(modifiable(it.key, item)) to it.key)
+                        list.add(modifiable(it.key, item) to it.key)
                     }
                 }
             }
