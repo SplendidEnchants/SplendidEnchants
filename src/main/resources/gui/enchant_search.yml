@@ -24,7 +24,7 @@ template:
     material: BLUE_STAINED_GLASS_PANE
     name: "&b回到上一层"
     feature:
-      - ==: Control$back
+      - ==: EnchantSearch$back
   'P':
     material: ARROW
     name: "&e上一页"
