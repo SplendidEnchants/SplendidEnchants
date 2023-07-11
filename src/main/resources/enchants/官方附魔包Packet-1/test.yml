@@ -64,12 +64,20 @@ variables:
 #可无此项
 mechanisms:
   listeners:
-    KILLMOB:
-      - "[赋值]{当前累计}={当前累计}+1"
-      - "[条件]{当前累计}>={击杀累计}"
-      - "[赋值]{是否充能完毕}=充能完毕"
-    ATTACK:
-      - "[条件]{当前累计}>={击杀累计}"
-      - "[赋值]{当前累计}=0"
-      - "[赋值]{是否充能完毕}=充能中"
-      - "[赋值]damage_high=damage_high*(1+{伤害增加百分比}/100)"
+    kill_mob:
+      type: kill_mob
+      chains:
+        - "赋值::{当前累计}={当前累计}+1"
+        - "条件::{当前累计}>={击杀累计}"
+        - "赋值::{是否充能完毕}=充能完毕"
+    attack_mob:
+      type: attack_mob
+      #若无pirority，默认为HIGHEST
+      priority: HIGHEST
+      chains:
+        - "条件::{当前累计}>={击杀累计}"
+        - "赋值::{当前累计}=0"
+        - "赋值::{是否充能完毕}=充能中"
+        - "事件::{damage}={damage}*(1+{伤害增加百分比}/100)"
+  tickers: #每秒做什么
+    - ""

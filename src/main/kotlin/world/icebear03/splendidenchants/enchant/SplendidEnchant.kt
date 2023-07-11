@@ -9,12 +9,14 @@ import org.bukkit.entity.EntityCategory
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import taboolib.common.util.replaceWithOrder
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
 import taboolib.module.kether.compileToJexl
+import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.api.MathAPI
 import world.icebear03.splendidenchants.api.PlayerAPI
@@ -205,6 +207,17 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                 }
             }
             return list.toTypedArray()
+        }
+
+        fun modifyVariable(item: ItemStack, variable: String, value: String): ItemStack {
+            return item.modifyMeta<ItemMeta> {
+                val pdc = this.persistentDataContainer
+                pdc.set(
+                    NamespacedKey.fromString("splendidenchant_" + modifiable[variable]!!.first)!!,
+                    PersistentDataType.STRING,
+                    value
+                )
+            }
         }
     }
 
