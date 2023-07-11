@@ -6,35 +6,54 @@ import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.subCommand
 import taboolib.expansion.createHelper
-import world.icebear03.splendidenchants.api.EnchantAPI
-import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
-@CommandHeader("splendidenchants", aliases = ["se", "附魔", "spe"])
+@CommandHeader("splendidenchants", aliases = ["se", "spe", "nereusopus"])
 object Commands {
 
-    @CommandBody
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["help", "帮助"])
     val main = mainCommand {
         createHelper(true)
     }
 
-    @CommandBody(permission = "splendidenchants.admin", aliases = ["展示"])
-    val displayEnchants = subCommand {
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["et", "附魔"])
+    val enchant = subCommand {
         execute<Player> { sender, _, _ ->
-            val item = EnchantDisplayer.display(sender.inventory.itemInMainHand, sender)
-            sender.inventory.setItemInMainHand(item)
-            sender.sendMessage("展示成功")
+
         }
     }
 
-    @CommandBody(permission = "splendidenchants.admin", aliases = ["原版附魔兼容测试"])
-    val testvanilla = subCommand {
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["bk", "附魔书"])
+    val book = subCommand {
         execute<Player> { sender, _, _ ->
-            val item =
-                ItemAPI.addEnchant(sender.inventory.itemInMainHand, EnchantAPI.getSplendidEnchant("测试附魔")!!, 3)
-            ItemAPI.addEnchant(item, EnchantAPI.getSplendidEnchant("播种机")!!, 2)
-            sender.inventory.setItemInMainHand(item)
-            sender.sendMessage("测试成功")
+
+        }
+    }
+
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["rl", "重载"])
+    val reload = subCommand {
+        execute<Player> { sender, _, _ ->
+
+        }
+    }
+
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["模式"])
+    val mode = subCommand {
+        execute<Player> { sender, _, _ ->
+
+        }
+    }
+
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["ran", "rd", "随机附魔书"])
+    val random = subCommand {
+        execute<Player> { sender, _, _ ->
+
+        }
+    }
+
+    @CommandBody(aliases = ["查询附魔"])
+    val info = subCommand {
+        execute<Player> { sender, _, _ ->
+
         }
     }
 }

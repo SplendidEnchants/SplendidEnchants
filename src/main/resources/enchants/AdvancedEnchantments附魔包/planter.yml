@@ -11,7 +11,7 @@ limitations:
   - "CONFLICT_GROUP:播种类附魔"
 
 display:
-  description:  
+  description:
     general: "§7蹲下时右击耕地可范围播种"
     specific: "§7蹲下时右击耕地可范围播种 (范围:§a{范围}格 §7冷却:§a{冷却}秒§7)"
 
@@ -31,3 +31,5 @@ variables:
 mechanisms:
   listeners:
     RIGHT_CLICK_BLOCK:
+      - "[条件]"
+      - "plant: {range={范围},seeds=all}"
