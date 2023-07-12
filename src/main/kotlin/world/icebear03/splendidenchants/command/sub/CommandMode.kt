@@ -24,6 +24,9 @@ object CommandMode : CommandExecutor {
     override val description: String
         get() = "切换特殊模式"
 
+    override val usage: String
+        get() = ""
+
     init {
         CommandHandler.sub[name] = this
     }

@@ -24,6 +24,9 @@ object CommandInfo : CommandExecutor {
     override val description: String
         get() = "查询附魔详情信息"
 
+    override val usage: String
+        get() = ""
+
     init {
         CommandHandler.sub[name] = this
     }

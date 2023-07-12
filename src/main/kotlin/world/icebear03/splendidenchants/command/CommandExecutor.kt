@@ -1,9 +1,6 @@
 package world.icebear03.splendidenchants.command
 
-import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.SimpleCommandBody
-import taboolib.module.chat.colored
-import taboolib.module.lang.asLangText
 
 /**
  * SplendidEnchants
@@ -19,4 +16,6 @@ interface CommandExecutor {
     val name: String
 
     val description: String
+
+    val usage: String
 }
