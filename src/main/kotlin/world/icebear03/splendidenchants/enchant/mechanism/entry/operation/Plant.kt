@@ -43,14 +43,21 @@ object Plant {
         return null
     }
 
-    fun plant(player: Player, range: Int, seeds: String?) {
-        if (range <= 1)
+    fun plant(player: Player, sideLength: Int, seeds: String?) {
+        if (sideLength <= 1)
             return
 
         val block = PlayerAPI.lookingAtBlock(player, 6.0) ?: return
+
+        val down = -sideLength / 2
+        var up = sideLength / 2
+        if (sideLength % 2 == 0) {
+            up -= 1
+        }
+
         val location = block.location
-        for (x in -range + 1 until range) {
-            for (z in -range + 1 until range) {
+        for (x in down until up + 1) {
+            for (z in down until up + 1) {
                 val current = location.clone().add(x.toDouble(), 0.0, z.toDouble()).toHighestLocation()
 
                 if (current.block.type != Material.FARMLAND)
