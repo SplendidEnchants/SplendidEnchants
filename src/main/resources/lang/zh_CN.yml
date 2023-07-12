@@ -4,13 +4,3 @@ limit_type_conflict_enchant: "冲突"
 limit_type_conflict_group: "冲突"
 limit_type_dependent_enchant: "依赖"
 limit_type_dependent_group: "依赖"
-
-Command-Help-Type: '命令'
-Command-Help-Args: '参数'
-
-COMMAND-BOOK-DESCRIPTION: '获取一本附魔书'
-COMMAND-ENCHANT-DESCRIPTION: '为手中物品附魔'
-COMMAND-INFO-DESCRIPTION: '查询附魔详细信息'
-COMMAND-MODE-DESCRIPTION: '切换特殊模式'
-COMMAND-RANDOM-DESCRIPTION: '随机获取一本附魔书'
-COMMAND-RELOAD-DESCRIPTION: '重新加载插件'

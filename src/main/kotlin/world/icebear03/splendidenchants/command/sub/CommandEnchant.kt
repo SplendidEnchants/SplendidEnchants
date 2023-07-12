@@ -18,7 +18,11 @@ object CommandEnchant : CommandExecutor {
 
     }
 
-    override val name: String = "enchant"
+    override val name: String
+        get() = "enchant"
+
+    override val description: String
+        get() = "为手中物品附魔"
 
     init {
         CommandHandler.sub[name] = this
