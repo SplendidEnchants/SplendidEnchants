@@ -1,7 +1,7 @@
 basic:
   id: planter
   name: "播种机"
-  max_level: 3
+  max_level: 2
 
 rarity: 传奇
 targets:
@@ -12,8 +12,8 @@ limitations:
 
 display:
   description:
-    general: "§7蹲下时右击耕地可范围播种"
-    specific: "§7蹲下时右击耕地可范围播种 (范围:§a{范围}格 §7冷却:§a{冷却}秒§7)"
+    general: "§7右击耕地可范围播种(需要种子)"
+    specific: "§7右击耕地可范围播种(需要种子) (§a{边长}×§a{边长} §7冷却:§a{冷却}秒§7)"
 
 alternative:
   grindstoneable: true
@@ -25,11 +25,13 @@ alternative:
 
 variables:
   leveled:
-    冷却: 3-level
-    范围: level+1
+    冷却: 2.5-level
+    边长: level+1
 
 mechanisms:
   listeners:
-    RIGHT_CLICK_BLOCK:
-      - "[条件]冷却:{冷却}"
-      - "[操作]plant: {range={范围},seeds=all}"
+    right_click:
+      type: RIGHT_CLICK
+      chains:
+        - "冷却::{冷却}:true"
+        - "操作::plant:{边长}:ALL"

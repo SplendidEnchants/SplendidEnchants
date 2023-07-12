@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.listener.mechanism
+package world.icebear03.splendidenchants.listener.gui
 
 import org.bukkit.Material
 import org.bukkit.entity.Player
