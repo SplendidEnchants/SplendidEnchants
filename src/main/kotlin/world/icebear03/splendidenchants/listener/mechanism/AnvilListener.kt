@@ -10,7 +10,6 @@ import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.util.YamlUpdater
-import kotlin.math.roundToInt
 
 object AnvilListener {
 
@@ -59,7 +58,7 @@ object AnvilListener {
         //如果交给原版处理rename，则会丢附魔
         if (second == null) {
             if (renameText != ItemAPI.getName(first)) {
-                inv.repairCost = finalCost(renameCost, player)
+                inv.repairCost = finalCost(renameCost + 0.0, player)
                 event.result = ItemAPI.setName(first.clone(), renameText)
             }
             return
@@ -77,13 +76,13 @@ object AnvilListener {
             } else {
                 event.result = item
             }
-            inv.repairCost = finalCost(cost, player)
+            inv.repairCost = finalCost(cost + 0.0, player)
             return
         }
 
         //拼合附魔（重点！）
         val resultAndCost = combine(first, second, player)
-        var cost = resultAndCost.second
+        var cost = resultAndCost.second + 0.0
         if (cost <= 0 || resultAndCost.first == null) {
             event.result = null
             return
@@ -104,9 +103,9 @@ object AnvilListener {
     }
 
     //返回的是 新物品，耗费经验
-    fun combine(first: ItemStack, second: ItemStack, player: Player): Pair<ItemStack?, Int> {
+    fun combine(first: ItemStack, second: ItemStack, player: Player): Pair<ItemStack?, Double> {
         if (first.type != second.type && second.type != Material.ENCHANTED_BOOK) {
-            return null to 0
+            return null to 0.0
         }
 
         val result = first.clone()
@@ -145,15 +144,14 @@ object AnvilListener {
                 costLevel += perLevel * (newLevel - originLevel)
             }
         }
-        return result to costLevel.roundToInt()
+        return result to costLevel
     }
 
-    fun finalCost(origin: Int, player: Player): Int {
-        var minCost = origin.toDouble()
+    fun finalCost(origin: Double, player: Player): Int {
+        var minCost = origin
         privilege.forEach {
             if (player.hasPermission(it.key)) {
                 val newCost = it.value.replace("{cost_level}", origin.toString()).compileToJexl().eval() as Double
-                println("Result: $newCost")
                 minCost = minOf(minCost, newCost)
             }
         }

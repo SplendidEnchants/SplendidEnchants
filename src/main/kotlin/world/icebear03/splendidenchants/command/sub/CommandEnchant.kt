@@ -39,31 +39,31 @@ object CommandEnchant : CommandExecutor {
                     val enchant = EnchantAPI.getSplendidEnchant(ctx["enchant"])
                     val level = ctx["level"]
                     if (enchant == null) {
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7附魔 §f${ctx["enchant"]} §7不存在.")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7附魔 §f${ctx["enchant"]} §7不存在.")
                         return@execute
                     }
                     if (!level.isInt()) {
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7等级必须为数字.")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7等级必须为数字.")
                         return@execute
                     }
                     if (level.toInt() < 0) {
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7等级必须大于等于0(0为清除附魔).")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7等级必须大于等于0(0为清除附魔).")
                         return@execute
                     }
                     val item = sender.inventory.itemInMainHand
                     if (item.isAir) {
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7你必须手持物品才可以对物品附魔.")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7你必须手持物品才可以对物品附魔.")
                         return@execute
                     }
 
                     when {
                         level.toInt() > 0 -> {
                             ItemAPI.addEnchant(item, enchant, level.toInt())
-                            sender.sendMessage("§8[§6SplendidEnchants§8] §7已成功为物品添加附魔 ${enchant.rarity.color}${enchant.basicData.name}§7, 等级 §f$level§7.")
+                            sender.sendMessage("§6SplendidEnchants §7>> §7已成功为物品添加附魔 ${enchant.rarity.color}${enchant.basicData.name}§7, 等级 §f$level§7.")
                         }
                         level.toInt() == 0 -> {
                             ItemAPI.removeEnchant(item, enchant)
-                            sender.sendMessage("§8[§6SplendidEnchants§8] §7已成功为物品清除附魔 ${enchant.rarity.color}${enchant.basicData.name}§7.")
+                            sender.sendMessage("§6SplendidEnchants §7>> §7已成功为物品清除附魔 ${enchant.rarity.color}${enchant.basicData.name}§7.")
                         }
                     }
                 }

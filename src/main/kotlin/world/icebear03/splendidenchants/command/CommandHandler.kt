@@ -1,11 +1,14 @@
 @file:Suppress("deprecation")
+
 package world.icebear03.splendidenchants.command
 
 import taboolib.common.platform.ProxyCommandSender
-import taboolib.common.platform.command.*
+import taboolib.common.platform.command.CommandBody
+import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.component.CommandBase
 import taboolib.common.platform.command.component.CommandComponent
 import taboolib.common.platform.command.component.CommandComponentLiteral
+import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.function.pluginVersion
 import taboolib.common.util.Strings
 import taboolib.module.chat.RawMessage
@@ -59,7 +62,8 @@ object CommandHandler {
                     """
                 §7插件版本: §2${pluginVersion}
                 §7游戏版本: §b${MinecraftVersion.minecraftVersion}
-            """.trimIndent()).sendTo(sender)
+            """.trimIndent()
+                ).sendTo(sender)
             sender.sendMessage("")
             RawMessage()
                 .append("  §7命令: ").append("§f/splendidenchants §8[...]")
@@ -76,7 +80,7 @@ object CommandHandler {
                     usage += " "
                 }
                 val description = sub[name]?.description ?: "没有描述"
-                command.children.filterIsInstance<CommandComponentLiteral>().map { it.aliases[0] }.forEach {  }
+                command.children.filterIsInstance<CommandComponentLiteral>().map { it.aliases[0] }.forEach { }
 
                 RawMessage()
                     .append("    §8- ").append("§f$name")
@@ -99,20 +103,21 @@ object CommandHandler {
                 val description = sub[ctx.self()]?.description ?: "没有描述"
                 when (state) {
                     1 -> {
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f$name §7参数不足.")
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7正确用法:")
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7§f/splendidenchants $name $usage§8- §7$description")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7指令 §f$name §7参数不足.")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7正确用法:")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7§f/splendidenchants $name $usage§8- §7$description")
                     }
+
                     2 -> {
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f$name §7不存在.")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7指令 §f$name §7不存在.")
                         val similar = sub.keys.maxByOrNull { Strings.similarDegree(name, it) }!!
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7你可能想要:")
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7$similar")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7你可能想要:")
+                        sender.sendMessage("§6SplendidEnchants §7>> §7$similar")
                     }
                 }
             }
             incorrectSender { sender, ctx ->
-                sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.args().first()} §7只能由 §f玩家 §7执行.")
+                sender.sendMessage("§6SplendidEnchants §7>> §7指令 §f${ctx.args().first()} §7只能由 §f玩家 §7执行.")
             }
         }
     }
