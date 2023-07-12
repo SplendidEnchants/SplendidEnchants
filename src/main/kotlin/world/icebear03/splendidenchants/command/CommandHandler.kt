@@ -49,47 +49,51 @@ object CommandHandler {
     val info = CommandInfo.command
 
     private fun CommandComponent.createTabooHelper() {
-        val message = RawMessage()
-            .newLine()
-            .append("  ").append("§6SplendidEnchants")
-            .hoverText("§7SplendidEnchants 附魔扩展插件")
-            .append(" ").append("§f${pluginVersion}")
-            .hoverText(
-                """
+        execute<ProxyCommandSender> { sender, context, _ ->
+            val message = RawMessage()
+                .newLine()
+                .append("  ").append("§6SplendidEnchants")
+                .hoverText("§7SplendidEnchants 附魔扩展插件")
+                .append(" ").append("§f${pluginVersion}")
+                .hoverText(
+                    """
                 §7插件版本: §2${pluginVersion}
                 §7游戏版本: §b${MinecraftVersion.minecraftVersion}
             """.trimIndent())
-            .newLine()
-            .append("  §7命令: ").append("§f/splendidenchants §8[...]")
-            .hoverText("§f/splendidenchants §8[...]")
-            .suggestCommand("/splendidenchants ")
-            .newLine()
-            .append("  §7参数:")
-            .newLine()
-
-        for (command in children.filterIsInstance<CommandComponentLiteral>()) {
-            val name = command.aliases[0]
-            val description = sub[name]?.description ?: "没有描述"
-            val args = StringBuilder()
-            command.children.filterIsInstance<CommandComponentLiteral>().map { it.aliases[0] }.forEach {  }
-
-
-            message.append("    §8- ").append("§f$name")
-                .hoverText("§f/splendidenchants $name §8- §7$description")
-                .suggestCommand("/splendidenchants $name ")
                 .newLine()
-                .append("      §7")
+                .append("  §7命令: ").append("§f/splendidenchants §8[...]")
+                .hoverText("§f/splendidenchants §8[...]")
+                .suggestCommand("/splendidenchants ")
                 .newLine()
+                .append("  §7参数:")
+                .newLine()
+
+            for (command in children.filterIsInstance<CommandComponentLiteral>()) {
+                val name = command.aliases[0]
+                val description = sub[name]?.description ?: "没有描述"
+                val args = StringBuilder()
+                command.children.filterIsInstance<CommandComponentLiteral>().map { it.aliases[0] }.forEach {  }
+
+
+                message.append("    §8- ").append("§f$name")
+                    .hoverText("§f/splendidenchants $name §8- §7$description")
+                    .suggestCommand("/splendidenchants $name ")
+                    .newLine()
+                    .append("      §7")
+                    .newLine()
+            }
+
+            message.sendTo(sender)
         }
 
         if (this is CommandBase) {
             incorrectCommand { sender, ctx, _, state ->
                 when (state) {
-                    //1 -> {
-                    //    sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7参数不足.")
-                   /////    sender.sendMessage("§8[§6SplendidEnchants§8] §7正确用法:")
-                   //     sender.sendMessage("§8[§6SplendidEnchants§8] §7§f/splendidenchants ${ctx.self()} §8- §7${sub[ctx.self()]?.description ?: "没有描述"}")
-                   // }
+                    1 -> {
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7参数不足.")
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7正确用法:")
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7§f/splendidenchants ${ctx.self()} §8- §7${sub[ctx.self()]?.description ?: "没有描述"}")
+                    }
                     2 -> {
                         sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7不存在.")
                         val similar = getMostSimilarCommand(ctx.self())
