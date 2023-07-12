@@ -1,6 +1,5 @@
 package world.icebear03.splendidenchants.api.nms
 
-import world.icebear03.splendidenchants.`object`.Overlay
 import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -13,7 +12,8 @@ import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
 import taboolib.platform.util.isAir
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
-import java.util.UUID
+import world.icebear03.splendidenchants.`object`.Overlay
+import java.util.*
 
 /**
  * SplendidEnchants
@@ -24,7 +24,14 @@ import java.util.UUID
  */
 class NMSImpl : NMS() {
 
-    override fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor) {
+    override fun sendBossBar(
+        player: Player,
+        message: String,
+        progress: Float,
+        time: Int,
+        overlay: Overlay,
+        color: BarColor
+    ) {
         val uuid = UUID.randomUUID()
         when (MinecraftVersion.major) {
             // 1.16
@@ -57,15 +64,16 @@ class NMSImpl : NMS() {
                     player,
                     NMSPacketPlayOutBoss::class.java.unsafeInstance(),
                     "id" to uuid,
-                    "operation" to getClass("net.minecraft.network.protocol.game.PacketPlayOutBoss\$a").unsafeInstance().also {
-                        it.setProperty("name", CraftChatMessage19.fromString(message.colored()).first())
-                        it.setProperty("progress", progress)
-                        it.setProperty("color", NMSBossBattleBarColor.valueOf(color.name.uppercase()))
-                        it.setProperty("overlay", NMSBossBattleBarStyle.valueOf(overlay.name.uppercase()))
-                        it.setProperty("darkenScreen", false)
-                        it.setProperty("playMusic", false)
-                        it.setProperty("createWorldFog", false)
-                    }
+                    "operation" to getClass("net.minecraft.network.protocol.game.PacketPlayOutBoss\$a").unsafeInstance()
+                        .also {
+                            it.setProperty("name", CraftChatMessage19.fromString(message.colored()).first())
+                            it.setProperty("progress", progress)
+                            it.setProperty("color", NMSBossBattleBarColor.valueOf(color.name.uppercase()))
+                            it.setProperty("overlay", NMSBossBattleBarStyle.valueOf(overlay.name.uppercase()))
+                            it.setProperty("darkenScreen", false)
+                            it.setProperty("playMusic", false)
+                            it.setProperty("createWorldFog", false)
+                        }
                 )
                 submit(delay = time * 20L) {
                     sendPacket(

@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.listener.gui
+package world.icebear03.splendidenchants.listener.mechanism
 
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -10,7 +10,7 @@ import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.util.YamlUpdater
-import kotlin.math.floor
+import kotlin.math.roundToInt
 
 object AnvilListener {
 
@@ -24,7 +24,7 @@ object AnvilListener {
     val enchantCostPerLevel: String
 
     val allowDiffenrentMaterial: Boolean
-    val privilege = mapOf("default" to "{cost_level}*1.0").toMutableMap()
+    val privilege = mutableMapOf<String, String>()
 
     init {
         val config = YamlUpdater.loadAndUpdate("mechanisms/anvil.yml")
@@ -56,25 +56,28 @@ object AnvilListener {
             return
 
         //重命名
+        //如果交给原版处理rename，则会丢附魔
         if (second == null) {
-            if (renameText == null)
-                return
             if (renameText != ItemAPI.getName(first)) {
-                inv.repairCost = minOf(maxCost, renameCost)
-                //如果交给原版处理rename，则会丢附魔
+                inv.repairCost = finalCost(renameCost, player)
                 event.result = ItemAPI.setName(first.clone(), renameText)
             }
             return
         }
 
         //修理
+        //如果交给原版处理durability，则会丢附魔
         if (ItemAPI.getEnchants(second).isEmpty()) {
-            if (result == null)
-                return
-            inv.repairCost = minOf(maxCost, repairCost)
-            //如果交给原版处理durability，则会丢附魔
-            //所以我们先获取新的durability，然后再重新造一个物品
-            event.result = ItemAPI.setDamage(first.clone(), ItemAPI.getDamage(result))
+            var cost = repairCost
+            val item = ItemAPI.setDamage(first.clone(), ItemAPI.getDamage(result))
+
+            if (renameText != ItemAPI.getName(first)) {
+                cost += renameCost
+                event.result = ItemAPI.setName(item, renameText)
+            } else {
+                event.result = item
+            }
+            inv.repairCost = finalCost(cost, player)
             return
         }
 
@@ -92,65 +95,70 @@ object AnvilListener {
 
         if (renameText != ItemAPI.getName(first)) {
             cost += renameCost
-            event.result = ItemAPI.setName(resultAndCost.first!!.clone(), renameText)
+            event.result = ItemAPI.setName(resultAndCost.first!!, renameText)
         } else {
             event.result = resultAndCost.first
         }
-        //特权减免等级消耗处理
-        var finalCost =
 
-            //TODO 写到eval里没用
-            privilege["default"]!!.replace("{cost_level}", cost.toString()).compileToJexl().eval() as Double
-        privilege.forEach {
-            if (it.key != "default" && player.hasPermission(it.value))
-                finalCost =
-                    minOf(
-                        finalCost,
-
-                        //TODO 写到eval里没用
-                        it.value.replace("{cost_level}", cost.toString()).compileToJexl().eval() as Double
-                    )
-        }
-
-        //不能低于1级
-        inv.repairCost = minOf(maxCost, maxOf(1, floor(finalCost).toInt()))
+        inv.repairCost = finalCost(cost, player)
     }
 
-    //返回的是 拼合结果，耗费经验
-    fun combine(first: ItemStack, second: ItemStack, player: Player): Pair<ItemStack?, Double> {
+    //返回的是 新物品，耗费经验
+    fun combine(first: ItemStack, second: ItemStack, player: Player): Pair<ItemStack?, Int> {
         if (first.type != second.type && second.type != Material.ENCHANTED_BOOK) {
-            return null to 0.0
+            return null to 0
         }
 
         val result = first.clone()
         var costLevel = 0.0
         for (it in ItemAPI.getEnchants(second)) {
-            if (it.key.limitations.checkAvailable(CheckType.ANVIL, player, first).first) {
-                var originLevel = ItemAPI.getLevel(result, it.key)
-                //TODO 写到eval里没用
-                val perLevel =
-                    enchantCostPerLevel.replace("{max_level}", it.key.maxLevel.toString()).compileToJexl()
-                        .eval() as Double
+            val enchant = it.key
+            val level = it.value
+            val maxLevel = it.key.maxLevel
+            var originLevel = ItemAPI.getLevel(result, enchant)
+            var newLevel = originLevel
+
+            if (enchant.limitations.checkAvailable(CheckType.ANVIL, player, first).first) {
+                val perLevel = enchantCostPerLevel.replace("{max_level}", it.key.maxLevel.toString()).compileToJexl()
+                    .eval() as Double
+                //是新的附魔
                 if (originLevel <= 0) {
                     originLevel = 0
                     costLevel += newEnchantExtraCost
                 }
-                if (originLevel < it.value) {
-                    if (it.value >= it.key.maxLevel && !allowUnsafeLevel) {
+                if (originLevel < level) {
+                    newLevel = level
+                    //不允许超出最高级
+                    if (level >= maxLevel) {
+                        if (!allowUnsafeLevel) {
+                            newLevel = maxLevel
+                        }
+                    }
+                }
+                if (originLevel == level) {
+                    if (level >= maxLevel && !allowUnsafeCombine) {
                         continue
                     }
-                    ItemAPI.addEnchant(result, it.key, it.value)
-                    costLevel += perLevel * (it.value - originLevel)
+                    newLevel = level + 1
                 }
-                if (originLevel == it.value) {
-                    if (it.value >= it.key.maxLevel && !allowUnsafeCombine) {
-                        continue
-                    }
-                    ItemAPI.addEnchant(result, it.key, it.value + 1)
-                    costLevel += perLevel
-                }
+                ItemAPI.addEnchant(result, enchant, newLevel)
+                costLevel += perLevel * (newLevel - originLevel)
             }
         }
-        return result to costLevel
+        return result to costLevel.roundToInt()
+    }
+
+    fun finalCost(origin: Int, player: Player): Int {
+        var minCost = origin.toDouble()
+        privilege.forEach {
+            if (player.hasPermission(it.key)) {
+                val newCost = it.value.replace("{cost_level}", origin.toString()).compileToJexl().eval() as Double
+                println("Result: $newCost")
+                minCost = minOf(minCost, newCost)
+            }
+        }
+
+        //不能低于1级，不能高于设定好的上限等级
+        return minOf(maxCost, maxOf(minCost, 1.0).toInt())
     }
 }

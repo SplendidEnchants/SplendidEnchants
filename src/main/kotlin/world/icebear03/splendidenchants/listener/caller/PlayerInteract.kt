@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.listener.mechanism
+package world.icebear03.splendidenchants.listener.caller
 
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent

@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.listener.gui
+package world.icebear03.splendidenchants.listener.mechanism
 
 import org.bukkit.event.inventory.PrepareGrindstoneEvent
 import org.bukkit.inventory.ItemStack
@@ -14,6 +14,7 @@ object GrindstoneListener {
         val inv = event.inventory
         val upper: ItemStack? = inv.upperItem
         val lower: ItemStack? = inv.lowerItem
+
 //        if (!ItemUtils.grindstoneable(upper) || !ItemUtils.grindstoneable(lower)) {
 //            grindstone.setItem(2, ItemStack(Material.AIR))
 //            event.setCancelled(true)

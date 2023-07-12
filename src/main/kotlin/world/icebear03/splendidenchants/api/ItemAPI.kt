@@ -74,7 +74,7 @@ object ItemAPI {
     //注意原meta会更改
     fun addEnchant(meta: ItemMeta, enchant: SplendidEnchant, level: Int): ItemMeta {
         if (meta is EnchantmentStorageMeta) {
-            meta.addEnchant(enchant, level, true)
+            meta.addStoredEnchant(enchant, level, true)
         } else {
             meta.addEnchant(enchant, level, true)
         }

@@ -20,12 +20,7 @@ enchant_cost:
   #浮点数运算，最后一步修约到整数
   per_level: "6.0/{max_level}"
 
-#是否允许不同材质的同种工具之间的拼合
-#比如金镐和钻石镐
-allow_different_material: false
-
 #vip权限的玩家，可以节省经验等级
 privilege:
-  - "default:{cost_level}*1.0"
   - "splendidenchants.privilege.anvil.vip:{cost_level}-1"
   - "splendidenchants.privilege.anvil.svip:{cost_level}-2"

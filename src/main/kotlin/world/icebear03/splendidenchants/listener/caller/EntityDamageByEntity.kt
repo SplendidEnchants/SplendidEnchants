@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.listener.mechanism
+package world.icebear03.splendidenchants.listener.caller
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent
 import org.bukkit.entity.*
