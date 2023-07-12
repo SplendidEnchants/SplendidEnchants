@@ -18,7 +18,11 @@ object CommandRandom : CommandExecutor {
 
     }
 
-    override val name: String = "random"
+    override val name: String
+        get() = "random"
+
+    override val description: String
+        get() = "随机获取一本附魔书"
 
     init {
         CommandHandler.sub[name] = this

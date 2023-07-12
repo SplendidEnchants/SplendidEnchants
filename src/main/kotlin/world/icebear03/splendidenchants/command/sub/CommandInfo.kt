@@ -18,7 +18,11 @@ object CommandInfo : CommandExecutor {
 
     }
 
-    override val name: String = "info"
+    override val name: String
+        get() = "info"
+
+    override val description: String
+        get() = "查询附魔详情信息"
 
     init {
         CommandHandler.sub[name] = this

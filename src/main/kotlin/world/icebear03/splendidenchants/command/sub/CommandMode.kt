@@ -18,7 +18,11 @@ object CommandMode : CommandExecutor {
 
     }
 
-    override val name: String = "mode"
+    override val name: String
+        get() = "mode"
+
+    override val description: String
+        get() = "切换特殊模式"
 
     init {
         CommandHandler.sub[name] = this

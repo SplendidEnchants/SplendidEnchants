@@ -18,7 +18,11 @@ object CommandReload : CommandExecutor {
 
     }
 
-    override val name: String = "reload"
+    override val name: String
+        get() = "reload"
+
+    override val description: String
+        get() = "重新加载插件"
 
     init {
         CommandHandler.sub[name] = this

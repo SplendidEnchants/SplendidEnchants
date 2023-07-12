@@ -18,6 +18,5 @@ interface CommandExecutor {
 
     val name: String
 
-    fun description(sender: ProxyCommandSender): String =
-        sender.asLangText("COMMAND-${name.uppercase()}-DESCRIPTION").colored()
+    val description: String
 }

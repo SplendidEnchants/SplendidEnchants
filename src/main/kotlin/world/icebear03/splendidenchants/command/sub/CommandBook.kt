@@ -18,7 +18,11 @@ object CommandBook : CommandExecutor {
 
     }
 
-    override val name: String = "book"
+    override val name: String
+        get() = "book"
+
+    override val description: String
+        get() = "获取一本附魔书"
 
     init {
         CommandHandler.sub[name] = this

@@ -2,12 +2,13 @@
 package world.icebear03.splendidenchants.command
 
 import taboolib.common.platform.ProxyCommandSender
-import taboolib.common.platform.command.CommandBody
-import taboolib.common.platform.command.CommandHeader
-import taboolib.common.platform.command.mainCommand
+import taboolib.common.platform.command.*
+import taboolib.common.platform.command.component.CommandBase
+import taboolib.common.platform.command.component.CommandComponent
+import taboolib.common.platform.command.component.CommandComponentDynamic
+import taboolib.common.platform.command.component.CommandComponentLiteral
 import taboolib.common.platform.function.pluginVersion
 import taboolib.module.chat.RawMessage
-import taboolib.module.lang.asLangText
 import taboolib.module.nms.MinecraftVersion
 import world.icebear03.splendidenchants.command.sub.*
 import java.util.concurrent.ConcurrentHashMap
@@ -26,17 +27,7 @@ object CommandHandler {
 
     @CommandBody(aliases = ["help", "帮助"])
     val main = mainCommand {
-        execute<ProxyCommandSender> { sender, _, _ ->
-            generateMainHelper(sender)
-        }
-        incorrectCommand { sender, ctx, _, _ ->
-            sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7不存在.")
-            val similar = getMostSimilarCommand(ctx.self())
-            if (similar != null) {
-                sender.sendMessage("§8[§6SplendidEnchants§8] §7你可能想要:")
-                sender.sendMessage("§8[§6SplendidEnchants§8] §7$similar")
-            }
-        }
+        createTabooHelper()
     }
 
     @CommandBody(permission = "splendidenchants.admin", aliases = ["et", "附魔"])
@@ -57,36 +48,63 @@ object CommandHandler {
     @CommandBody(aliases = ["查询附魔"])
     val info = CommandInfo.command
 
-    private fun generateMainHelper(proxySender: ProxyCommandSender) {
-        proxySender.sendMessage("")
-        RawMessage()
-            .append("  ").append("§6SplendidEnchants")
-            .hoverText("§7SplendidEnchants 附魔扩展插件")
-            .append(" ").append("§f${pluginVersion}")
-            .hoverText(
-                """
+    private fun CommandComponent.createTabooHelper() {
+        execute<ProxyCommandSender> { sender, context, _ ->
+            val message = RawMessage()
+                .newLine()
+                .append("  ").append("§6SplendidEnchants")
+                .hoverText("§7SplendidEnchants 附魔扩展插件")
+                .append(" ").append("§f${pluginVersion}")
+                .hoverText(
+                    """
                 §7插件版本: §2${pluginVersion}
                 §7游戏版本: §b${MinecraftVersion.minecraftVersion}
-            """.trimIndent()
-            ).sendTo(proxySender)
-        proxySender.sendMessage("")
-        RawMessage()
-            .append("  §7${proxySender.asLangText("Command-Help-Type")}: ").append("§f/splendidenchants §8[...]")
-            .hoverText("§f/splendidenchants §8[...]")
-            .suggestCommand("/splendidenchants ")
-            .sendTo(proxySender)
-        proxySender.sendMessage("  §7${proxySender.asLangText("Command-Help-Args")}:")
+            """.trimIndent())
+                .newLine()
+                .append("  §7命令: ").append("§f/splendidenchants §8[...]")
+                .hoverText("§f/splendidenchants §8[...]")
+                .suggestCommand("/splendidenchants ")
+                .newLine()
+                .append("  §7参数:")
+                .newLine()
 
-        fun displayArg(name: String, desc: String) {
-            RawMessage()
-                .append("    §8- ").append("§f$name")
-                .hoverText("§f/splendidenchants $name §8- §7$desc")
-                .suggestCommand("/splendidenchants $name ")
-                .sendTo(proxySender)
-            proxySender.sendMessage("      §7$desc")
+            for (command in children.filterIsInstance<CommandComponentLiteral>()) {
+                val name = command.aliases[0]
+                val description = sub[name]?.description ?: "没有描述"
+                val args = StringBuilder()
+                command.children.filterIsInstance<CommandComponentLiteral>().map { it.aliases[0] }.forEach {  }
+
+
+                message.append("    §8- ").append("§f$name")
+                    .hoverText("§f/splendidenchants $name §8- §7$description")
+                    .suggestCommand("/splendidenchants $name ")
+                    .newLine()
+                    .append("      §7")
+                    .newLine()
+            }
+
+            message.sendTo(sender)
         }
-        sub.forEach { (name, executor) -> displayArg(name, executor.description(proxySender)) }
-        proxySender.sendMessage("")
+
+        if (this is CommandBase) {
+            incorrectCommand { sender, ctx, _, state ->
+                when (state) {
+                    1 -> {
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7参数不足.")
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7正确用法:")
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7§f/splendidenchants ${ctx.self()} §8- §7${sub[ctx.self()]?.description ?: "没有描述"}")
+                    }
+                    2 -> {
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7不存在.")
+                        val similar = getMostSimilarCommand(ctx.self())
+                        if (similar != null) {
+                            sender.sendMessage("§8[§6SplendidEnchants§8] §7你可能想要:")
+                            sender.sendMessage("§8[§6SplendidEnchants§8] §7$similar")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun compare(str: String, target: String): Int {
@@ -150,5 +168,4 @@ object CommandHandler {
         }
         return result
     }
-
 }
