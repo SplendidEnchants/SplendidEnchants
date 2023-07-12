@@ -24,6 +24,9 @@ object CommandRandom : CommandExecutor {
     override val description: String
         get() = "随机获取一本附魔书"
 
+    override val usage: String
+        get() = ""
+
     init {
         CommandHandler.sub[name] = this
     }

@@ -5,9 +5,9 @@ import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.*
 import taboolib.common.platform.command.component.CommandBase
 import taboolib.common.platform.command.component.CommandComponent
-import taboolib.common.platform.command.component.CommandComponentDynamic
 import taboolib.common.platform.command.component.CommandComponentLiteral
 import taboolib.common.platform.function.pluginVersion
+import taboolib.common.util.Strings
 import taboolib.module.chat.RawMessage
 import taboolib.module.nms.MinecraftVersion
 import world.icebear03.splendidenchants.command.sub.*
@@ -71,13 +71,16 @@ object CommandHandler {
 
             for (command in children.filterIsInstance<CommandComponentLiteral>()) {
                 val name = command.aliases[0]
+                var usage = sub[name]?.usage ?: ""
+                if (usage.isNotEmpty()) {
+                    usage += " "
+                }
                 val description = sub[name]?.description ?: "没有描述"
-                val args = StringBuilder()
                 command.children.filterIsInstance<CommandComponentLiteral>().map { it.aliases[0] }.forEach {  }
 
                 RawMessage()
                     .append("    §8- ").append("§f$name")
-                    .hoverText("§f/splendidenchants $name §8- §7$description")
+                    .hoverText("§f/splendidenchants $name $usage §8- §7$description")
                     .suggestCommand("/splendidenchants $name ")
                     .sendTo(sender)
                 sender.sendMessage("      §7$description")
@@ -88,84 +91,29 @@ object CommandHandler {
 
         if (this is CommandBase) {
             incorrectCommand { sender, ctx, _, state ->
+                val name = ctx.self()
+                var usage = sub[ctx.self()]?.usage ?: ""
+                if (usage.isNotEmpty()) {
+                    usage += " "
+                }
+                val description = sub[ctx.self()]?.description ?: "没有描述"
                 when (state) {
                     1 -> {
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7参数不足.")
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f$name §7参数不足.")
                         sender.sendMessage("§8[§6SplendidEnchants§8] §7正确用法:")
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7§f/splendidenchants ${ctx.self()} §8- §7${sub[ctx.self()]?.description ?: "没有描述"}")
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7§f/splendidenchants $name $usage§8- §7$description")
                     }
                     2 -> {
-                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.self()} §7不存在.")
-                        val similar = getMostSimilarCommand(ctx.self())
-                        if (similar != null) {
-                            sender.sendMessage("§8[§6SplendidEnchants§8] §7你可能想要:")
-                            sender.sendMessage("§8[§6SplendidEnchants§8] §7$similar")
-                        }
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f$name §7不存在.")
+                        val similar = sub.keys.maxByOrNull { Strings.similarDegree(name, it) }!!
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7你可能想要:")
+                        sender.sendMessage("§8[§6SplendidEnchants§8] §7$similar")
                     }
                 }
             }
-        }
-    }
-
-    private fun compare(str: String, target: String): Int {
-        val d: Array<IntArray>
-        val n = str.length
-        val m = target.length
-        var j: Int
-        var ch1: Char
-        var ch2: Char
-        var temp: Int
-        if (n == 0) {
-            return m
-        }
-        if (m == 0) {
-            return n
-        }
-        d = Array(n + 1) { IntArray(m + 1) }
-        var i = 0
-        while (i <= n) {
-            d[i][0] = i
-            i++
-        }
-        j = 0
-        while (j <= m) {
-            d[0][j] = j
-            j++
-        }
-        i = 1
-        while (i <= n) {
-            ch1 = str[i - 1]
-            j = 1
-            while (j <= m) {
-                ch2 = target[j - 1]
-                temp = if (ch1 == ch2 || ch1.code == ch2.code + 32 || ch1.code + 32 == ch2.code) {
-                    0
-                } else {
-                    1
-                }
-                d[i][j] = (d[i - 1][j] + 1).coerceAtMost(d[i][j - 1] + 1).coerceAtMost(d[i - 1][j - 1] + temp)
-                j++
-            }
-            i++
-        }
-        return d[n][m]
-    }
-
-    private fun getSimilarityRatio(str: String, target: String): Float {
-        val max = Math.max(str.length, target.length)
-        return 1 - compare(str, target).toFloat() / max
-    }
-
-    private fun getMostSimilarCommand(command: String): String? {
-        var result: String? = null
-        var similarity = 0f
-        for (subCommand in sub.keys()) {
-            val t = getSimilarityRatio(command, subCommand)
-            if (t > similarity) {
-                similarity = t
-                result = subCommand
+            incorrectSender { sender, ctx ->
+                sender.sendMessage("§8[§6SplendidEnchants§8] §7指令 §f${ctx.args().first()} §7只能由 §f玩家 §7执行.")
             }
         }
-        return result
     }
 }
