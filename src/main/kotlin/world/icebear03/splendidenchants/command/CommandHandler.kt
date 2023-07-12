@@ -50,8 +50,8 @@ object CommandHandler {
 
     private fun CommandComponent.createTabooHelper() {
         execute<ProxyCommandSender> { sender, context, _ ->
-            val message = RawMessage()
-                .newLine()
+            sender.sendMessage("")
+            RawMessage()
                 .append("  ").append("§6SplendidEnchants")
                 .hoverText("§7SplendidEnchants 附魔扩展插件")
                 .append(" ").append("§f${pluginVersion}")
@@ -59,14 +59,15 @@ object CommandHandler {
                     """
                 §7插件版本: §2${pluginVersion}
                 §7游戏版本: §b${MinecraftVersion.minecraftVersion}
-            """.trimIndent())
-                .newLine()
+            """.trimIndent()).sendTo(sender)
+            sender.sendMessage("")
+            RawMessage()
                 .append("  §7命令: ").append("§f/splendidenchants §8[...]")
                 .hoverText("§f/splendidenchants §8[...]")
                 .suggestCommand("/splendidenchants ")
-                .newLine()
-                .append("  §7参数:")
-                .newLine()
+                .sendTo(sender)
+            sender.sendMessage("  §7参数:")
+
 
             for (command in children.filterIsInstance<CommandComponentLiteral>()) {
                 val name = command.aliases[0]
@@ -74,16 +75,15 @@ object CommandHandler {
                 val args = StringBuilder()
                 command.children.filterIsInstance<CommandComponentLiteral>().map { it.aliases[0] }.forEach {  }
 
-
-                message.append("    §8- ").append("§f$name")
+                RawMessage()
+                    .append("    §8- ").append("§f$name")
                     .hoverText("§f/splendidenchants $name §8- §7$description")
                     .suggestCommand("/splendidenchants $name ")
-                    .newLine()
-                    .append("      §7")
-                    .newLine()
+                    .sendTo(sender)
+                sender.sendMessage("      §7$description")
             }
 
-            message.sendTo(sender)
+            sender.sendMessage("")
         }
 
         if (this is CommandBase) {
