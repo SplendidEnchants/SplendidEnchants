@@ -10,6 +10,7 @@ import taboolib.expansion.createHelper
 import taboolib.module.kether.isInt
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.ui.MainMenuUI
 
 // @CommandHeader("splendidenchants", aliases = ["se", "spe", "nereusopus", "no"])
 object Commands {
@@ -60,6 +61,13 @@ object Commands {
     val book = subCommand {
         execute<Player> { sender, _, _ ->
 
+        }
+    }
+
+    @CommandBody(permission = "splendidenchants.admin", aliases = ["mn", "菜单"])
+    val menu = subCommand {
+        execute<Player> { sender, _, _ ->
+            MainMenuUI.open(sender)
         }
     }
 

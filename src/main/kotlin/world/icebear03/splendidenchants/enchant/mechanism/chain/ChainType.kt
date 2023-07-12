@@ -1,6 +1,7 @@
 package world.icebear03.splendidenchants.enchant.mechanism.chain
 
 enum class ChainType {
+    COOLDOWN,
     CONDITION,
     ASSIGNMENT,
     EVENT,
@@ -10,6 +11,7 @@ enum class ChainType {
         fun fromString(string: String): ChainType {
             //TODO I18n
             return when (string) {
+                "冷却" -> COOLDOWN
                 "条件" -> CONDITION
                 "赋值" -> ASSIGNMENT
                 "事件" -> EVENT

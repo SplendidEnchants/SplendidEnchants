@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack
 import taboolib.library.configuration.ConfigurationSection
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.mechanism.chain.Chain
 import java.util.concurrent.ConcurrentHashMap
 
@@ -46,6 +47,9 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSect
         player: Player,
         item: ItemStack,
     ) {
+        if (!belonging.limitations.checkAvailable(CheckType.USE, player, item).first)
+            return
+
         listenersByType[eventType]?.forEach {
             if (listenersById[it]!!.first == eventPriority) {
                 listenersById[it]!!.second.forEach { chain ->

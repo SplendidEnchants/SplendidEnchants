@@ -30,6 +30,8 @@ variables:
 
 mechanisms:
   listeners:
-    RIGHT_CLICK_BLOCK:
-      - "[条件]冷却:{冷却}"
-      - "[操作]plant: {range={范围},seeds=all}"
+    right_click:
+      type: RIGHT_CLICK
+      chains:
+        - "冷却::{冷却}:true"
+        - "操作::plant:{范围}:ALL"
