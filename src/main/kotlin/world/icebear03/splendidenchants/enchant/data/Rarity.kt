@@ -1,16 +1,16 @@
 package world.icebear03.splendidenchants.enchant.data
 
-import world.icebear03.splendidenchants.Config
-import world.icebear03.splendidenchants.util.loadAndUpdate
 import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
+import world.icebear03.splendidenchants.Config
+import world.icebear03.splendidenchants.util.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
 
 data class Rarity(
     val id: String,
     val name: String,
     val color: String,
-    val weight: Double
+    val weight: Int
 ) {
     companion object {
 
@@ -25,7 +25,7 @@ data class Rarity(
                     it,
                     rarityConfig.getString("$it.name")!!,
                     rarityConfig.getString("$it.color")!!,
-                    rarityConfig.getDouble("$it.weight")
+                    rarityConfig.getInt("$it.weight")
                 )
             }
             info("调试信息：加载品质成功，共${rarities.size}个品质！")

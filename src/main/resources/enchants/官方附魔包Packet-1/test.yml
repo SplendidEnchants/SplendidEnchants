@@ -1,5 +1,11 @@
 #以下是每个附魔都应有的配置
 basic:
+  #可选，默认true
+  enable: true
+  #可选，默认空
+  disable_worlds:
+    - "world_nether"
+
   id: test
   name: "测试附魔"
   max_level: 2
@@ -30,8 +36,8 @@ display:
 alternative:
   #默认为true
   grindstoneable: false
-  #默认为1
-  weight: 0.85
+  #默认为100
+  weight: 85
   #默认为false
   is_treasure: true
   #默认为false

@@ -227,7 +227,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
     inner class AlternativeData(config: ConfigurationSection?) {
 
         var grindstoneable: Boolean = true
-        var weight: Double = 1.0
+        var weight: Int = 100
         var isTreasure: Boolean = false
         var isCursed: Boolean = false
         var isTradeable: Boolean = true
@@ -236,7 +236,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         init {
             config?.run {
                 grindstoneable = getBoolean("grindstoneable", true)
-                weight = getDouble("weight", 1.0)
+                weight = getInt("weight", 100)
                 isTreasure = getBoolean("is_treasure", false)
                 isCursed = getBoolean("is_cursed", false)
                 isTradeable = getBoolean("is_tradeable", true)
@@ -247,12 +247,16 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     inner class BasicData(config: ConfigurationSection) {
 
+        var enable: Boolean
+        var disableWorlds: List<String>
         var id: String
         var name: String
         var maxLevel: Int
         private val key: NamespacedKey
 
         init {
+            enable = config.getBoolean("enable", true)
+            disableWorlds = config.getStringList("disable_worlds")
             id = config.getString("id")!!
             name = config.getString("name")!!
             maxLevel = config.getInt("max_level")
