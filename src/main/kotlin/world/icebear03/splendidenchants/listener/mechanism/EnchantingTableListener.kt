@@ -5,9 +5,11 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
+import org.serverct.parrot.parrotx.function.round
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
+import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
@@ -79,10 +81,14 @@ object EnchantingTableListener {
                 maxOf(
                     1, minOf(
                         maxLevel,
-                        (levelFormula.replace("{bonus}", bonus.toString())
-                            .replace("{max_level}", maxLevel.toString())
-                            .replace("{cost_level}", costLevel.toString())
-                            .compileToJexl().eval() as Double).roundToInt()
+                        (levelFormula.replaceWithOrder(
+                            bonus.toString() to "bonus",
+                            maxLevel.toString() to "max_level",
+                            costLevel.toString() to "cost_level",
+                            Math.random().round(3).toString() to "random"
+                        )
+                            .compileToJexl().eval() as Double
+                                ).roundToInt()
                     )
                 )
             }
