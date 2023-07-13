@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets
 
 /**
  * SplendidEnchants
- * world.icebear03.splendidenchants.util.YamlUpdater
+ * world.icebear03.splendidenchants.util.internal.YamlUpdater
  *
  * @author mical
  * @since 2023/6/20 9:38 PM

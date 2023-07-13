@@ -2,6 +2,7 @@
 
 package world.icebear03.splendidenchants.api
 
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
@@ -19,6 +20,12 @@ object ItemAPI {
         return if (item?.itemMeta == null) null else item.clone().modifyLore {
             clear()
             addAll(lore)
+        }
+    }
+
+    fun createBook(enchants: Map<Enchantment, Int>): ItemStack {
+        return ItemStack(Material.ENCHANTED_BOOK).modifyMeta<ItemMeta> {
+            setEnchants(this, enchants)
         }
     }
 
