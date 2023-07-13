@@ -89,36 +89,38 @@ class Limitations(enchant: SplendidEnchant, lines: List<String>) {
     fun checkAvailable(item: ItemStack): Pair<Boolean, String> {
         if (!belonging.basicData.enable)
             return false to "附魔未启用"
-        
+
         for (limitation in limitations) {
             val limitType = limitation.first
             val value = limitation.second
-            val enchant = EnchantAPI.getSplendidEnchant(value) ?: continue
             when (limitType) {
                 CONFLICT_ENCHANT -> {
+                    val enchant = EnchantAPI.getSplendidEnchant(value) ?: continue
                     if (ItemAPI.containsEnchant(item, enchant))
                         return false to "{limit.conflict} || enchant=$value"
                 }
 
                 DEPENDENCE_ENCHANT -> {
+                    val enchant = EnchantAPI.getSplendidEnchant(value) ?: continue
                     if (!ItemAPI.containsEnchant(item, enchant))
                         return false to "{limit.conflict} || enchant=$value"
                 }
 
-                CONFLICT_GROUP -> { //特殊规则：多个共存机制 TODO 待完成
-//                    ItemAPI.getEnchants(item).keys.forEach { it ->
-//                        var amount = 0
-//                        if (!EnchantAPI.isSame(it, belonging) && EnchantGroup.isIn(it, value))
-//                            amount++
-//                        if (amount > EnchantGroup.maxCoexist(value))
-//                            return false to "{limit.conflict} || enchant=$value"
-//                    }
+                CONFLICT_GROUP -> {
+                    ItemAPI.getEnchants(item).keys.forEach {
+                        var amount = 0
+                        if (!EnchantAPI.isSame(it, belonging) && EnchantGroup.isIn(it, value)) {
+                            amount++
+                        }
+                        if (amount >= EnchantGroup.maxCoexist(value))
+                            return false to "{limit.conflict} || enchant=$value"
+                    }
                 }
 
                 DEPENDENCE_GROUP -> {
                     var flag = false
-                    ItemAPI.getEnchants(item).keys.forEach { enchant ->
-                        if (!EnchantAPI.isSame(enchant, belonging) && EnchantGroup.isIn(enchant, value))
+                    ItemAPI.getEnchants(item).keys.forEach { it ->
+                        if (!EnchantAPI.isSame(it, belonging) && EnchantGroup.isIn(it, value))
                             flag = true
                     }
                     if (!flag)

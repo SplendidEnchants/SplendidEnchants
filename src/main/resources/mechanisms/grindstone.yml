@@ -27,5 +27,5 @@ blacklist_group: 不可磨砂类附魔
 
 #拥有不同权限可以增加返还的经验
 privilege:
-  - "splendidenchants.privilege.grindstone.vip:{return_exp}*1.25"
-  - "splendidenchants.privilege.grindstone.svip:{return_exp}*1.5"
+  - "splendidenchants.privilege.grindstone.vip:{refund_exp}*1.25"
+  - "splendidenchants.privilege.grindstone.svip:{refund_exp}*1.5"

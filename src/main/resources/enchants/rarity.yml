@@ -1,7 +1,7 @@
 common:
   name: 普通
   color: §7
-  weight: 500
+  weight: 1000
 uncommon:
   name: 稀有
   color: §a

@@ -10,7 +10,6 @@ import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.EnchantGroup
-import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.util.YamlUpdater
 import kotlin.math.roundToInt
 
@@ -22,7 +21,7 @@ object GrindstoneListener {
 
     val expPerEnchant: String
     val accumulation: Boolean
-    val rarityBonus = mutableMapOf<Rarity, Double>()
+    val rarityBonus = mutableMapOf<String, Double>()
     val defaultBonus: Double
     val blacklist: String
 
@@ -37,7 +36,7 @@ object GrindstoneListener {
         accumulation = config.getBoolean("accumulation", true)
         val section = config.getConfigurationSection("rarity_bonus")!!
         section.getKeys(false).forEach {
-            rarityBonus[Rarity.fromIdOrName(it)] = section.getDouble(it)
+            rarityBonus[it] = section.getDouble(it)
         }
         defaultBonus = config.getDouble("default_bonus", 1.0)
         blacklist = config.getString("blacklist_group", "不可磨砂类附魔")!!
@@ -76,7 +75,11 @@ object GrindstoneListener {
             if (EnchantGroup.isIn(enchant, blacklist)) {
                 ItemAPI.addEnchant(grinded, enchant, level)
             } else {
-                val bonus = if (rarityBonus.containsKey(enchant.rarity)) rarityBonus[enchant.rarity] else defaultBonus
+                var bonus = defaultBonus
+                if (rarityBonus.containsKey(enchant.rarity.id))
+                    bonus = rarityBonus[enchant.rarity.id]!!
+                if (rarityBonus.containsKey(enchant.rarity.name))
+                    bonus = rarityBonus[enchant.rarity.name]!!
                 val refund = expPerEnchant.replaceWithOrder(
                     level to "level",
                     maxLevel to "maxLevel",
@@ -97,7 +100,7 @@ object GrindstoneListener {
         var maxRefund = origin
         AnvilListener.privilege.forEach {
             if (player.hasPermission(it.key)) {
-                val newRefund = it.value.replace("{cost_level}", origin.toString()).compileToJexl().eval() as Double
+                val newRefund = it.value.replace("{refund_exp}", origin.toString()).compileToJexl().eval() as Double
                 maxRefund = maxOf(maxRefund, newRefund)
             }
         }

@@ -42,7 +42,7 @@ object AnvilListener {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun event(event: PrepareAnvilEvent) {
         val inv = event.inventory
         val first = inv.firstItem
