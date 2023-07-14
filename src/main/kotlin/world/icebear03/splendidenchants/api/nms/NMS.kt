@@ -17,14 +17,7 @@ import world.icebear03.splendidenchants.`object`.Overlay
  */
 abstract class NMS {
 
-    abstract fun sendBossBar(
-        player: Player,
-        message: String,
-        progress: Float,
-        time: Int,
-        overlay: Overlay,
-        color: BarColor
-    )
+    abstract fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor)
 
     abstract fun toBukkitItemStack(item: Any): ItemStack
 

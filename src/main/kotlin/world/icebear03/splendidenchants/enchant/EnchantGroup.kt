@@ -55,20 +55,17 @@ data class EnchantGroup(
         }
 
         fun isIn(enchant: Enchantment, group: String): Boolean {
-            return if (groups[group] == null) false
-            else groups[group]!!.enchantNames.contains(EnchantAPI.getName(enchant))
-                    || groups[group]!!.enchantNames.contains(EnchantAPI.getId(enchant))
+            return groups[group]?.enchantNames?.contains(EnchantAPI.getName(enchant)) ?: false || groups[group]?.enchantNames?.contains(
+                EnchantAPI.getId(enchant)
+            ) ?: false
         }
 
         fun maxCoexist(group: String): Int {
-            return if (groups[group] == null) 1
-            else groups[group]!!.maxCoexist
+            return groups[group]?.maxCoexist ?: 1
         }
 
         fun getSplendidEnchants(group: String): List<SplendidEnchant> {
-            if (!groups.containsKey(group))
-                return listOf()
-            return groups[group]!!.enchants
+            return groups[group]?.enchants ?: emptyList()
         }
     }
 }

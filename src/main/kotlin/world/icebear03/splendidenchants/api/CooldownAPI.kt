@@ -5,6 +5,7 @@ import taboolib.common5.format
 import java.util.*
 
 object CooldownAPI {
+
     val stamps = mutableMapOf<UUID, MutableMap<String, Long>>()
 
     fun addStamp(player: Player, key: String) {

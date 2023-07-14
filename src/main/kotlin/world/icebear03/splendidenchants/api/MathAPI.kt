@@ -22,9 +22,6 @@ object MathAPI {
                 }
             }
         }
-        return (
-                if (hasPreviousBlank) " $rNumber"
-                else rNumber.toString()
-                )
+        return if (hasPreviousBlank) " $rNumber" else rNumber.toString()
     }
 }

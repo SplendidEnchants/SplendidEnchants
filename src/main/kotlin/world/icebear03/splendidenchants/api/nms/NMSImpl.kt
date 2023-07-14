@@ -24,14 +24,7 @@ import java.util.*
  */
 class NMSImpl : NMS() {
 
-    override fun sendBossBar(
-        player: Player,
-        message: String,
-        progress: Float,
-        time: Int,
-        overlay: Overlay,
-        color: BarColor
-    ) {
+    override fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor) {
         val uuid = UUID.randomUUID()
         when (MinecraftVersion.major) {
             // 1.16
