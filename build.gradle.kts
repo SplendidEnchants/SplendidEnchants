@@ -13,6 +13,7 @@ taboolib {
             name("Mical")
         }
         desc("SplendidEnchants 附魔扩展插件")
+        load("STARTUP")
     }
     install("common")
     install("common-5")
