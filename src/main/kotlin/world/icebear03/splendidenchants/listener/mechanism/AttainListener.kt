@@ -2,9 +2,12 @@ package world.icebear03.splendidenchants.listener.mechanism
 
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
+import org.bukkit.event.world.LootGenerateEvent
+import org.bukkit.inventory.ItemStack
 import org.serverct.parrot.parrotx.function.round
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
@@ -18,7 +21,7 @@ import world.icebear03.splendidenchants.util.YamlUpdater
 import kotlin.math.roundToInt
 
 
-object EnchantingTableListener {
+object AttainListener {
 
     val vanillaTable: Boolean
 
@@ -51,6 +54,28 @@ object EnchantingTableListener {
         fullLevelPrivilege = config.getString("privilege.full_level", "splendidenchants.privilege.table.full")!!
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    fun event(event: LootGenerateEvent) {
+        if (event.entity != null) {
+            val items = mutableListOf<ItemStack>()
+            items.addAll(event.loot)
+            event.loot.clear()
+
+            items.forEach { item ->
+                if (ItemAPI.getEnchants(item).isNotEmpty()) {
+                    val newItem = ItemAPI.clearEnchants(item)
+                    event.loot.add(ItemAPI.setEnchants(newItem, enchantToAdd(event.entity as Player, newItem).first))
+                } else {
+                    event.loot.add(item)
+                }
+            }
+        } else {
+            event.loot.removeIf {
+                ItemAPI.getEnchants(it).isNotEmpty()
+            }
+        }
+    }
+
     //记录附魔台的书架等级
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun event(event: PrepareItemEnchantEvent) {
@@ -67,10 +92,34 @@ object EnchantingTableListener {
         val player = event.enchanter
         val item = event.item.clone()
         val costLevel = event.whichButton() + 1
-        val amount = enchantAmount(player, costLevel)
-        val bonus = shelfAmount[event.enchantBlock.location]
+        val bonus = shelfAmount[event.enchantBlock.location] ?: 16
 
-        val availableEnchants = EnchantAPI.getAvailableEnchants(player, item, CheckType.ATTAIN)
+        val result = enchantToAdd(player, item, costLevel, bonus)
+        event.enchantsToAdd.putAll(result.first)
+
+        //对书的附魔，必须手动进行，因为原版处理会掉特殊附魔
+        if (item.type == Material.BOOK) {
+            event.enchantsToAdd.clear()
+            submit {
+                val book = event.inventory.getItem(0)!!
+                book.type = Material.ENCHANTED_BOOK
+                ItemAPI.setEnchants(book, event.enchantsToAdd)
+            }
+        }
+    }
+
+    fun enchantToAdd(
+        player: Player,
+        item: ItemStack,
+        costLevel: Int = 3,
+        bonus: Int = 16
+    ): Pair<Map<Enchantment, Int>, ItemStack> {
+        val resultMap = mutableMapOf<Enchantment, Int>()
+        val resultItem = item.clone()
+
+        val amount = enchantAmount(player, costLevel)
+        val availableEnchants = EnchantAPI.getAvailableEnchants(player, resultItem, CheckType.ATTAIN)
+
         for (i in 0 until amount) {
             val enchant = EnchantAPI.drawInRandom(availableEnchants) ?: break
             val maxLevel = enchant.maxLevel
@@ -93,20 +142,13 @@ object EnchantingTableListener {
                 )
             }
 
-            if (enchant.limitations.checkAvailable(item).first) {
-                event.enchantsToAdd[enchant] = level
-                ItemAPI.addEnchant(item, enchant, level)
+            if (enchant.limitations.checkAvailable(resultItem).first) {
+                resultMap[enchant] = level
+                ItemAPI.addEnchant(resultItem, enchant, level)
             }
         }
 
-        //对书的附魔，必须手动进行，因为原版处理会掉特殊附魔
-        if (item.type == Material.BOOK) {
-            submit {
-                val book = event.inventory.getItem(0)!!
-                ItemAPI.setEnchants(book, event.enchantsToAdd)
-                event.inventory.setItem(0, item)
-            }
-        }
+        return resultMap to resultItem
     }
 
     fun enchantAmount(player: Player, costLevel: Int): Int {

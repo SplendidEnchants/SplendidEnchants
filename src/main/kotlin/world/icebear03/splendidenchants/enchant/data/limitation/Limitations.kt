@@ -1,5 +1,6 @@
 package world.icebear03.splendidenchants.enchant.data.limitation
 
+import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -10,6 +11,7 @@ import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
 
 class Limitations(enchant: SplendidEnchant, lines: List<String>) {
@@ -73,6 +75,11 @@ class Limitations(enchant: SplendidEnchant, lines: List<String>) {
 
                 TARGET -> {
                     var flag = false
+                    if (item.type == Material.BOOK || item.type == Material.ENCHANTED_BOOK) {
+                        if (checkType != CheckType.USE) {
+                            flag = true
+                        }
+                    }
                     belonging.targets.forEach {
                         if (Target.isIn(it, item.type)) {
                             flag = true

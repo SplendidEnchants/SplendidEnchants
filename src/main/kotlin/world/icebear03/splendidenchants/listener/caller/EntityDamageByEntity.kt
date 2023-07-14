@@ -51,7 +51,11 @@ object EntityDamageByEntity {
                 return
             isProjectile = true
             damageEntity.shooter as Player
-        } else damageEntity as Player
+        } else {
+            if (damageEntity !is Player)
+                return
+            damageEntity
+        }
 
         var weapon = damager.inventory.itemInMainHand
         if (isProjectile) {

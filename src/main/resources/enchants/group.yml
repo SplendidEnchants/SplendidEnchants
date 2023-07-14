@@ -1,11 +1,9 @@
 原版增伤类附魔:
-  max_coexist: 1
   enchants:
     - 锋利
     - 亡灵杀手
     - 节肢杀手
 原版防御类附魔:
-  max_coexist: 1
   enchants:
     - 保护
     - 摔落保护
@@ -13,14 +11,12 @@
     - 爆炸保护
     - 弹射物保护
 原版移动机制类附魔:
-  max_coexist: 1
   enchants:
     - 深海探索者
     - 灵魂疾行
     - 冰霜行者
     - 迅捷潜行
 原版附魔:
-  max_coexist: 1
   enchants:
     - 水下速掘
     - 节肢杀手
@@ -62,7 +58,10 @@
     - 耐久
     - 消失诅咒
 诅咒类附魔:
-  max_coexist: 1
-  enchants:
-    - 绑定诅咒
-    - 消失诅咒
+  rarities:
+    - 诅咒
+可交易附魔:
+  rarities:
+    - 普通
+    - 稀有
+    - 精良

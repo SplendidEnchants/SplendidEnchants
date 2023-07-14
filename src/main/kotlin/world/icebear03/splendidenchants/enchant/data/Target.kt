@@ -1,9 +1,10 @@
-package world.icebear03.splendidenchants.enchant.data.limitation
+package world.icebear03.splendidenchants.enchant.data
 
 import org.bukkit.Material
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
+import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.util.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
 
@@ -16,6 +17,10 @@ data class Target(
 ) {
 
     val types = typeNames.map { Material.valueOf(it) }
+
+    init {
+        EnchantLoader.enchantsByTarget[this] = mutableSetOf()
+    }
 
     companion object {
 

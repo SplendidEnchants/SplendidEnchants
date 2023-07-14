@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.enchant.data
 import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.Config
+import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.util.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
 
@@ -12,6 +13,10 @@ data class Rarity(
     val color: String,
     val weight: Int
 ) {
+    init {
+        EnchantLoader.enchantsByRarity[this] = mutableSetOf()
+    }
+
     companion object {
 
         val rarities = ConcurrentHashMap<String, Rarity>()

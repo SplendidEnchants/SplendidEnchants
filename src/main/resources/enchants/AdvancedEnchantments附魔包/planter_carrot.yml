@@ -1,9 +1,9 @@
 basic:
-  id: planter
-  name: "播种机"
+  id: planter_carrot
+  name: "胡萝卜播种机"
   max_level: 3
 
-rarity: 传奇
+rarity: 精良
 targets:
   - 锄
 
@@ -12,8 +12,8 @@ limitations:
 
 display:
   description:
-    general: "§7右击可范围播种作物(需要种子)"
-    specific: "§7右击可范围播种作物(需要种子) (§a{边长}×§a{边长} §7冷却:§a{冷却}秒§7)"
+    general: "§7右击可范围播种胡萝卜(需要种子)"
+    specific: "§7右击可范围播种胡萝卜(需要种子) (§a{边长}×§a{边长} §7冷却:§a{冷却}秒§7)"
 
 variables:
   leveled:
@@ -26,4 +26,4 @@ mechanisms:
       type: RIGHT_CLICK
       chains:
         - "冷却::{冷却}:true"
-        - "操作::plant:{边长}:ALL"
+        - "操作::plant:{边长}:CARROT"

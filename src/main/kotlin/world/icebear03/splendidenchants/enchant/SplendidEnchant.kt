@@ -21,8 +21,8 @@ import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.api.MathAPI
 import world.icebear03.splendidenchants.api.PlayerAPI
 import world.icebear03.splendidenchants.enchant.data.Rarity
+import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
-import world.icebear03.splendidenchants.enchant.data.limitation.Target
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap

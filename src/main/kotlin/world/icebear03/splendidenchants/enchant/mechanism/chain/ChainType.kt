@@ -9,7 +9,6 @@ enum class ChainType {
 
     companion object {
         fun fromString(string: String): ChainType {
-            //TODO I18n
             return when (string) {
                 "冷却" -> COOLDOWN
                 "条件" -> CONDITION

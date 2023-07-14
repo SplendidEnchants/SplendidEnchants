@@ -11,6 +11,10 @@ import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 
 object EnchantAPI {
 
+    fun getSplendidEnchants(rarity: Rarity): List<SplendidEnchant> {
+        return EnchantLoader.enchantsByRarity[rarity]!!.toList()
+    }
+
     fun getSplendidEnchant(idOrName: String): SplendidEnchant? {
         return EnchantLoader.enchantById[idOrName] ?: EnchantLoader.enchantByName[idOrName]
     }

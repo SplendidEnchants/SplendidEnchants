@@ -52,15 +52,13 @@ data class Chain(val listeners: Listeners, val chainLine: String) {
             }
 
             CONDITION -> {
-                //TODO 应当支持更多东西！
-                //比如字符串相等，contains等
+
                 return line.compileToJexl().eval() as Boolean
             }
 
             ASSIGNMENT -> {
                 val variableName = line.split("=")[0].replace("{", "").replace("}", "")
                 val expression = line.split("=")[1]
-                //TODO 能不能不用try，就判断ta是不是数学表达式
                 val variableValue =
                     try {
                         expression.compileToJexl().eval().toString()

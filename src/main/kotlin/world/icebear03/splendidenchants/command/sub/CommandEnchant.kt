@@ -27,8 +27,8 @@ object CommandEnchant : CommandExecutor {
         dynamic("enchant") {
             suggestionUncheck<Player> { _, _ ->
                 // FIXME
-                EnchantLoader.enchantById.keys().toList().toMutableList().also {
-                    it.addAll(EnchantLoader.enchantByName.keys().toList())
+                EnchantLoader.enchantById.keys.toList().toMutableList().also {
+                    it.addAll(EnchantLoader.enchantByName.keys.toList())
                 }
             }
             execute<Player> { sender, ctx, _ ->

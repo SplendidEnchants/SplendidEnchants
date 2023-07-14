@@ -112,7 +112,7 @@ object ItemAPI {
 
     fun clearEnchants(item: ItemStack): ItemStack {
         return if (item.itemMeta == null) item else item.clone().modifyMeta<ItemMeta> {
-            setEnchants(this, enchants)
+            clearEnchants(this)
         }
     }
 

@@ -5,7 +5,7 @@ import taboolib.common.platform.function.info
 import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.data.Rarity
-import world.icebear03.splendidenchants.enchant.data.limitation.Target
+import world.icebear03.splendidenchants.enchant.data.Target
 
 object SplendidEnchants : Plugin() {
 
