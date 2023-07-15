@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.api
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.common.util.random
 import taboolib.common5.RandomList
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
@@ -68,5 +69,10 @@ object EnchantAPI {
         }
 
         return randomEnchantList.random()
+    }
+
+    fun randomEnchant(): Pair<SplendidEnchant, Int> {
+        val enchant = EnchantLoader.enchantById.values.random()
+        return enchant to random(enchant.startLevel, enchant.maxLevel)
     }
 }
