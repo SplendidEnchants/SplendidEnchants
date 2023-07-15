@@ -2,8 +2,8 @@ package world.icebear03.splendidenchants.enchant.mechanism
 
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
-import org.bukkit.event.EventPriority
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.event.EventPriority
 import taboolib.library.configuration.ConfigurationSection
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.SplendidEnchant

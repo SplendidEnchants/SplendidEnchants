@@ -70,18 +70,16 @@ object EntityDamageByEntity {
         //以下是测试代码
 
         ItemAPI.getEnchants(weapon).forEach {
-            it.key.listeners.trigger(event, EventType.ATTACK, org.bukkit.event.EventPriority.HIGHEST, damager, weapon)
+            it.key.listeners.trigger(event, EventType.ATTACK, EventPriority.HIGHEST, damager, weapon)
         }
 
         submit {
             if (damagee.isDead) {
-                println("dead")
-
                 ItemAPI.getEnchants(weapon).forEach {
                     it.key.listeners.trigger(
                         event,
                         EventType.KILL,
-                        org.bukkit.event.EventPriority.HIGHEST,
+                        EventPriority.HIGHEST,
                         damager,
                         weapon
                     )
