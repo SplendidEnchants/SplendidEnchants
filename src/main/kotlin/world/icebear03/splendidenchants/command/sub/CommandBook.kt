@@ -8,9 +8,9 @@ import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 
 val commandBook = subCommand {
+    // 应加上新的可变参数-给予的玩家
     dynamic("enchant") {
         suggestionUncheck<Player> { _, _ ->
-            // FIXME
             EnchantLoader.enchantById.keys.toList().toMutableList().also {
                 it.addAll(EnchantLoader.enchantByName.keys.toList())
             }

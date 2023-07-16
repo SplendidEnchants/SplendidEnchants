@@ -6,6 +6,7 @@ import taboolib.common.platform.command.mainCommand
 import taboolib.expansion.createHelper
 import world.icebear03.splendidenchants.command.sub.commandBook
 import world.icebear03.splendidenchants.command.sub.commandEnchant
+import world.icebear03.splendidenchants.command.sub.commandMenu
 import world.icebear03.splendidenchants.command.sub.commandRandom
 
 @CommandHeader(name = "splendidenchants", aliases = ["se", "spe", "nereusopus", "no", "nerous"])
@@ -24,4 +25,7 @@ object Commands {
 
     @CommandBody(permission = "splendidenchants.random")
     val random = commandRandom
+
+    @CommandBody(permission = "splendidenchants.menu")
+    val menu = commandMenu
 }

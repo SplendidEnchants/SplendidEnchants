@@ -71,8 +71,14 @@ object EnchantAPI {
         return randomEnchantList.random()
     }
 
-    fun randomEnchant(): Pair<SplendidEnchant, Int> {
-        val enchant = EnchantLoader.enchantById.values.random()
-        return enchant to random(enchant.startLevel, enchant.maxLevel)
+    fun randomEnchant(rarity: Rarity?, lv: Int?): Pair<SplendidEnchant, Int> {
+        val enchant = if (rarity == null) {
+            EnchantLoader.enchantById.values.random()
+        } else {
+            EnchantLoader.enchantsByRarity[rarity]!!.random()
+        }
+        val level = lv ?: random(enchant.startLevel, enchant.maxLevel)
+        return enchant to level
+
     }
 }

@@ -17,6 +17,10 @@ data class Rarity(
         EnchantLoader.enchantsByRarity[this] = mutableSetOf()
     }
 
+    override fun toString(): String {
+        return name
+    }
+
     companion object {
 
         val rarities = ConcurrentHashMap<String, Rarity>()

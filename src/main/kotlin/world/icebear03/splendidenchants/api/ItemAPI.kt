@@ -11,11 +11,9 @@ import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
-import taboolib.common.util.random
 import taboolib.platform.util.giveItem
 import taboolib.platform.util.modifyLore
 import taboolib.platform.util.modifyMeta
-import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
 object ItemAPI {
@@ -35,10 +33,6 @@ object ItemAPI {
 
     fun giveBook(player: Player, enchant: SplendidEnchant, level: Int = enchant.maxLevel) {
         player.giveItem(createBook(mapOf(enchant to level)))
-    }
-
-    fun randomBook(): ItemStack {
-        return createBook(mapOf(EnchantAPI.randomEnchant()))
     }
 
     fun getEnchants(item: ItemStack?): Map<SplendidEnchant, Int> {

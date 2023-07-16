@@ -1,4 +1,5 @@
 @file:Suppress("UNCHECKED_CAST")
+
 package world.icebear03.splendidenchants.ui
 
 import org.bukkit.entity.Player
@@ -14,6 +15,7 @@ import taboolib.module.ui.type.Linked
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.ui.util.applyReplaceMap
+import world.icebear03.splendidenchants.util.YamlUpdater
 
 /**
  * SplendidEnchants
@@ -24,6 +26,10 @@ import world.icebear03.splendidenchants.ui.util.applyReplaceMap
  */
 @MenuComponent("ItemCheck")
 object ItemCheckUI {
+
+    init {
+        YamlUpdater.loadAndUpdate("gui/item_check.yml", listOf())
+    }
 
     @Config("gui/item_check.yml")
     private lateinit var source: Configuration

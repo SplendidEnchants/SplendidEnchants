@@ -10,6 +10,7 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
+import world.icebear03.splendidenchants.util.YamlUpdater
 
 /**
  * SplendidEnchants
@@ -20,6 +21,10 @@ import taboolib.module.ui.type.Basic
  */
 @MenuComponent("Menu")
 object MainMenuUI {
+
+    init {
+        YamlUpdater.loadAndUpdate("gui/menu.yml", listOf())
+    }
 
     @Config("gui/menu.yml")
     private lateinit var source: Configuration
@@ -58,8 +63,8 @@ object MainMenuUI {
 
     @MenuComponent
     private val enchant_search = MenuFunctionBuilder {
-        onClick { (_, _, _, _) ->
-            TODO("search")
+        onClick { (_, _, event, _) ->
+            EnchantSearchUI.open(event.clicker)
         }
     }
 
