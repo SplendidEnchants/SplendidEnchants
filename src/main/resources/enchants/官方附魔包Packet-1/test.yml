@@ -7,7 +7,7 @@ basic:
     - "world_nether"
 
   id: test
-  name: "测试附魔"
+  name: "蓄能"
   max_level: 2
 
 #若无此项，则自动匹配到default rarity
@@ -15,6 +15,7 @@ rarity: 史诗
 #若无此项，则自动匹配到“未定义”
 targets:
   - 剑
+  - 斧
 
 #可无此项
 limitations:

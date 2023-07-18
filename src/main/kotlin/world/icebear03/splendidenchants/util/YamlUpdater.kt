@@ -1,76 +1,56 @@
 package world.icebear03.splendidenchants.util
 
+import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.releaseResourceFile
-import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
-import taboolib.module.configuration.Type
-import java.nio.charset.StandardCharsets
+import taboolib.module.kether.inferType
+import taboolib.module.kether.isInt
+import java.io.File
 
-/**
- * SplendidEnchants
- * world.icebear03.splendidenchants.util.internal.YamlUpdater
- *
- * @author mical
- * @since 2023/6/20 9:38 PM
- */
+
 object YamlUpdater {
 
-    fun loadAndUpdate(path: String, whitelist: List<String> = emptyList()): Configuration {
-        val resource = YamlUpdater::class.java.classLoader.getResourceAsStream(path) ?: return Configuration.empty()
-        val source = resource.readBytes().toString(StandardCharsets.UTF_8)
-        val sourceConfig = Configuration.loadFromString(source, Type.YAML)
-        val file = releaseResourceFile(path)
-        val config = Configuration.loadFromFile(file)
-        if (whitelist.isEmpty() && config.saveToString() != sourceConfig.saveToString()) {
-            sourceConfig.saveToFile(file)
-            return Configuration.loadFromFile(file)
+    fun isTypeConsistent(a: Any?, b: Any?): Boolean {
+        if (a == null || b == null) {
+            return false
         }
-        var pass = true
-        for (key in whitelist) {
-            if (!config.contains(key) && sourceConfig.contains(key)) {
-                config[key] = sourceConfig[key]
-                pass = false
-            } else {
-                val obj = sourceConfig[key]
-                if (obj is ConfigurationSection) {
-                    if (config[key] !is ConfigurationSection) {
-                        config[key] = obj
-                        pass = false
-                    } else {
-                        val mapOld = getValues(config[key] as ConfigurationSection)
-                        if (mapOld != getValues(obj)) {
-                            config[key] = obj
-                            pass = false
-                        }
-                    }
-                } else {
-                    if (config[key] != obj) {
-                        config[key] = obj
-                        pass = false
-                    }
-                }
-            }
+        if (a.inferType() is String && b.inferType() is String) {
+            return true
         }
-        if (!pass) {
-            config.saveToFile(file)
-        }
-        return config
+        return false
     }
 
-    private fun getValues(section: ConfigurationSection): Map<String, Any?> {
-        val result = hashMapOf<String, Any?>()
-        section.getKeys(false).forEach { key ->
-            val obj = section[key]
-            if (obj is ConfigurationSection) {
-                result += getValues(obj)
-            } else {
-                result += key to obj
+    fun isNumber(a: Any?): Boolean {
+        if (a == null)
+            return false
+        return a.inferType()!!.isInt() || a.inferType()!! is Double
+    }
+
+    //最前面无需带/或\
+    fun loadAndUpdate(path: String, forceUpdate: List<String>): Configuration {
+        //希望不要锁定的是一个同名文件夹
+        val file = File(getDataFolder(), path)
+        val old = Configuration.loadFromFile(file)
+        releaseResourceFile(path, true)
+        val new = Configuration.loadFromFile(file)
+
+        old.getKeys(true).forEach {
+            if (!old.isConfigurationSection(it) && new.contains(it)) {
+                var flag = true
+                forceUpdate.forEach { forced ->
+                    if (it.startsWith(forced))
+                        flag = false
+                }
+                if (flag && isTypeConsistent(new[it], old[it])) //FIXME 如何检查新旧配置同路径对应的value同类型，比如 String对String， 数字对数字
+                    new[it] = old[it]
             }
         }
-        return result
+        new.saveToFile(file)
+
+        return Configuration.loadFromFile(file)
     }
 }
 
-fun Configuration.Companion.loadAndUpdate(path: String, whitelist: List<String> = emptyList()): Configuration {
-    return YamlUpdater.loadAndUpdate(path, whitelist)
+fun Configuration.Companion.loadAndUpdate(path: String, forceUpdate: List<String> = emptyList()): Configuration {
+    return YamlUpdater.loadAndUpdate(path, forceUpdate)
 }
