@@ -17,7 +17,7 @@ object EntityDamageByEntity {
 
     val projectileSourceItems = ConcurrentHashMap<UUID, ItemStack>()
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     fun event(event: EntityShootBowEvent) {
         if (event.isCancelled)
             return
@@ -28,16 +28,27 @@ object EntityDamageByEntity {
         projectileSourceItems[event.projectile.uniqueId] = event.bow!!
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.MONITOR)
     fun event(event: EntityRemoveFromWorldEvent) {
         projectileSourceItems.remove(event.entity.uniqueId)
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    fun event(event: EntityDamageByEntityEvent) {
-        if (event.isCancelled)
-            return
+    @SubscribeEvent(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    fun eventLowest(event: EntityDamageByEntityEvent) {
+        settle(event, EventPriority.LOWEST)
+    }
 
+    @SubscribeEvent(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun eventHigh(event: EntityDamageByEntityEvent) {
+        settle(event, EventPriority.HIGH)
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun eventHighest(event: EntityDamageByEntityEvent) {
+        settle(event, EventPriority.HIGHEST)
+    }
+
+    private fun settle(event: EntityDamageByEntityEvent, priority: EventPriority) {
         val damageEntity = event.damager
         val damagedEntity = event.entity
         var isProjectile = false
@@ -45,7 +56,7 @@ object EntityDamageByEntity {
         if (damagedEntity is ArmorStand || damagedEntity !is LivingEntity)
             return
 
-        val damagee = damagedEntity
+        val damaged = damagedEntity
         val damager: Player = if (damageEntity is Projectile) {
             if (damageEntity.shooter !is Player)
                 return
@@ -67,19 +78,17 @@ object EntityDamageByEntity {
             }
         }
 
-        //以下是测试代码
-
         ItemAPI.getEnchants(weapon).forEach {
-            it.key.listeners.trigger(event, EventType.ATTACK, EventPriority.HIGHEST, damager, weapon)
+            it.key.listeners.trigger(event, EventType.ATTACK, priority, damager, weapon)
         }
 
         submit {
-            if (damagee.isDead) {
+            if (damaged.isDead) {
                 ItemAPI.getEnchants(weapon).forEach {
                     it.key.listeners.trigger(
                         event,
                         EventType.KILL,
-                        EventPriority.HIGHEST,
+                        priority,
                         damager,
                         weapon
                     )

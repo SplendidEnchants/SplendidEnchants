@@ -13,32 +13,32 @@ import world.icebear03.splendidenchants.util.TriggerSlots
 
 object PlayerInteract {
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun eventLowest(event: PlayerInteractEvent) {
         settle(event, EventPriority.LOWEST)
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun eventHigh(event: PlayerInteractEvent) {
         settle(event, EventPriority.HIGH)
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun eventHighest(event: PlayerInteractEvent) {
         settle(event, EventPriority.HIGHEST)
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun eventLowest(event: PlayerInteractEntityEvent) {
         settle(event, EventPriority.LOWEST)
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun eventHigh(event: PlayerInteractEntityEvent) {
         settle(event, EventPriority.HIGH)
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun eventHighest(event: PlayerInteractEntityEvent) {
         settle(event, EventPriority.HIGHEST)
     }
