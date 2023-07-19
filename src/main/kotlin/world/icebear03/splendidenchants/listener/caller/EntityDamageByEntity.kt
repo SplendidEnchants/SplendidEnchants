@@ -10,6 +10,8 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
+import world.icebear03.splendidenchants.util.FurtherOperation
+import world.icebear03.splendidenchants.util.PermissionChecker
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -46,9 +48,26 @@ object EntityDamageByEntity {
     @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun eventHighest(event: EntityDamageByEntityEvent) {
         settle(event, EventPriority.HIGHEST)
+        //HIGHEST处必带
     }
 
     private fun settle(event: EntityDamageByEntityEvent, priority: EventPriority) {
+        println("${System.currentTimeMillis()}正在处理攻击 $priority")
+
+        //伤害生物、破坏方块的settle必带
+        if (PermissionChecker.isChecking(event)) {
+            println("${System.currentTimeMillis()}权限检查攻击，取消 $priority")
+            return
+        }
+        if (FurtherOperation.hadRun(event)) {
+            println("${System.currentTimeMillis()}已经处理的攻击，取消 $priority")
+            return
+        }
+
+        println("${System.currentTimeMillis()}这是未处理的攻击，添加时间戳 $priority")
+        FurtherOperation.addStamp(event)
+        //-------------------------
+
         val damageEntity = event.damager
         val damagedEntity = event.entity
         var isProjectile = false
@@ -81,6 +100,10 @@ object EntityDamageByEntity {
         ItemAPI.getEnchants(weapon).forEach {
             it.key.listeners.trigger(event, EventType.ATTACK, priority, damager, weapon)
         }
+
+        //必带
+        FurtherOperation.delStamp(event)
+        println("${System.currentTimeMillis()}攻击已经处理，去除时间戳 $priority")
 
         submit {
             if (damaged.isDead) {

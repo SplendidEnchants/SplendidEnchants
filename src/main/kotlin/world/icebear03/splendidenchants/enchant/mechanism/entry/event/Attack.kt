@@ -22,7 +22,7 @@ object Attack {
                 event.damage = params[1].compileToJexl().eval() as Double
             }
 
-            "玩家", "攻击者" -> {
+            "攻击者", "伤害者" -> {
                 ObjectPlayer.modifyPlayer(player, params.subList(1, params.size), replacerMap)
             }
 

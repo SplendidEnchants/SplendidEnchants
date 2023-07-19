@@ -10,8 +10,11 @@ object YamlUpdater {
 
     //最前面无需带/或\
     fun loadAndUpdate(path: String, forceUpdate: List<String> = emptyList()): Configuration {
+        val fileName = path.split("/").last()
+        val directoryName = getDataFolder().absolutePath + "/" + path.replace(fileName, "")
         //希望不要锁定的是一个同名文件夹
-        val file = File(getDataFolder(), path)
+        val file = File(directoryName, fileName)
+//        println(file)
         if (!file.exists()) {
             releaseResourceFile(path, true)
             return Configuration.loadFromFile(file)
