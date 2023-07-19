@@ -52,19 +52,19 @@ object EntityDamageByEntity {
     }
 
     private fun settle(event: EntityDamageByEntityEvent, priority: EventPriority) {
-        println("${System.currentTimeMillis()}正在处理攻击 $priority")
+//        println("${System.currentTimeMillis()}正在处理攻击 $priority")
 
         //伤害生物、破坏方块的settle必带
         if (PermissionChecker.isChecking(event)) {
-            println("${System.currentTimeMillis()}权限检查攻击，取消 $priority")
+//            println("${System.currentTimeMillis()}权限检查攻击，取消 $priority")
             return
         }
         if (FurtherOperation.hadRun(event)) {
-            println("${System.currentTimeMillis()}已经处理的攻击，取消 $priority")
+//            println("${System.currentTimeMillis()}已经处理的攻击，取消 $priority")
             return
         }
 
-        println("${System.currentTimeMillis()}这是未处理的攻击，添加时间戳 $priority")
+//        println("${System.currentTimeMillis()}这是未处理的攻击，添加时间戳 $priority")
         FurtherOperation.addStamp(event)
         //-------------------------
 
@@ -97,13 +97,14 @@ object EntityDamageByEntity {
             }
         }
 
+//        println("攻击，-----------------------------------------伤害")
         ItemAPI.getEnchants(weapon).forEach {
             it.key.listeners.trigger(event, EventType.ATTACK, priority, damager, weapon)
         }
 
         //必带
         FurtherOperation.delStamp(event)
-        println("${System.currentTimeMillis()}攻击已经处理，去除时间戳 $priority")
+//        println("${System.currentTimeMillis()}攻击已经处理，去除时间戳 $priority")
 
         submit {
             if (damaged.isDead) {

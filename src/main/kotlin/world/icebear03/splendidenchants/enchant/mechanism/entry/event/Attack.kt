@@ -1,10 +1,12 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.event
 
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.enchant.mechanism.entry.`object`.ObjectPlayer
+import world.icebear03.splendidenchants.util.FurtherOperation
 
 object Attack {
 
@@ -24,6 +26,15 @@ object Attack {
 
             "攻击者", "伤害者" -> {
                 ObjectPlayer.modifyPlayer(player, params.subList(1, params.size), replacerMap)
+            }
+
+            "攻击周围" -> {
+                val range = params[1].toDouble()
+                val damage = params[2].toDouble()
+                event.entity.getNearbyEntities(range, range, range).filterIsInstance<LivingEntity>().forEach {
+                    FurtherOperation.furtherDamage(player, it, damage)
+                    player.sendMessage("${System.currentTimeMillis()}攻击生物造成伤害: $damage")
+                }
             }
 
             else -> {}

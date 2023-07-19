@@ -1,7 +1,6 @@
 package world.icebear03.splendidenchants.util
 
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
@@ -16,8 +15,8 @@ object FurtherOperation {
 
     // 游戏刻时间戳 to 是否已经处理过了
     //伤害者
-    val lastDamageTracker = mutableMapOf<Pair<UUID, UUID>, Int>()
-    val lastBreakTracker = mutableMapOf<Pair<Location, UUID>, Int>()
+    val lastDamageTracker = mutableMapOf<UUID, Int>()
+    val lastBreakTracker = mutableMapOf<UUID, Int>()
 
     init {
         submit(delay = 0L, period = 20L) {
@@ -37,29 +36,29 @@ object FurtherOperation {
 
     fun addStamp(event: Event) {
         if (event is EntityDamageByEntityEvent) {
-            val key = event.damager.uniqueId to event.entity.uniqueId
+            val key = event.damager.uniqueId
             lastDamageTracker[key] = Bukkit.getCurrentTick()
         }
         if (event is BlockBreakEvent) {
-            val key = event.block.location to event.player.uniqueId
+            val key = event.player.uniqueId
             lastBreakTracker[key] = Bukkit.getCurrentTick()
         }
     }
 
     fun delStamp(event: Event) {
         if (event is EntityDamageByEntityEvent) {
-            val key = event.damager.uniqueId to event.entity.uniqueId
+            val key = event.damager.uniqueId
             lastDamageTracker.remove(key)
         }
         if (event is BlockBreakEvent) {
-            val key = event.block.location to event.player.uniqueId
+            val key = event.player.uniqueId
             lastBreakTracker.remove(key)
         }
     }
 
     fun hadRun(event: Event): Boolean {
         if (event is EntityDamageByEntityEvent) {
-            val key = event.damager.uniqueId to event.entity.uniqueId
+            val key = event.damager.uniqueId
             if (lastDamageTracker.containsKey(key)) {
                 val tick = lastDamageTracker[key]!!
                 if (tick >= Bukkit.getCurrentTick() - 1) {
@@ -68,7 +67,7 @@ object FurtherOperation {
             }
         }
         if (event is BlockBreakEvent) {
-            val key = event.block.location to event.player.uniqueId
+            val key = event.player.uniqueId
             if (lastBreakTracker.containsKey(key)) {
                 val tick = lastBreakTracker[key]!!
                 if (tick >= Bukkit.getCurrentTick() - 1) {

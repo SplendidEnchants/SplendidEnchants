@@ -35,6 +35,7 @@ object PermissionChecker {
         val uuid = event.player.uniqueId
         if (checkingBlocks[loc to uuid] != null) {
             checkingBlocks[loc to uuid] = !event.isCancelled
+            event.isCancelled = true
         }
     }
 
@@ -64,6 +65,7 @@ object PermissionChecker {
         val damagedUUID = event.entity.uniqueId
         if (checkingDamages[damagerUUID to damagedUUID] != null) {
             checkingDamages[damagerUUID to damagedUUID] = !event.isCancelled
+            event.isCancelled = true
         }
     }
 }
