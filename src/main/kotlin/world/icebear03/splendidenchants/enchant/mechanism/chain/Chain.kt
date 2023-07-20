@@ -13,6 +13,7 @@ import world.icebear03.splendidenchants.enchant.mechanism.chain.ChainType.*
 import world.icebear03.splendidenchants.enchant.mechanism.entry.event.Attack
 import world.icebear03.splendidenchants.enchant.mechanism.entry.event.Kill
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Plant
+import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Println
 
 data class Chain(val listeners: Listeners, val chainLine: String) {
 
@@ -77,10 +78,8 @@ data class Chain(val listeners: Listeners, val chainLine: String) {
 
             OPERATION -> {
                 when (params[0]) {
-                    "plant" -> {
-                        Plant.plant(player, params[1].toInt(), params[2])
-                    }
-
+                    "plant" -> Plant.plant(player, params[1].toInt(), params[2])
+                    "println" -> Println.println(player, params.joinToString(":"))
                     else -> {}
                 }
             }

@@ -5,8 +5,9 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import taboolib.module.kether.compileToJexl
+import world.icebear03.splendidenchants.enchant.mechanism.entry.`object`.ObjectLivingEntity
 import world.icebear03.splendidenchants.enchant.mechanism.entry.`object`.ObjectPlayer
-import world.icebear03.splendidenchants.util.FurtherOperation
+import world.icebear03.splendidenchants.util.StringUtils
 
 object Attack {
 
@@ -14,26 +15,32 @@ object Attack {
         val event = e as EntityDamageByEntityEvent
 
         replacerMap.add(event.damage.toString() to "原伤害")
+        replacerMap.add(ObjectPlayer.toString(player) to "攻击者")
+        replacerMap.add(ObjectPlayer.toString(player) to "伤害者")
+        replacerMap.add(ObjectLivingEntity.toString(event.entity as LivingEntity) to "被攻击者")
+        replacerMap.add(ObjectLivingEntity.toString(event.entity as LivingEntity) to "被伤害者")
+        replacerMap.add(event.cause.toString() to "伤害类型")
 
-        //param = param.replaceWithOrder(*replacerMap.toArray())
+        val replaced = StringUtils.replaceParams(params, replacerMap)
 
-        when (params[0]) {
+        when (replaced.first) {
             "设置伤害" -> {
-                event.damage = params[1].compileToJexl().eval() as Double
+                event.damage = replaced.second[1].compileToJexl().eval() as Double
+            }
+
+            "取消伤害", "取消" -> {
+                event.isCancelled = true
             }
 
             "攻击者", "伤害者" -> {
-                ObjectPlayer.modifyPlayer(player, params.subList(1, params.size), replacerMap)
+                ObjectPlayer.modifyPlayer(player, replaced.second, replacerMap)
             }
 
-            "攻击周围" -> {
-                val range = params[1].toDouble()
-                val damage = params[2].toDouble()
-                player.getNearbyEntities(range, range, range).filterIsInstance<LivingEntity>().forEach {
-                    if (it.uniqueId != player.uniqueId) {
-                        FurtherOperation.furtherDamage(player, it, damage)
-//                        player.sendMessage("${System.currentTimeMillis()}攻击生物造成伤害: $damage")
-                    }
+            "被攻击者", "被伤害者" -> {
+                if (event.entity is Player)
+                    ObjectPlayer.modifyPlayer(event.entity as Player, replaced.second, replacerMap)
+                else {
+                    ObjectLivingEntity.modifyLivingEntity(event.entity as LivingEntity, replaced.second, replacerMap)
                 }
             }
 
