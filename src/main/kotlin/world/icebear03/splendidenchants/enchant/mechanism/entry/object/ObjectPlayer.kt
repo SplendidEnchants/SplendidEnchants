@@ -6,7 +6,7 @@ import world.icebear03.splendidenchants.util.FurtherOperation
 
 object ObjectPlayer {
 
-    fun modifyPlayer(player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, String>>) {
+    fun modifyPlayer(player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, Any>>) {
 //        player.sendMessage(params.toString())
         when (params[0]) {
             //测试方法，正规不会有

@@ -52,14 +52,29 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSect
 
         listenersByType[eventType]?.forEach {
             if (listenersById[it]!!.first == eventPriority) {
-                listenersById[it]!!.second.forEach { chain ->
-                    player.sendMessage(chain.chainLine)
-                    val canContinue = chain.trigger(
-                        event, eventType, player, item,
-                        belonging.variable.generateReplaceMap(ItemAPI.getLevel(item, belonging), player, item)
+                val replacerMap = arrayListOf<Pair<String, Any>>()
+                replacerMap.addAll(
+                    belonging.variable.generateReplaceMap(
+                        ItemAPI.getLevel(item, belonging),
+                        player,
+                        item
                     )
+                )
+                listenersById[it]!!.second.forEach { chain ->
+//                    player.sendMessage(chain.chainLine)
+                    val canContinue = chain.trigger(event, eventType, player, item, replacerMap)
                     if (!canContinue)
                         return
+
+                    val refreshed = belonging.variable.generateReplaceMap(
+                        ItemAPI.getLevel(item, belonging),
+                        player,
+                        item
+                    )
+                    refreshed.forEach {
+                        replacerMap.removeIf { origin -> it.first == origin.first }
+                    }
+                    replacerMap.addAll(refreshed)
                 }
             }
         }

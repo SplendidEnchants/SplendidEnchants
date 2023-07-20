@@ -10,7 +10,7 @@ import world.icebear03.splendidenchants.util.FurtherOperation
 
 object Attack {
 
-    fun modifyEvent(e: Event, player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, String>>) {
+    fun modifyEvent(e: Event, player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, Any>>) {
         val event = e as EntityDamageByEntityEvent
 
         replacerMap.add(event.damage.toString() to "原伤害")
@@ -31,9 +31,11 @@ object Attack {
             "攻击周围" -> {
                 val range = params[1].toDouble()
                 val damage = params[2].toDouble()
-                event.entity.getNearbyEntities(range, range, range).filterIsInstance<LivingEntity>().forEach {
-                    FurtherOperation.furtherDamage(player, it, damage)
-                    player.sendMessage("${System.currentTimeMillis()}攻击生物造成伤害: $damage")
+                player.getNearbyEntities(range, range, range).filterIsInstance<LivingEntity>().forEach {
+                    if (it.uniqueId != player.uniqueId) {
+                        FurtherOperation.furtherDamage(player, it, damage)
+//                        player.sendMessage("${System.currentTimeMillis()}攻击生物造成伤害: $damage")
+                    }
                 }
             }
 
