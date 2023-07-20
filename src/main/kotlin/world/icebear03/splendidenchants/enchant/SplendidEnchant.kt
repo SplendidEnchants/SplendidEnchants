@@ -89,8 +89,8 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
         val previousFormat = displayerConfig.getString("format.previous", "{default_previous}")!!
         val subsequentFormat = displayerConfig.getString("format.subsequent", "{default_subsequent}")!!
-        private val generalDescription = displayerConfig.getString("description.general")!!
-        private val specificDescription =
+        val generalDescription = displayerConfig.getString("description.general")!!
+        val specificDescription =
             if (displayerConfig.contains("description.specific"))
                 displayerConfig.getString("description.specific")!!
             else generalDescription

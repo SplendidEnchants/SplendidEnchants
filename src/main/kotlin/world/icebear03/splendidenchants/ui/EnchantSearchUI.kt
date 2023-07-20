@@ -12,9 +12,7 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
-import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
-import world.icebear03.splendidenchants.ui.util.applyReplaceMap
 import world.icebear03.splendidenchants.util.YamlUpdater
 
 /**
@@ -50,23 +48,24 @@ object EnchantSearchUI {
             virtualize()
             val (shape, templates) = config
             rows(shape.rows)
-            val slots = shape["EnchantSearch\$information"].toList()
-            slots(slots)
-            elements { ItemAPI.getEnchants(player.equipment.itemInMainHand).toList() }
+            val slots = shape["EnchantSearch\$enchant"].toList()
+            elements {
+
+            }
 
             onBuild { _, inventory ->
-                shape.all("EnchantSearch\$information", "Previous", "Next") { slot, index, item, _ ->
+                shape.all("EnchantSearch\$enchant", "Previous", "Next") { slot, index, item, _ ->
                     inventory.setItem(slot, item(slot, index))
                 }
             }
 
-            val template = templates.require("EnchantSearch\$information")
-            onGenerate { _, element, index, slot ->
-                template(slot, index, element, player)
+            val template = templates.require("EnchantSearch\$enchant")
+            onGenerate { _, member, index, slot ->
+                template(slot, index, member)
             }
 
-            onClick { event, element ->
-                template.handle(event, element)
+            onClick { event, member ->
+                template.handle(event, member)
             }
 
             shape["Previous"].first().let { slot ->
@@ -91,12 +90,7 @@ object EnchantSearchUI {
     }
 
     @MenuComponent
-    private val information = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) ->
-            val (enchant, level) = args[0] as Pair<SplendidEnchant, Int>
-            val player = args[1] as Player
-            (icon to level) applyReplaceMap (enchant to player)
-        }
+    private val enchant = MenuFunctionBuilder {
     }
 
     @MenuComponent
