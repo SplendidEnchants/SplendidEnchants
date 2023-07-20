@@ -49,9 +49,9 @@ object EnchantSearchUI {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["EnchantSearch\$enchant"].toList()
-            elements {
-
-            }
+//            elements {
+//
+//            }
 
             onBuild { _, inventory ->
                 shape.all("EnchantSearch\$enchant", "Previous", "Next") { slot, index, item, _ ->
