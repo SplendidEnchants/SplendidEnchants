@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
+    var config: Config
     var basicData: BasicData
     var rarity: Rarity
     var targets: List<Target>
@@ -40,6 +41,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     init {
         val config = Configuration.loadFromFile(file)
+        this.config = Config(file)
         basicData = BasicData(config.getConfigurationSection("basic")!!)
         rarity = Rarity.fromIdOrName(config.getString("rarity", "null")!!)
         targets = arrayListOf()
@@ -127,7 +129,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
         //生成可能存在的占位符和对应值
         fun getReplaceMap(level: Int?, player: Player?, item: ItemStack?): ArrayList<Pair<String, String>> {
-            var tmp = variable.generateReplaceMap(level, player, item)
+            val tmp = variable.generateReplaceMap(level, player, item)
             val l = (level ?: basicData.maxLevel)
             tmp += basicData.id to "id"
             tmp += basicData.name to "name"
@@ -264,6 +266,19 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
     }
 
-    //TODO
+    inner class Config(file: File) {
 
+        var file: File
+        var config: Configuration
+
+        init {
+            this.file = file
+            config = Configuration.loadFromFile(file)
+        }
+
+        fun modify(path: String, value: Any?) {
+            config.set(path, value)
+            config.saveToFile(file)
+        }
+    }
 }
