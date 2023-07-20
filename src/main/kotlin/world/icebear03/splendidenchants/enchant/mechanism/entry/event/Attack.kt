@@ -10,12 +10,10 @@ import world.icebear03.splendidenchants.util.FurtherOperation
 
 object Attack {
 
-    fun modifyEvent(e: Event, player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, Any>>) {
+    fun modifyEvent(e: Event, player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, String>>) {
         val event = e as EntityDamageByEntityEvent
 
         replacerMap.add(event.damage.toString() to "原伤害")
-        //TODO 更多占位符...
-
 
         //param = param.replaceWithOrder(*replacerMap.toArray())
 

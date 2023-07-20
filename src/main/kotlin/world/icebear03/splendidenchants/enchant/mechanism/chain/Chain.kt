@@ -26,9 +26,8 @@ data class Chain(val listeners: Listeners, val chainLine: String) {
         eventType: EventType,
         player: Player,
         item: ItemStack,
-        replacerMap: ArrayList<Pair<String, Any>>
+        replacerMap: ArrayList<Pair<String, String>>
     ): Boolean {
-
         val line = originLine.replaceWithOrder(*replacerMap.toArray())
         val params = line.split(":")
 

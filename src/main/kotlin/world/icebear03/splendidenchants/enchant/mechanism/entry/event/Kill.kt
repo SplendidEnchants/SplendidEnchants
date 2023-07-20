@@ -5,7 +5,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 
 object Kill {
-    fun modifyEvent(e: Event, player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, Any>>) {
+    fun modifyEvent(e: Event, player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, String>>) {
         val event = e as EntityDamageByEntityEvent
 //        var param = line.replaceFirst(":", "::").split("::")[1]
 //
