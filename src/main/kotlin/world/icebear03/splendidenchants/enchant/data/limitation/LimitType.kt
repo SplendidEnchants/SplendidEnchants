@@ -10,5 +10,6 @@ enum class LimitType(val typeName: String) {
     CONFLICT_ENCHANT("冲突"), // 如 锋利
     CONFLICT_GROUP("冲突"), // 如 "PVE类附魔"
     DEPENDENCE_ENCHANT("依赖"), // 如 无限
-    DEPENDENCE_GROUP("依赖"); // 如 "保护类附魔"
+    DEPENDENCE_GROUP("依赖"), // 如 "保护类附魔"
+    DISABLE_WORLD("世界未启用"); // 如 world_the_end
 }

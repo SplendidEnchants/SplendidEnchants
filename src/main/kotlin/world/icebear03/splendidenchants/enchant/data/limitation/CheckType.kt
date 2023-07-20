@@ -11,7 +11,8 @@ enum class CheckType(vararg types: LimitType) {
         LimitType.DEPENDENCE_GROUP,
         LimitType.DEPENDENCE_ENCHANT,
         LimitType.MAX_CAPABILITY,
-        LimitType.TARGET
+        LimitType.TARGET,
+        LimitType.DISABLE_WORLD
     ), // 从战利品/附魔台中获得附魔物品时
     MERCHANT(
         LimitType.PAPI_EXPRESSION,
@@ -21,7 +22,8 @@ enum class CheckType(vararg types: LimitType) {
         LimitType.DEPENDENCE_GROUP,
         LimitType.DEPENDENCE_ENCHANT,
         LimitType.MAX_CAPABILITY,
-        LimitType.TARGET
+        LimitType.TARGET,
+        LimitType.DISABLE_WORLD
     ), // 生成村民交易中的附魔时
     ANVIL(
         LimitType.CONFLICT_GROUP,
@@ -29,14 +31,16 @@ enum class CheckType(vararg types: LimitType) {
         LimitType.DEPENDENCE_GROUP,
         LimitType.DEPENDENCE_ENCHANT,
         LimitType.MAX_CAPABILITY,
-        LimitType.TARGET
+        LimitType.TARGET,
+        LimitType.DISABLE_WORLD
     ), // 进行铁砧拼合物品附魔时
     USE(
         LimitType.CONFLICT_GROUP,
         LimitType.CONFLICT_ENCHANT,
         LimitType.DEPENDENCE_GROUP,
         LimitType.DEPENDENCE_ENCHANT,
-        LimitType.TARGET
+        LimitType.TARGET,
+        LimitType.DISABLE_WORLD
     ); // 使用物品上的附魔时
 
     val limitTypes = hashSetOf<LimitType>()

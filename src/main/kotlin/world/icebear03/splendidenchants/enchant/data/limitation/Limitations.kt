@@ -55,7 +55,7 @@ class Limitations(enchant: SplendidEnchant, lines: List<String>) {
 
                 PERMISSION -> {
                     if (creature == null)
-                        return true to ""
+                        continue
                     if (!creature.hasPermission(value))
                         return false to "{limit.permission} || permission=$value"
                 }
@@ -70,6 +70,15 @@ class Limitations(enchant: SplendidEnchant, lines: List<String>) {
                     val capability = Target.maxCapability(item.type)
                     if (ItemAPI.getEnchants(item).size >= capability) {
                         return false to "{limit.max_capability} || capability=$capability"
+                    }
+                }
+
+                DISABLE_WORLD -> {
+                    if (creature == null)
+                        continue
+                    val worldName = creature.world.name
+                    if (belonging.basicData.disableWorlds.contains(worldName)) {
+                        return false to "{limit.disable_world} || world=$worldName"
                     }
                 }
 
