@@ -6,7 +6,6 @@ import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
-import world.icebear03.splendidenchants.util.EnchantFilter
 
 object SplendidEnchants : Plugin() {
 
@@ -19,9 +18,6 @@ object SplendidEnchants : Plugin() {
         Target.initialize()
         EnchantLoader.initialize()
         EnchantGroup.initialize()
-
-
-        EnchantFilter.test()
     }
 
     override fun onDisable() {
