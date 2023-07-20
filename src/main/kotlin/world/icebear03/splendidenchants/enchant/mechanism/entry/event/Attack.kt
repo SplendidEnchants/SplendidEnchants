@@ -22,7 +22,6 @@ object Attack {
         replacerMap.add(event.cause.toString() to "伤害类型")
 
         val replaced = StringUtils.replaceParams(params, replacerMap)
-        println(replaced)
 
         when (replaced.first) {
             "设置伤害" -> {

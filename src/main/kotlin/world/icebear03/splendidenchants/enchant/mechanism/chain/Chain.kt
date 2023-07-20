@@ -68,7 +68,6 @@ data class Chain(val listeners: Listeners, val chainLine: String) {
             }
 
             EVENT -> {
-                println(params)
                 when (eventType) {
                     KILL -> Kill.modifyEvent(event, player, params, replacerMap)
                     ATTACK -> Attack.modifyEvent(event, player, params, replacerMap)

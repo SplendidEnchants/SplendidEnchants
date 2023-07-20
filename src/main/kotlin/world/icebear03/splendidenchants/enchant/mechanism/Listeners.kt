@@ -34,7 +34,7 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSect
             }
 
             listenersById[id] = priority to chains
-            if (!listenersByType.contains(type))
+            if (!listenersByType.containsKey(type))
                 listenersByType[type] = mutableListOf()
             listenersByType[type]!! += id
         }

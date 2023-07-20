@@ -213,8 +213,6 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
 
         fun modifyVariable(item: ItemStack, variable: String, value: String): ItemStack {
-            println(variable)
-            println(modifiable)
             return item.modifyMeta<ItemMeta> {
                 val pdc = this.persistentDataContainer
                 pdc.set(
