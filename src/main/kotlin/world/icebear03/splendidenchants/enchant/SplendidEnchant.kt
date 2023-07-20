@@ -263,4 +263,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             key = NamespacedKey.fromString(id, null) ?: error("minecraft")
         }
     }
+
+    //TODO
+
 }
