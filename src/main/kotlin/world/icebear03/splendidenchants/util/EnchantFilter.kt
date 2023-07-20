@@ -16,6 +16,12 @@ object EnchantFilter {
     val all = EnchantLoader.enchantByName.values
     val filterMap = mutableMapOf<UUID, MutableMap<FilterType, MutableList<Pair<Any, FilterStatement>>>>()
 
+    fun test() {
+        println(
+            generateLore(TYPE, mutableListOf("原版附魔" to ON, "可交易附魔" to OFF))
+        )
+    }
+
     fun filter(player: Player): List<SplendidEnchant> {
         createIfNotExists(player)
         return filter(filterMap[player.uniqueId]!!)
@@ -70,11 +76,17 @@ object EnchantFilter {
         }
     }
 
+
     fun generateLore(type: FilterType, player: Player): List<String> {
         if (!filterMap.containsKey(player.uniqueId))
             return listOf()
-        val lore = mutableListOf<String>()
         val pairs = filterMap[player.uniqueId]!![type] ?: return listOf()
+
+        return generateLore(type, pairs)
+    }
+
+    fun generateLore(type: FilterType, pairs: MutableList<Pair<Any, FilterStatement>>): List<String> {
+        val lore = mutableListOf<String>()
 
         pairs.forEach {
             lore += it.second.symbol + " " + when (type) {
