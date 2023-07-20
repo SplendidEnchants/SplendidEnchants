@@ -5,23 +5,14 @@ import taboolib.common.platform.command.subCommand
 import taboolib.module.kether.isInt
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.EnchantLoader
+import world.icebear03.splendidenchants.command.Commands
 
 val commandBook = subCommand {
     // 应加上新的可变参数-给予的玩家
     dynamic("enchant") {
-        suggestionUncheck<Player> { _, _ ->
-            EnchantLoader.enchantById.keys.toList().toMutableList().also {
-                it.addAll(EnchantLoader.enchantByName.keys.toList())
-            }
-        }
+        suggestionUncheck<Player> { _, _ -> Commands.enchantNamesAndIds }
         dynamic("level") {
-            suggestionUncheck<Player> { _, ctx ->
-                val enchant =
-                    EnchantAPI.getSplendidEnchant(ctx["enchant"]) ?: return@suggestionUncheck (1..9).toList()
-                        .map { it.toString() }
-                return@suggestionUncheck (enchant.startLevel..enchant.maxLevel).toList().map { it.toString() }
-            }
+            suggestionUncheck<Player> { _, _ -> listOf("等级(正整数)") }
 
             execute<Player> { sender, ctx, _ ->
                 val enchant = EnchantAPI.getSplendidEnchant(ctx["enchant"])

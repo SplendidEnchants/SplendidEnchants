@@ -6,21 +6,13 @@ import taboolib.module.kether.isInt
 import taboolib.platform.util.isAir
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.EnchantLoader
+import world.icebear03.splendidenchants.command.Commands
 
 val commandEnchant = subCommand {
     dynamic("enchant") {
-        suggestionUncheck<Player> { _, _ ->
-            // FIXME
-            EnchantLoader.enchantById.keys.toList().toMutableList().also {
-                it.addAll(EnchantLoader.enchantByName.keys.toList())
-            }
-        }
+        suggestionUncheck<Player> { _, _ -> Commands.enchantNamesAndIds }
         dynamic("level") {
-            suggestionUncheck<Player> { _, ctx ->
-                val enchant = EnchantAPI.getSplendidEnchant(ctx["enchant"]) ?: return@suggestionUncheck (0..9).toList().map { it.toString() }
-                return@suggestionUncheck (0..enchant.maxLevel).toList().map { it.toString() }
-            }
+            suggestionUncheck<Player> { _, _ -> listOf("等级(正整数)") }
 
             execute<Player> { sender, ctx, _ ->
                 val enchant = EnchantAPI.getSplendidEnchant(ctx["enchant"])
@@ -48,6 +40,7 @@ val commandEnchant = subCommand {
                         ItemAPI.addEnchant(item, enchant, level.toInt())
                         sender.sendMessage("§8[§6SplendidEnchants§8] §7已成功为物品添加附魔 ${enchant.rarity.color}${enchant.basicData.name}§7, 等级 §f$level§7.")
                     }
+
                     level.toInt() == 0 -> {
                         ItemAPI.removeEnchant(item, enchant)
                         sender.sendMessage("§8[§6SplendidEnchants§8] §7已成功为物品清除附魔 ${enchant.rarity.color}${enchant.basicData.name}§7.")

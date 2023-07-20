@@ -8,9 +8,14 @@ import world.icebear03.splendidenchants.command.sub.commandBook
 import world.icebear03.splendidenchants.command.sub.commandEnchant
 import world.icebear03.splendidenchants.command.sub.commandMenu
 import world.icebear03.splendidenchants.command.sub.commandRandom
+import world.icebear03.splendidenchants.enchant.EnchantLoader
 
 @CommandHeader(name = "splendidenchants", aliases = ["se", "spe", "nereusopus", "no", "nerous"])
 object Commands {
+
+    val enchantNamesAndIds = EnchantLoader.enchantById.keys.toList().toMutableList().also {
+        it.addAll(EnchantLoader.enchantByName.keys.toList())
+    }
 
     @CommandBody
     val main = mainCommand {
