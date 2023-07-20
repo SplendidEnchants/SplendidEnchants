@@ -14,7 +14,7 @@ object Attack {
     fun modifyEvent(e: Event, player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, String>>) {
         val event = e as EntityDamageByEntityEvent
 
-        replacerMap.add(event.damage.toString() to "原伤害")
+        replacerMap.add(event.damage.toString() to "伤害")
         replacerMap.add(ObjectPlayer.toString(player) to "攻击者")
         replacerMap.add(ObjectPlayer.toString(player) to "伤害者")
         replacerMap.add(ObjectLivingEntity.toString(event.entity as LivingEntity) to "被攻击者")
@@ -22,10 +22,11 @@ object Attack {
         replacerMap.add(event.cause.toString() to "伤害类型")
 
         val replaced = StringUtils.replaceParams(params, replacerMap)
+        println(replaced)
 
         when (replaced.first) {
             "设置伤害" -> {
-                event.damage = replaced.second[1].compileToJexl().eval() as Double
+                event.damage = replaced.second[0].compileToJexl().eval() as Double
             }
 
             "取消伤害", "取消" -> {

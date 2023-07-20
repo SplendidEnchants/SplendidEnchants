@@ -52,12 +52,11 @@ data class Chain(val listeners: Listeners, val chainLine: String) {
             }
 
             CONDITION -> {
-
                 return line.compileToJexl().eval() as Boolean
             }
 
             ASSIGNMENT -> {
-                val variableName = line.split("=")[0].replace("{", "").replace("}", "")
+                val variableName = line.split("=")[0]
                 val expression = line.split("=")[1]
                 val variableValue =
                     try {
@@ -69,10 +68,13 @@ data class Chain(val listeners: Listeners, val chainLine: String) {
             }
 
             EVENT -> {
+                println(params)
                 when (eventType) {
                     KILL -> Kill.modifyEvent(event, player, params, replacerMap)
                     ATTACK -> Attack.modifyEvent(event, player, params, replacerMap)
                     RIGHT_CLICK -> TODO()
+                    LEFT_CLICK -> TODO()
+                    INTERACT_ENTITY -> TODO()
                 }
             }
 
