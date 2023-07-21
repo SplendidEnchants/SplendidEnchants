@@ -11,7 +11,8 @@ import java.util.concurrent.ConcurrentHashMap
 data class EnchantGroup(
     val name: String,
     val enchantNames: List<String>,
-    val maxCoexist: Int
+    val maxCoexist: Int,
+    val skull: String
 ) {
 
     val enchants = mutableListOf<SplendidEnchant>()
@@ -50,7 +51,8 @@ data class EnchantGroup(
                 groups[it] = EnchantGroup(
                     it,
                     enchants,
-                    groupConfig.getInt("$it.max_coexist", 1)
+                    groupConfig.getInt("$it.max_coexist", 1),
+                    groupConfig.getString("$it.skull", "")!!
                 )
             }
 

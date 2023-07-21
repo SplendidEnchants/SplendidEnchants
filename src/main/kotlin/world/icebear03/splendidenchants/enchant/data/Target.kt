@@ -13,7 +13,8 @@ data class Target(
     val name: String,
     val capability: Int,
     val activeSlots: Set<EquipmentSlot>,
-    val typeNames: List<String>
+    val typeNames: List<String>,
+    val skull: String
 ) {
 
     val types = typeNames.map { Material.valueOf(it) }
@@ -36,10 +37,11 @@ data class Target(
                     targetConfig.getString("$it.name")!!,
                     targetConfig.getInt("$it.max"),
                     targetConfig.getStringList("$it.active_slots").map { s -> EquipmentSlot.valueOf(s) }.toSet(),
-                    targetConfig.getStringList("$it.types")
+                    targetConfig.getStringList("$it.types"),
+                    targetConfig.getString("$it.skull", "")!!
                 )
             }
-            targets["unknown"] = Target("unknown", "未定义", 16, hashSetOf(), arrayListOf())
+            targets["unknown"] = Target("unknown", "未定义", 16, hashSetOf(), arrayListOf(), "")
 
             console().sendMessage("    Successfully load §6${targets.size} targets")
         }

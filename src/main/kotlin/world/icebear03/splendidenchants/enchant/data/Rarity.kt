@@ -11,7 +11,8 @@ data class Rarity(
     val id: String,
     val name: String,
     val color: String,
-    val weight: Int
+    val weight: Int,
+    val skull: String
 ) {
     init {
         EnchantLoader.enchantsByRarity[this] = mutableSetOf()
@@ -36,7 +37,8 @@ data class Rarity(
                     it,
                     rarityConfig.getString("$it.name")!!,
                     rarityConfig.getString("$it.color")!!,
-                    rarityConfig.getInt("$it.weight")
+                    rarityConfig.getInt("$it.weight"),
+                    rarityConfig.getString("$it.skull", "")!!
                 )
             }
             defaultRarity = rarities[Config.config.getString("default_rarity", "common")]!!
