@@ -1,7 +1,7 @@
 package world.icebear03.splendidenchants
 
 import taboolib.common.platform.Plugin
-import taboolib.common.platform.function.info
+import taboolib.common.platform.function.console
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.EnchantLoader
@@ -20,52 +20,52 @@ object SplendidEnchants : Plugin() {
 
     override fun onEnable() {
         val stamp = System.currentTimeMillis()
-        info("§e                                                               ")
-        info("§e ______   ______  __       ______   __   __   _____    __   _____                         ")
-        info("§e/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
-        info("§e\\ \\___  \\\\ \\  _-/\\ \\ \\____\\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\/\\ \\\\ \\ \\\\ \\ \\/\\ \\                      ")
-        info("§e \\/\\_____\\\\ \\_\\   \\ \\_____\\\\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\____- \\ \\_\\\\ \\____-                      ")
-        info("§e  \\/_____/ \\/_/    \\/_____/ \\/_____/ \\/_/ \\/_/ \\/____/  \\/_/ \\/____/                      ")
-        info("§e                                                                                          ")
-        info("§e                ______   __   __   ______   __  __   ______   __   __   ______  ______    ")
-        info("§e               /\\  ___\\ /\\ \"-.\\ \\ /\\  ___\\ /\\ \\_\\ \\ /\\  __ \\ /\\ \"-.\\ \\ /\\__  _\\/\\  ___\\   ")
-        info("§e               \\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\____\\ \\  __ \\\\ \\  __ \\\\ \\ \\-.  \\\\/_/\\ \\/\\ \\___  \\  ")
-        info("§e                \\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\_____\\\\ \\_\\ \\_\\\\ \\_\\ \\_\\\\ \\_\\\\\"\\_\\  \\ \\_\\ \\/\\_____\\ ")
-        info("§e                 \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/\\/_/ \\/_/\\/_/ \\/_/ \\/_/   \\/_/  \\/_____/ ")
-        info("§e                                                               ")
-        info("Installing SplendidEnchants...")
+        console().sendMessage("§e                                                               ")
+        console().sendMessage("§e ______   ______  __       ______   __   __   _____    __   _____                         ")
+        console().sendMessage("§e/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
+        console().sendMessage("§e\\ \\___  \\\\ \\  _-/\\ \\ \\____\\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\/\\ \\\\ \\ \\\\ \\ \\/\\ \\                      ")
+        console().sendMessage("§e \\/\\_____\\\\ \\_\\   \\ \\_____\\\\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\____- \\ \\_\\\\ \\____-                      ")
+        console().sendMessage("§e  \\/_____/ \\/_/    \\/_____/ \\/_____/ \\/_/ \\/_/ \\/____/  \\/_/ \\/____/                      ")
+        console().sendMessage("§e                                                                                          ")
+        console().sendMessage("§e                ______   __   __   ______   __  __   ______   __   __   ______  ______    ")
+        console().sendMessage("§e               /\\  ___\\ /\\ \"-.\\ \\ /\\  ___\\ /\\ \\_\\ \\ /\\  __ \\ /\\ \"-.\\ \\ /\\__  _\\/\\  ___\\   ")
+        console().sendMessage("§e               \\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\____\\ \\  __ \\\\ \\  __ \\\\ \\ \\-.  \\\\/_/\\ \\/\\ \\___  \\  ")
+        console().sendMessage("§e                \\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\_____\\\\ \\_\\ \\_\\\\ \\_\\ \\_\\\\ \\_\\\\\"\\_\\  \\ \\_\\ \\/\\_____\\ ")
+        console().sendMessage("§e                 \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/\\/_/ \\/_/\\/_/ \\/_/ \\/_/   \\/_/  \\/_____/ ")
+        console().sendMessage("§e                                                               ")
+        console().sendMessage("Installing SplendidEnchants...")
 
-        info("|- Loading Config Module...")
+        console().sendMessage("|- Loading Config Module...")
         Config.initialize()
 
-        info("|- Loading Enchants...")
+        console().sendMessage("|- Loading Enchants...")
         Rarity.initialize()
         Target.initialize()
         EnchantDisplayer.initialize()
         EnchantLoader.initialize()
         EnchantGroup.initialize()
 
-        info("|- Loading Mechanisms...")
+        console().sendMessage("|- Loading Mechanisms...")
         AnvilListener.initialize()
         AttainListener.initialize()
         GrindstoneListener.initialize()
         VillagerListener.initialize()
 
-        info("|- Loading GUIs...")
-        info("                            ")
-        info("Installed SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
-        info("| Version: §r3.0.0")
-        info("| Author: §r白熊_IceBear &{#FFD0DB}Micalhl §bxiaozhangup")
+        console().sendMessage("|- Loading GUIs...")
+        console().sendMessage("                            ")
+        console().sendMessage("Installed SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
+        console().sendMessage("| Version: §r3.0.0")
+        console().sendMessage("| Author: §f白熊_IceBear §{#FFD0DB}Micalhl §bxiaozhangup")
     }
 
     fun reload() {
         val stamp = System.currentTimeMillis()
-        info("Reloading SplendidEnchants...")
+        console().sendMessage("Reloading SplendidEnchants...")
 
-        info("|- Reloading Config Module...")
+        console().sendMessage("|- Reloading Config Module...")
         Config.initialize()
 
-        info("|- Reloading Enchants...")
+        console().sendMessage("|- Reloading Enchants...")
         EnchantLoader.resetSort()
         Rarity.initialize()
         Target.initialize()
@@ -74,20 +74,20 @@ object SplendidEnchants : Plugin() {
         EnchantGroup.initialize()
         EnchantFilter.clearAll()
 
-        info("|- Reloading Mechanisms...")
+        console().sendMessage("|- Reloading Mechanisms...")
         AnvilListener.initialize()
         AttainListener.initialize()
         GrindstoneListener.initialize()
         VillagerListener.initialize()
 
-        info("|- Reloading GUIs...")
+        console().sendMessage("|- Reloading GUIs...")
         MainMenuUI.reload()
         ItemCheckUI.reload()
         EnchantSearchUI.reload()
 
-        info("                            ")
-        info("Reloaded SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
-        info("| Version: §r3.0.0")
-        info("| Author: §r白熊_IceBear §dMicalhl §bxiaozhangup")
+        console().sendMessage("                            ")
+        console().sendMessage("Reloaded SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
+        console().sendMessage("| Version: §r3.0.0")
+        console().sendMessage("| Author: §f白熊_IceBear §{#FFD0DB}Micalhl §bxiaozhangup")
     }
 }

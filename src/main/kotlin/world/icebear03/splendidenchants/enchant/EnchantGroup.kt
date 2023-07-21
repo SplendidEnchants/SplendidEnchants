@@ -1,7 +1,7 @@
 package world.icebear03.splendidenchants.enchant
 
 import org.bukkit.enchantments.Enchantment
-import taboolib.common.platform.function.info
+import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.enchant.data.Rarity
@@ -54,7 +54,7 @@ data class EnchantGroup(
                 )
             }
 
-            info("    Successfully load §6${groups.size} groups")
+            console().sendMessage("    Successfully load §6${groups.size} groups")
         }
 
         fun isIn(enchant: Enchantment, group: String): Boolean {

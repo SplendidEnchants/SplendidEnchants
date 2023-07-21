@@ -6,7 +6,7 @@ import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.common.platform.function.info
+import taboolib.common.platform.function.console
 import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
@@ -43,7 +43,7 @@ object AnvilListener {
             privilege[it.split(":")[0]] = it.split(":")[1]
         }
 
-        info("    Successfully load anvil module")
+        console().sendMessage("    Successfully load anvil module")
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

@@ -2,7 +2,7 @@ package world.icebear03.splendidenchants.enchant.data
 
 import org.bukkit.Material
 import org.bukkit.inventory.EquipmentSlot
-import taboolib.common.platform.function.info
+import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.util.loadAndUpdate
@@ -41,7 +41,7 @@ data class Target(
             }
             targets["unknown"] = Target("unknown", "未定义", 16, hashSetOf(), arrayListOf())
 
-            info("    Successfully load §6${targets.size} targets")
+            console().sendMessage("    Successfully load §6${targets.size} targets")
         }
 
         fun fromIdOrName(idOrName: String): Target {

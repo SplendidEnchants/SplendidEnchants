@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 import org.serverct.parrot.parrotx.function.round
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.common.platform.function.info
+import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
@@ -51,7 +51,7 @@ object AttainListener {
         }
         fullLevelPrivilege = config.getString("privilege.full_level", fullLevelPrivilege)!!
 
-        info("    Successfully load table & looting module")
+        console().sendMessage("    Successfully load table & looting module")
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

@@ -1,6 +1,6 @@
 package world.icebear03.splendidenchants.enchant.data
 
-import taboolib.common.platform.function.info
+import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.Config
 import world.icebear03.splendidenchants.enchant.EnchantLoader
@@ -41,7 +41,7 @@ data class Rarity(
             }
             defaultRarity = rarities[Config.config.getString("default_rarity", "common")]!!
 
-            info("    Successfully load §6${rarities.size} rarities")
+            console().sendMessage("    Successfully load §6${rarities.size} rarities")
         }
 
         fun fromIdOrName(idOrName: String): Rarity {
