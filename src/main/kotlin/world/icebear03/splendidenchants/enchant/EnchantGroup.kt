@@ -53,7 +53,8 @@ data class EnchantGroup(
                     groupConfig.getInt("$it.max_coexist", 1)
                 )
             }
-            info("调试信息：加载附魔组成功，共${groups.size}个组！")
+
+            info("    Successfully load ${groups.size} groups!")
         }
 
         fun isIn(enchant: Enchantment, group: String): Boolean {

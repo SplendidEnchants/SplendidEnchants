@@ -6,6 +6,7 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.info
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.api.ItemAPI
@@ -45,6 +46,8 @@ object GrindstoneListener {
         config.getStringList("privilege").forEach { it ->
             privilege[it.split(":")[0]] = it.split(":")[1]
         }
+
+        info("    Successfully load grindstone module!")
     }
 
 

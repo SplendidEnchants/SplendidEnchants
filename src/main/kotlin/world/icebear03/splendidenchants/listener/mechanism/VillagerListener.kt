@@ -4,6 +4,7 @@ import org.bukkit.event.entity.VillagerAcquireTradeEvent
 import org.bukkit.inventory.MerchantRecipe
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.info
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.EnchantGroup
@@ -20,6 +21,8 @@ object VillagerListener {
         enableEnchantTrade = config.getBoolean("enable", true)
         tradeEnchantGroup = config.getString("group", tradeEnchantGroup)!!
         amount = config.getInt("amount", 2)
+
+        info("    Successfully load merchant module!")
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

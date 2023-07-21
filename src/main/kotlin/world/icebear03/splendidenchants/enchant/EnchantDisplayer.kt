@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
+import taboolib.common.platform.function.info
 import taboolib.common.util.replaceWithOrder
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
@@ -59,6 +60,8 @@ object EnchantDisplayer {
         loreFormation.clear()
         loreFormation[true] = config.getStringList("lore_formation.has_lore")
         loreFormation[false] = config.getStringList("lore_formation.without_lore")
+
+        info("    Successfully load enchant displayer module!")
     }
 
     //对附魔排序

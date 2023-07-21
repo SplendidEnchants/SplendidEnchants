@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack
 import org.serverct.parrot.parrotx.function.round
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.info
 import taboolib.common.platform.function.submit
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
@@ -49,6 +50,8 @@ object AttainListener {
             moreEnchantPrivilege[it.split(":")[0]] = it.split(":")[1]
         }
         fullLevelPrivilege = config.getString("privilege.full_level", fullLevelPrivilege)!!
+
+        info("    Successfully load table & looting module!")
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

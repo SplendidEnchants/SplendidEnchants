@@ -39,9 +39,9 @@ data class Rarity(
                     rarityConfig.getInt("$it.weight")
                 )
             }
-            info("调试信息：加载品质成功，共${rarities.size}个品质！")
-
             defaultRarity = rarities[Config.config.getString("default_rarity", "common")]!!
+
+            info("    Successfully load ${rarities.size} rarities!")
         }
 
         fun fromIdOrName(idOrName: String): Rarity {

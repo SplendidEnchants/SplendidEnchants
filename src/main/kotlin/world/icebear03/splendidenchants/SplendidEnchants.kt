@@ -19,22 +19,29 @@ import world.icebear03.splendidenchants.util.EnchantFilter
 object SplendidEnchants : Plugin() {
 
     override fun onEnable() {
-        info("Loading SplendidEnchants...")
+        info("Installing SplendidEnchants...")
 
+        info("|- Loading Config Module...")
         Config.initialize()
 
-        //ENCHANT
+        info("|- Loading Enchants...")
         Rarity.initialize()
         Target.initialize()
         EnchantDisplayer.initialize()
         EnchantLoader.initialize()
         EnchantGroup.initialize()
 
-        //Mechanisms
+        info("|- Loading Mechanisms...")
         AnvilListener.initialize()
         AttainListener.initialize()
         GrindstoneListener.initialize()
         VillagerListener.initialize()
+
+        info("|- Loading GUIs...")
+        info("|-------------------------------")
+        info("Installed SplendidEnchants")
+        info("| Version: 3.0.0")
+        info("| Author: 白熊_IceBear Micalhl xiaozhangup")
     }
 
     override fun onDisable() {
@@ -44,27 +51,32 @@ object SplendidEnchants : Plugin() {
     fun reload() {
         info("Reloading SplendidEnchants...")
 
-        //ENCHANT
-        EnchantLoader.resetSort()
+        info("|- Reloading Config Module...")
+        Config.initialize()
 
+        info("|- Reloading Enchants...")
+        EnchantLoader.resetSort()
         Rarity.initialize()
         Target.initialize()
         EnchantDisplayer.initialize()
         EnchantLoader.initialize(true)
         EnchantGroup.initialize()
+        EnchantFilter.clearAll()
 
-        //GUI
-        MainMenuUI.reload()
-        ItemCheckUI.reload()
-        EnchantSearchUI.reload()
-
-        //Mechianisms
+        info("|- Reloading Mechanisms...")
         AnvilListener.initialize()
         AttainListener.initialize()
         GrindstoneListener.initialize()
         VillagerListener.initialize()
 
-        //filter重置，因为可能留下不存在的rarity
-        EnchantFilter.clearAll()
+        info("|- Reloading GUIs...")
+        MainMenuUI.reload()
+        ItemCheckUI.reload()
+        EnchantSearchUI.reload()
+
+        info("|-------------------------------")
+        info("Reloaded SplendidEnchants")
+        info("| Version: 3.0.0")
+        info("| Author: 白熊_IceBear Micalhl xiaozhangup")
     }
 }

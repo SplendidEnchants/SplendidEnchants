@@ -4,6 +4,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import taboolib.common.io.newFolder
 import taboolib.common.platform.function.getDataFolder
+import taboolib.common.platform.function.info
 import taboolib.library.reflex.Reflex.Companion.getProperty
 import taboolib.library.reflex.Reflex.Companion.setProperty
 import world.icebear03.splendidenchants.enchant.data.Rarity
@@ -66,6 +67,8 @@ object EnchantLoader {
         }
 
         Enchantment::class.java.setProperty("acceptingNew", value = false, isStatic = true)
+
+        info("    Successfully load ${enchantById.size} enchants!")
     }
 
     fun unregister() {

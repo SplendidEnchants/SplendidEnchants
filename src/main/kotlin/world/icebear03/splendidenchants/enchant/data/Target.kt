@@ -40,7 +40,8 @@ data class Target(
                 )
             }
             targets["unknown"] = Target("unknown", "未定义", 16, hashSetOf(), arrayListOf())
-            info("调试信息：加载附魔对象成功，共${targets.size}种对象！")
+
+            info("    Successfully load ${targets.size} targets!")
         }
 
         fun fromIdOrName(idOrName: String): Target {
