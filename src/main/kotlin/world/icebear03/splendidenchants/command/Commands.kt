@@ -4,10 +4,7 @@ import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.mainCommand
 import taboolib.expansion.createHelper
-import world.icebear03.splendidenchants.command.sub.commandBook
-import world.icebear03.splendidenchants.command.sub.commandEnchant
-import world.icebear03.splendidenchants.command.sub.commandMenu
-import world.icebear03.splendidenchants.command.sub.commandRandom
+import world.icebear03.splendidenchants.command.sub.*
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 
 @CommandHeader(name = "splendidenchants", aliases = ["se", "spe", "nereusopus", "no", "nerous"])
@@ -33,4 +30,7 @@ object Commands {
 
     @CommandBody(permission = "splendidenchants.menu")
     val menu = commandMenu
+
+    @CommandBody(permission = "splendidenchants.reload")
+    val reload = commandReload
 }

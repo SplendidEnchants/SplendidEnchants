@@ -47,8 +47,11 @@ object EnchantLoader {
                     val enchant = SplendidEnchant(file, key)
 
                     // 注册附魔
-                    if (!folder.name.equals("原版附魔"))
+                    if (!folder.name.equals("原版附魔")) {
+                        keyMap?.remove(enchant.key)
+                        nameMap?.remove(enchant.name)
                         Enchantment.registerEnchantment(enchant)
+                    }
                     enchantById[id] = enchant
                     enchantByName[enchant.basicData.name] = enchant
                     enchantsByRarity[enchant.rarity]!! += enchant
@@ -71,8 +74,9 @@ object EnchantLoader {
         info("    Successfully load ${enchantById.size} enchants!")
     }
 
+    @Deprecated("useless")
     fun unregister() {
-        enchantById.values.forEach {
+        enchantById.values.toList().forEach {
             unregister(it)
         }
     }
