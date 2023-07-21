@@ -19,6 +19,23 @@ import world.icebear03.splendidenchants.util.EnchantFilter
 object SplendidEnchants : Plugin() {
 
     override fun onEnable() {
+        val stamp = System.currentTimeMillis()
+        info(
+            """
+ ______   ______  __       ______   __   __   _____    __   _____                         
+/\  ___\ /\  == \/\ \     /\  ___\ /\ "-.\ \ /\  __-. /\ \ /\  __-.                       
+\ \___  \\ \  _-/\ \ \____\ \  __\ \ \ \-.  \\ \ \/\ \\ \ \\ \ \/\ \                      
+ \/\_____\\ \_\   \ \_____\\ \_____\\ \_\\"\_\\ \____- \ \_\\ \____-                      
+  \/_____/ \/_/    \/_____/ \/_____/ \/_/ \/_/ \/____/  \/_/ \/____/                      
+                                                                                          
+                ______   __   __   ______   __  __   ______   __   __   ______  ______    
+               /\  ___\ /\ "-.\ \ /\  ___\ /\ \_\ \ /\  __ \ /\ "-.\ \ /\__  _\/\  ___\   
+               \ \  __\ \ \ \-.  \\ \ \____\ \  __ \\ \  __ \\ \ \-.  \\/_/\ \/\ \___  \  
+                \ \_____\\ \_\\"\_\\ \_____\\ \_\ \_\\ \_\ \_\\ \_\\"\_\  \ \_\ \/\_____\ 
+                 \/_____/ \/_/ \/_/ \/_____/ \/_/\/_/ \/_/\/_/ \/_/ \/_/   \/_/  \/_____/ 
+                                                                                          
+            """.trimIndent()
+        )
         info("Installing SplendidEnchants...")
 
         info("|- Loading Config Module...")
@@ -39,7 +56,7 @@ object SplendidEnchants : Plugin() {
 
         info("|- Loading GUIs...")
         info("|-------------------------------")
-        info("Installed SplendidEnchants")
+        info("Installed SplendidEnchants in ${System.currentTimeMillis() - stamp}ms")
         info("| Version: 3.0.0")
         info("| Author: 白熊_IceBear Micalhl xiaozhangup")
     }
@@ -49,6 +66,7 @@ object SplendidEnchants : Plugin() {
     }
 
     fun reload() {
+        val stamp = System.currentTimeMillis()
         info("Reloading SplendidEnchants...")
 
         info("|- Reloading Config Module...")
@@ -75,7 +93,7 @@ object SplendidEnchants : Plugin() {
         EnchantSearchUI.reload()
 
         info("|-------------------------------")
-        info("Reloaded SplendidEnchants")
+        info("Reloaded SplendidEnchants in ${System.currentTimeMillis() - stamp}ms")
         info("| Version: 3.0.0")
         info("| Author: 白熊_IceBear Micalhl xiaozhangup")
     }
