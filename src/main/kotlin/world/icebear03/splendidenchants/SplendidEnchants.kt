@@ -2,6 +2,7 @@ package world.icebear03.splendidenchants
 
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
+import taboolib.module.chat.colored
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.EnchantLoader
@@ -55,7 +56,7 @@ object SplendidEnchants : Plugin() {
         console().sendMessage("                            ")
         console().sendMessage("Installed SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
         console().sendMessage("| Version: §r3.0.0")
-        console().sendMessage("| Author: §f白熊_IceBear §{#FFD0DB}Micalhl §bxiaozhangup")
+        console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §bxiaozhangup")
     }
 
     fun reload() {
@@ -88,6 +89,6 @@ object SplendidEnchants : Plugin() {
         console().sendMessage("                            ")
         console().sendMessage("Reloaded SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
         console().sendMessage("| Version: §r3.0.0")
-        console().sendMessage("| Author: §f白熊_IceBear §{#FFD0DB}Micalhl §bxiaozhangup")
+        console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §bxiaozhangup")
     }
 }

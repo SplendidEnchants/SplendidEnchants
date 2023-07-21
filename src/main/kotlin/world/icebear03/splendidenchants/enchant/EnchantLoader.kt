@@ -71,7 +71,7 @@ object EnchantLoader {
 
         Enchantment::class.java.setProperty("acceptingNew", value = false, isStatic = true)
 
-        console().sendMessage("    Successfully load ${enchantById.size} enchants")
+        console().sendMessage("    Successfully load §6${enchantById.size} enchants")
     }
 
     @Deprecated("useless")
