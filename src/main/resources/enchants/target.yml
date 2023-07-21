@@ -1,6 +1,7 @@
 swords:
   max: 12
   name: 剑
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTBkZmM4YTM1NjNiZjk5NmY1YzFiNzRiMGIwMTViMmNjZWIyZDA0Zjk0YmJjZGFmYjIyOTlkOGE1OTc5ZmFjMSJ9fX0="
   active_slots:
     - HAND
   types:
@@ -13,6 +14,7 @@ swords:
 axes:
   max: 12
   name: 斧
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjRiYTQ5Mzg0ZGJhN2I3YWNkYjRmNzBlOTM2MWU2ZDU3Y2JiY2JmNzIwY2Y0ZjE2YzJiYjgzZTQ1NTcifX19"
   active_slots:
     - HAND
   types:
@@ -25,6 +27,7 @@ axes:
 pickaxes:
   max: 7
   name: 镐
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjZlYTIxMzU4Mzg0NjE1MzQzNzJmMmRhNmM4NjJkMjFjZDVmM2QyYzcxMTlmMmJiNjc0YmJkNDI3OTEifX19"
   active_slots:
     - HAND
   types:
@@ -37,6 +40,7 @@ pickaxes:
 shovels:
   max: 6
   name: 铲
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMThkN2QxOWEzZmQ4ZTI2NTI0YWFiMzJmOTQ0ZGM3ZDJmNTYwZTFkOGZlMTc4ZTg5M2NlZWE3NGNmY2YifX19"
   active_slots:
     - HAND
   types:
@@ -49,6 +53,7 @@ shovels:
 hoes:
   max: 6
   name: 锄
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzMyMzVjOThkYjA3Zjk3NmRlZjI3Y2VhYWNhODljNzcxNzgzMWI0YmNjN2YyZjNhMTQ2MjJlNzhjMmRiZSJ9fX0="
   active_slots:
     - HAND
   types:
@@ -61,6 +66,7 @@ hoes:
 bow:
   max: 12
   name: 弓
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzU0Nzk1MTA0MjJiMWM1ZGNjNzdmNzVmZGMzMzQ2ZWQ0ZDlkYmJjYzFlODg1YjRhMjk5MmEyNzM3MzM2NDZhOSJ9fX0="
   active_slots:
     - HAND
   types:
@@ -68,6 +74,7 @@ bow:
 crossbow:
   max: 8
   name: 弩
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTM3ZWYyOTJiM2E0YzI1ZmUyMDBhYzJjNTMxYjk4MmZmYWFiYmYxMjNiMWE0ZWI1YjVjNTQ1ZDBlOWExOGEzNCJ9fX0="
   active_slots:
     - HAND
   types:
@@ -75,6 +82,7 @@ crossbow:
 trident:
   max: 8
   name: 三叉戟
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkyOTM1OWE1MWNjMDMzNjcxZDY0MTQ3ZTVjZmYyYTQyMjU4Zjk0OThmNDYzMTZiZTA5ZjJiM2JmNjgwOTFjMSJ9fX0="
   active_slots:
     - HAND
   types:
@@ -82,6 +90,7 @@ trident:
 helmets:
   max: 8
   name: 头盔
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2I5MjRiMzdmZTMyOTQyNzNhNzQzODZjODc4Y2EyMTBmYzg5ZjQ3ODcwMjk0M2EwMjcyZTcxMzk1NjMwYmVkYSJ9fX0="
   active_slots:
     - HEAD
   types:
@@ -95,6 +104,7 @@ helmets:
 chestplates:
   max: 8
   name: 胸甲
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2I5MjRiMzdmZTMyOTQyNzNhNzQzODZjODc4Y2EyMTBmYzg5ZjQ3ODcwMjk0M2EwMjcyZTcxMzk1NjMwYmVkYSJ9fX0="
   active_slots:
     - CHEST
   types:
@@ -107,6 +117,7 @@ chestplates:
 leggings:
   max: 8
   name: 护腿
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2I5MjRiMzdmZTMyOTQyNzNhNzQzODZjODc4Y2EyMTBmYzg5ZjQ3ODcwMjk0M2EwMjcyZTcxMzk1NjMwYmVkYSJ9fX0="
   active_slots:
     - LEGS
   types:
@@ -119,6 +130,7 @@ leggings:
 boots:
   max: 8
   name: 靴子
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2I5MjRiMzdmZTMyOTQyNzNhNzQzODZjODc4Y2EyMTBmYzg5ZjQ3ODcwMjk0M2EwMjcyZTcxMzk1NjMwYmVkYSJ9fX0="
   active_slots:
     - FEET
   types:
@@ -131,6 +143,7 @@ boots:
 elytra:
   max: 6
   name: 鞘翅
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMyYzFmMjUyNjNhZWJkNTdiODBiM2I3YjJiZTkxOGUxNGEyNzc3NmYxZTk5NTE3NDk1MjczZTU4M2NjNmY2ZCJ9fX0="
   active_slots:
     - CHEST
   types:
@@ -138,6 +151,7 @@ elytra:
 shears:
   max: 3
   name: 剪刀
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2MzNWQzNDdkZTRmNGRlNjdkOWUzNmE1NDdlNmJkMGE0YWVhZjZkMTRjYjU1ZGVlNjdiZTRiYTM1YzgxNTEifX19"
   active_slots:
     - HAND
   types:
@@ -145,6 +159,7 @@ shears:
 shield:
   max: 6
   name: 盾牌
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjUyNTU5ZjJiY2VhZDk4M2Y0YjY1NjFjMmI1ZjJiNTg4ZjBkNjExNmQ0NDY2NmNlZmYxMjAyMDc5ZDI3Y2E3NCJ9fX0="
   active_slots:
     - HAND
     - OFF_HAND
@@ -153,6 +168,7 @@ shield:
 rod:
   max: 7
   name: 钓鱼竿
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2FjMmIxMTkzYzEyNDU5ZGEzMjc3N2E2NmU3N2MzM2ViYTgzODhkOWNkNTE2ZDgzZjM2NTFiOWY3YmFmMCJ9fX0="
   active_slots:
     - HAND
   types:
@@ -160,6 +176,7 @@ rod:
 flint_and_steel:
   max: 3
   name: 打火石
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY4MmYwYTVhMTRiZjcxNTczODljYWJjYzcwMWVkZjM5NjIzNGQ3N2Y0MGY5MzRjZTg3OTcwMjc0MWU5Y2RiZiJ9fX0="
   active_slots:
     - HAND
   types:
@@ -167,6 +184,7 @@ flint_and_steel:
 carrot_stick:
   max: 3
   name: 萝卜钓竿
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2YyODM1OWNmOGY5NWY1NmUwYjQ1ZDkxNzE4NWQwMTM3YjUzODAxZjliYzU1MWQ0NThmNjM2NzE4ZmQifX19"
   active_slots:
     - HAND
   types:
@@ -174,6 +192,7 @@ carrot_stick:
 headable:
   max: 3
   name: 头饰
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmE2NTAzNmUyZjllZmFhMTQ4NGE5NGVhYjc2MzE4NThmNzU4MzI2NWM1OWM5NzliOThlYjM4MmFjYTNlNjljMCJ9fX0="
   active_slots:
     - HEAD
   types:
@@ -186,6 +205,7 @@ headable:
 damageable:
   max: 16
   name: 可损坏物品
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmJiMTI1NmViOWY2NjdjMDVmYjIxZTAyN2FhMWQ1MzU1OGJkYTc0ZTI0MGU0ZmE5ZTEzN2Q4NTFjNDE2ZmU5OCJ9fX0="
   types:
     - FLINT_AND_STEEL
     - FISHING_ROD
@@ -253,6 +273,7 @@ damageable:
 all:
   max: 16
   name: 所有物品
+  skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFhNzg1OTE2ZDJkMTdjYTBlYTJhZDIzZDgwMjQ3YzdjNTAyMTQ0MzkwM2JiYWI3YjI0Yjc5MzRiNmEzNjFhYiJ9fX0="
   types:
     - PLAYER_HEAD
     - CARVED_PUMPKIN
