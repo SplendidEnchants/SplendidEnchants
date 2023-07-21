@@ -28,6 +28,8 @@ data class Rarity(
         lateinit var defaultRarity: Rarity
 
         fun initialize() {
+            rarities.clear()
+
             val rarityConfig = Configuration.loadAndUpdate("enchants/rarity.yml")
             rarityConfig.getKeys(false).forEach {
                 rarities[it] = Rarity(

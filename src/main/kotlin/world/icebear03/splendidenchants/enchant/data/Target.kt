@@ -27,6 +27,8 @@ data class Target(
         val targets = ConcurrentHashMap<String, Target>()
 
         fun initialize() {
+            targets.clear()
+
             val targetConfig = Configuration.loadAndUpdate("enchants/target.yml")
             targetConfig.getKeys(false).forEach {
                 targets[it] = Target(

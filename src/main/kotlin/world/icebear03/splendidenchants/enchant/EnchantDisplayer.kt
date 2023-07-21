@@ -27,25 +27,25 @@ object EnchantDisplayer {
     //物品上附魔的序列化，便于在创造模式的还原(Map->String  "enchant_1_name:1|enchant_2_name:3……")
     val itemEnchantKey: NamespacedKey = NamespacedKey("splendidenchants", "item_enchants")
 
-    var defaultPrevious: String
-    var defaultSubsequent: String
+    var defaultPrevious = "{color}{name} {roman_level}"
+    var defaultSubsequent = "\n§8| §7{description}"
 
-    var sortByLevel: Boolean
-    var rarityOrder: List<String>
+    var sortByLevel = true
+    var rarityOrder = mutableListOf<String>()
 
-    var combine: Boolean
-    var minimal: Int
-    var amount: Int
-    var layouts: List<String>
+    var combine = true
+    var minimal = 8
+    var amount = 2
+    var layouts = listOf<String>()
 
     var loreFormation = mutableMapOf<Boolean, List<String>>()
 
-    init {
+    fun initialize() {
         val config = YamlUpdater.loadAndUpdate("enchants/display.yml")
-        defaultPrevious = config.getString("format.default_previous", "{color}{name} {roman_level}")!!
-        defaultSubsequent = config.getString("format.default_subsequent", "\n§8| §7{description}")!!
+        defaultPrevious = config.getString("format.default_previous", defaultPrevious)!!
+        defaultSubsequent = config.getString("format.default_subsequent", defaultSubsequent)!!
         sortByLevel = config.getBoolean("sort.level", true)
-        rarityOrder = config.getStringList("sort.rarity.order")
+        rarityOrder = config.getStringList("sort.rarity.order").toMutableList()
         Rarity.rarities.keys.forEach {
             if (!rarityOrder.contains(it))
                 rarityOrder += it
@@ -56,6 +56,7 @@ object EnchantDisplayer {
         amount = config.getInt("combine.amount", 2)
         layouts = config.getStringList("combine.layout")
 
+        loreFormation.clear()
         loreFormation[true] = config.getStringList("lore_formation.has_lore")
         loreFormation[false] = config.getStringList("lore_formation.without_lore")
     }

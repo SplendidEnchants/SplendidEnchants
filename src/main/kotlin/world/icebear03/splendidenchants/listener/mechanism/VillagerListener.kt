@@ -11,14 +11,14 @@ import world.icebear03.splendidenchants.util.YamlUpdater
 
 object VillagerListener {
 
-    val enableEnchantTrade: Boolean
-    val tradeEnchantGroup: String
-    val amount: Int
+    var enableEnchantTrade = true
+    var tradeEnchantGroup = "可交易附魔"
+    var amount = 2
 
-    init {
+    fun initialize() {
         val config = YamlUpdater.loadAndUpdate("mechanisms/villager.yml")
         enableEnchantTrade = config.getBoolean("enable", true)
-        tradeEnchantGroup = config.getString("group", "可交易附魔")!!
+        tradeEnchantGroup = config.getString("group", tradeEnchantGroup)!!
         amount = config.getInt("amount", 2)
     }
 

@@ -23,35 +23,32 @@ import kotlin.math.roundToInt
 
 object AttainListener {
 
-    val vanillaTable: Boolean
-
     val shelfAmount = mutableMapOf<Location, Int>()
 
-    val moreEnchantChance: MutableList<String>
-    val levelFormula: String
+    var vanillaTable = false
+    var moreEnchantChance = listOf("0.2*{cost_level}", "0.15*{cost_level}", "0.1*{cost_level}")
+    var levelFormula = "{cost_level}/3*{max_level}+{cost_level}*({random}-{random})"
+    var celebrateNotice = mutableMapOf<String, List<String>>()
+    var moreEnchantPrivilege = mutableMapOf<String, String>()
+    var fullLevelPrivilege = "splendidenchants.privilege.table.full"
 
-    val celebrateNotice = mutableMapOf<String, List<String>>()
-
-    val moreEnchantPrivilege = mutableMapOf<String, String>()
-    val fullLevelPrivilege: String
-
-    init {
+    fun initialize() {
         val config = YamlUpdater.loadAndUpdate("mechanisms/enchanting_table.yml")
         vanillaTable = config.getBoolean("vanilla_table", false)
-
-        moreEnchantChance = config.getStringList("more_enchant_chance").toMutableList()
-        levelFormula =
-            config.getString("level_formula", "{cost_level}/3*{max_level}+{cost_level}*({random}-{random})")!!
+        moreEnchantChance = config.getStringList("more_enchant_chance")
+        levelFormula = config.getString("level_formula", levelFormula)!!
 
         val section = config.getConfigurationSection("celebrate_notice")!!
+        celebrateNotice.clear()
         section.getKeys(false).forEach {
             celebrateNotice[it] = section.getStringList(it)
         }
 
-        config.getStringList("privilege.chance").forEach { it ->
+        moreEnchantPrivilege.clear()
+        config.getStringList("privilege.chance").forEach {
             moreEnchantPrivilege[it.split(":")[0]] = it.split(":")[1]
         }
-        fullLevelPrivilege = config.getString("privilege.full_level", "splendidenchants.privilege.table.full")!!
+        fullLevelPrivilege = config.getString("privilege.full_level", fullLevelPrivilege)!!
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

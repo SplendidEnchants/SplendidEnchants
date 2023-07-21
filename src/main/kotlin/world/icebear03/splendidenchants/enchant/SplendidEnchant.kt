@@ -30,29 +30,18 @@ import java.util.concurrent.ConcurrentHashMap
 class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     var config: Config
-    var basicData: BasicData
-    var rarity: Rarity
-    var targets: List<Target>
-    var limitations: Limitations
-    var displayer: Displayer
-    var alternativeData: AlternativeData
-    var variable: Variable
-    var listeners: Listeners
+    lateinit var basicData: BasicData
+    lateinit var rarity: Rarity
+    lateinit var targets: List<Target>
+    lateinit var limitations: Limitations
+    lateinit var displayer: Displayer
+    lateinit var alternativeData: AlternativeData
+    lateinit var variable: Variable
+    lateinit var listeners: Listeners
 
     init {
-        val config = Configuration.loadFromFile(file)
-        this.config = Config(file)
-        basicData = BasicData(config.getConfigurationSection("basic")!!)
-        rarity = Rarity.fromIdOrName(config.getString("rarity", "null")!!)
-        targets = arrayListOf()
-        config.getStringList("targets").forEach {
-            targets += Target.fromIdOrName(it)
-        }
-        limitations = Limitations(this, config.getStringList("limitations"))
-        displayer = Displayer(config.getConfigurationSection("display")!!)
-        alternativeData = AlternativeData(config.getConfigurationSection("alternative"))
-        variable = Variable(config.getConfigurationSection("variables"))
-        listeners = Listeners(this, config.getConfigurationSection("mechanisms.listeners"))
+        config = Config(file)
+        config.load()
     }
 
     override fun translationKey(): String = basicData.id
@@ -84,6 +73,36 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
     override fun getDamageIncrease(level: Int, entityCategory: EntityCategory): Float = 0.0f
 
     override fun getActiveSlots(): MutableSet<EquipmentSlot> = hashSetOf()
+
+    inner class Config(file: File) {
+
+        var file: File
+        var config: Configuration
+
+        init {
+            this.file = file
+            config = Configuration.loadFromFile(file)
+        }
+
+        fun modify(path: String, value: Any?) {
+            config.set(path, value)
+            config.saveToFile(file)
+        }
+
+        fun load() {
+            basicData = BasicData(config.getConfigurationSection("basic")!!)
+            rarity = Rarity.fromIdOrName(config.getString("rarity", "null")!!)
+            targets = arrayListOf()
+            config.getStringList("targets").forEach {
+                targets += Target.fromIdOrName(it)
+            }
+            limitations = Limitations(this@SplendidEnchant, config.getStringList("limitations"))
+            displayer = Displayer(config.getConfigurationSection("display")!!)
+            alternativeData = AlternativeData(config.getConfigurationSection("alternative"))
+            variable = Variable(config.getConfigurationSection("variables"))
+            listeners = Listeners(this@SplendidEnchant, config.getConfigurationSection("mechanisms.listeners"))
+        }
+    }
 
     inner class Displayer(displayerConfig: ConfigurationSection) {
 
@@ -263,22 +282,6 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             name = config.getString("name")!!
             maxLevel = config.getInt("max_level")
             key = NamespacedKey.fromString(id, null) ?: error("minecraft")
-        }
-    }
-
-    inner class Config(file: File) {
-
-        var file: File
-        var config: Configuration
-
-        init {
-            this.file = file
-            config = Configuration.loadFromFile(file)
-        }
-
-        fun modify(path: String, value: Any?) {
-            config.set(path, value)
-            config.saveToFile(file)
         }
     }
 }

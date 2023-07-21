@@ -13,19 +13,19 @@ import world.icebear03.splendidenchants.util.YamlUpdater
 
 object AnvilListener {
 
-    val allowUnsafeLevel: Boolean
-    val allowUnsafeCombine: Boolean
+    var allowUnsafeLevel = true
+    var allowUnsafeCombine = false
 
-    val maxCost: Int
-    val renameCost: Int
-    val repairCost: Int
-    val newEnchantExtraCost: Int
-    val enchantCostPerLevel: String
+    var maxCost = 100
+    var renameCost = 3
+    var repairCost = 5
+    var newEnchantExtraCost = 2
+    var enchantCostPerLevel = "6.0/{max_level}"
 
-    val allowDiffenrentMaterial: Boolean
-    val privilege = mutableMapOf<String, String>()
+    var allowDiffenrentMaterial = false
+    var privilege = mutableMapOf<String, String>()
 
-    init {
+    fun initialize() {
         val config = YamlUpdater.loadAndUpdate("mechanisms/anvil.yml")
         allowUnsafeLevel = config.getBoolean("limit.unsafe_level", true)
         allowUnsafeCombine = config.getBoolean("limit.unsafe_combine", false)
@@ -34,9 +34,10 @@ object AnvilListener {
         renameCost = config.getInt("rename_cost", 3)
         repairCost = config.getInt("repair_cost", 5)
         newEnchantExtraCost = config.getInt("enchant_cost.new_extra", 2)
-        enchantCostPerLevel = config.getString("enchant_cost.per_level", "6.0/{max_level}")!!
+        enchantCostPerLevel = config.getString("enchant_cost.per_level", enchantCostPerLevel)!!
 
         allowDiffenrentMaterial = config.getBoolean("allow_different_material", false)
+        privilege.clear()
         config.getStringList("privilege").forEach { it ->
             privilege[it.split(":")[0]] = it.split(":")[1]
         }

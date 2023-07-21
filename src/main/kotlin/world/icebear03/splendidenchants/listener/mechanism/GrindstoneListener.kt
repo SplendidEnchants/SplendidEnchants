@@ -16,31 +16,32 @@ import kotlin.math.roundToInt
 
 object GrindstoneListener {
 
-    val enableVanilla: Boolean
-    val enableCustomGrindstone: Boolean
+    var enableVanilla = false
+    var enableCustomGrindstone = true
+    var expPerEnchant = "30*{level}/{max_level}*{rarity_bonus}"
+    var accumulation = true
+    var rarityBonus = mutableMapOf<String, Double>()
+    var defaultBonus = 1.0
+    var blacklist = "不可磨砂类附魔"
+    var privilege = mutableMapOf<String, String>()
 
-    val expPerEnchant: String
-    val accumulation: Boolean
-    val rarityBonus = mutableMapOf<String, Double>()
-    val defaultBonus: Double
-    val blacklist: String
-
-    val privilege = mutableMapOf<String, String>()
-
-    init {
+    fun initialize() {
         val config = YamlUpdater.loadAndUpdate("mechanisms/grindstone.yml")
         enableVanilla = config.getBoolean("grindstone.vanilla", false)
         enableCustomGrindstone = config.getBoolean("grindstone.custom", true)
 
-        expPerEnchant = config.getString("exp_per_enchant", "30*{level}/{max_level}*{rarity_bonus}")!!
+        expPerEnchant = config.getString("exp_per_enchant", expPerEnchant)!!
         accumulation = config.getBoolean("accumulation", true)
         val section = config.getConfigurationSection("rarity_bonus")!!
+        rarityBonus.clear()
         section.getKeys(false).forEach {
             rarityBonus[it] = section.getDouble(it)
         }
-        defaultBonus = config.getDouble("default_bonus", 1.0)
-        blacklist = config.getString("blacklist_group", "不可磨砂类附魔")!!
 
+        defaultBonus = config.getDouble("default_bonus", 1.0)
+        blacklist = config.getString("blacklist_group", blacklist)!!
+
+        privilege.clear()
         config.getStringList("privilege").forEach { it ->
             privilege[it.split(":")[0]] = it.split(":")[1]
         }

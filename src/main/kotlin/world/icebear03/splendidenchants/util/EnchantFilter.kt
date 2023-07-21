@@ -111,6 +111,10 @@ object EnchantFilter {
         filterMap[player.uniqueId] = mutableMapOf()
     }
 
+    fun clearAll() {
+        filterMap.clear()
+    }
+
     fun addFilter(player: Player, type: FilterType, value: String, state: FilterStatement) {
         createIfNotExists(player)
         val key: Any = when (type) {
