@@ -47,7 +47,7 @@ object GrindstoneListener {
             privilege[it.split(":")[0]] = it.split(":")[1]
         }
 
-        info("    Successfully load grindstone module!")
+        info("    Successfully load grindstone module")
     }
 
 

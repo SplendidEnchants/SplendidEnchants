@@ -20,19 +20,19 @@ object SplendidEnchants : Plugin() {
 
     override fun onEnable() {
         val stamp = System.currentTimeMillis()
-        info("                                                               ")
-        info(" ______   ______  __       ______   __   __   _____    __   _____                         ")
-        info("/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
-        info("\\ \\___  \\\\ \\  _-/\\ \\ \\____\\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\/\\ \\\\ \\ \\\\ \\ \\/\\ \\                      ")
-        info(" \\/\\_____\\\\ \\_\\   \\ \\_____\\\\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\____- \\ \\_\\\\ \\____-                      ")
-        info("  \\/_____/ \\/_/    \\/_____/ \\/_____/ \\/_/ \\/_/ \\/____/  \\/_/ \\/____/                      ")
-        info("                                                                                          ")
-        info("                ______   __   __   ______   __  __   ______   __   __   ______  ______    ")
-        info("               /\\  ___\\ /\\ \"-.\\ \\ /\\  ___\\ /\\ \\_\\ \\ /\\  __ \\ /\\ \"-.\\ \\ /\\__  _\\/\\  ___\\   ")
-        info("               \\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\____\\ \\  __ \\\\ \\  __ \\\\ \\ \\-.  \\\\/_/\\ \\/\\ \\___  \\  ")
-        info("                \\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\_____\\\\ \\_\\ \\_\\\\ \\_\\ \\_\\\\ \\_\\\\\"\\_\\  \\ \\_\\ \\/\\_____\\ ")
-        info("                 \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/\\/_/ \\/_/\\/_/ \\/_/ \\/_/   \\/_/  \\/_____/ ")
-        info("                                                               ")
+        info("§e                                                               ")
+        info("§e ______   ______  __       ______   __   __   _____    __   _____                         ")
+        info("§e/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
+        info("§e\\ \\___  \\\\ \\  _-/\\ \\ \\____\\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\/\\ \\\\ \\ \\\\ \\ \\/\\ \\                      ")
+        info("§e \\/\\_____\\\\ \\_\\   \\ \\_____\\\\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\____- \\ \\_\\\\ \\____-                      ")
+        info("§e  \\/_____/ \\/_/    \\/_____/ \\/_____/ \\/_/ \\/_/ \\/____/  \\/_/ \\/____/                      ")
+        info("§e                                                                                          ")
+        info("§e                ______   __   __   ______   __  __   ______   __   __   ______  ______    ")
+        info("§e               /\\  ___\\ /\\ \"-.\\ \\ /\\  ___\\ /\\ \\_\\ \\ /\\  __ \\ /\\ \"-.\\ \\ /\\__  _\\/\\  ___\\   ")
+        info("§e               \\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\____\\ \\  __ \\\\ \\  __ \\\\ \\ \\-.  \\\\/_/\\ \\/\\ \\___  \\  ")
+        info("§e                \\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\_____\\\\ \\_\\ \\_\\\\ \\_\\ \\_\\\\ \\_\\\\\"\\_\\  \\ \\_\\ \\/\\_____\\ ")
+        info("§e                 \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/\\/_/ \\/_/\\/_/ \\/_/ \\/_/   \\/_/  \\/_____/ ")
+        info("§e                                                               ")
         info("Installing SplendidEnchants...")
 
         info("|- Loading Config Module...")
@@ -53,9 +53,9 @@ object SplendidEnchants : Plugin() {
 
         info("|- Loading GUIs...")
         info("                            ")
-        info("Installed SplendidEnchants in ${System.currentTimeMillis() - stamp}ms")
-        info("| Version: 3.0.0")
-        info("| Author: 白熊_IceBear Micalhl xiaozhangup")
+        info("Installed SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
+        info("| Version: §r3.0.0")
+        info("| Author: §r白熊_IceBear &{#FFD0DB}Micalhl §bxiaozhangup")
     }
 
     fun reload() {
@@ -86,8 +86,8 @@ object SplendidEnchants : Plugin() {
         EnchantSearchUI.reload()
 
         info("                            ")
-        info("Reloaded SplendidEnchants in ${System.currentTimeMillis() - stamp}ms")
-        info("| Version: 3.0.0")
-        info("| Author: 白熊_IceBear Micalhl xiaozhangup")
+        info("Reloaded SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
+        info("| Version: §r3.0.0")
+        info("| Author: §r白熊_IceBear §dMicalhl §bxiaozhangup")
     }
 }

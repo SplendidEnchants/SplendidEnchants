@@ -51,7 +51,7 @@ object AttainListener {
         }
         fullLevelPrivilege = config.getString("privilege.full_level", fullLevelPrivilege)!!
 
-        info("    Successfully load table & looting module!")
+        info("    Successfully load table & looting module")
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

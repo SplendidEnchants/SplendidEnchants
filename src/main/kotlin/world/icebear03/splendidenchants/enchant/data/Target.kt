@@ -41,7 +41,7 @@ data class Target(
             }
             targets["unknown"] = Target("unknown", "未定义", 16, hashSetOf(), arrayListOf())
 
-            info("    Successfully load ${targets.size} targets!")
+            info("    Successfully load §6${targets.size} targets")
         }
 
         fun fromIdOrName(idOrName: String): Target {

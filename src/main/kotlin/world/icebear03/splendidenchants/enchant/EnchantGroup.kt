@@ -54,7 +54,7 @@ data class EnchantGroup(
                 )
             }
 
-            info("    Successfully load ${groups.size} groups!")
+            info("    Successfully load §6${groups.size} groups")
         }
 
         fun isIn(enchant: Enchantment, group: String): Boolean {

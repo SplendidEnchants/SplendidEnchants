@@ -61,7 +61,7 @@ object EnchantDisplayer {
         loreFormation[true] = config.getStringList("lore_formation.has_lore")
         loreFormation[false] = config.getStringList("lore_formation.without_lore")
 
-        info("    Successfully load enchant displayer module!")
+        info("    Successfully load enchant displayer module")
     }
 
     //对附魔排序

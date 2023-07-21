@@ -22,7 +22,7 @@ object VillagerListener {
         tradeEnchantGroup = config.getString("group", tradeEnchantGroup)!!
         amount = config.getInt("amount", 2)
 
-        info("    Successfully load merchant module!")
+        info("    Successfully load merchant module")
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

@@ -41,7 +41,7 @@ data class Rarity(
             }
             defaultRarity = rarities[Config.config.getString("default_rarity", "common")]!!
 
-            info("    Successfully load ${rarities.size} rarities!")
+            info("    Successfully load §6${rarities.size} rarities")
         }
 
         fun fromIdOrName(idOrName: String): Rarity {
