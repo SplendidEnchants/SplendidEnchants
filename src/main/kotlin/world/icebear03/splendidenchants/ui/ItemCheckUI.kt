@@ -20,13 +20,6 @@ import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.util.YamlUpdater
 
-/**
- * SplendidEnchants
- * world.icebear03.splendidenchants.ui.ItemCheckUI
- *
- * @author Mical
- * @since 2023/7/11 21:55
- */
 @MenuComponent("ItemCheck")
 object ItemCheckUI {
 

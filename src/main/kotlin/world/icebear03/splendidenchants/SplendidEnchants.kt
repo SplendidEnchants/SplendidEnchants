@@ -8,14 +8,8 @@ import world.icebear03.splendidenchants.enchant.EnchantGroup
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
-import world.icebear03.splendidenchants.listener.mechanism.AnvilListener
-import world.icebear03.splendidenchants.listener.mechanism.AttainListener
-import world.icebear03.splendidenchants.listener.mechanism.GrindstoneListener
-import world.icebear03.splendidenchants.listener.mechanism.VillagerListener
-import world.icebear03.splendidenchants.ui.EnchantSearchUI
-import world.icebear03.splendidenchants.ui.FilterRarityUI
-import world.icebear03.splendidenchants.ui.ItemCheckUI
-import world.icebear03.splendidenchants.ui.MainMenuUI
+import world.icebear03.splendidenchants.listener.mechanism.*
+import world.icebear03.splendidenchants.ui.*
 import world.icebear03.splendidenchants.util.EnchantFilter
 
 object SplendidEnchants : Plugin() {
@@ -52,6 +46,7 @@ object SplendidEnchants : Plugin() {
         AttainListener.initialize()
         GrindstoneListener.initialize()
         VillagerListener.initialize()
+        ExpListener.initialize()
 
         console().sendMessage("|- Loading GUIs...")
         console().sendMessage("                            ")
@@ -81,12 +76,16 @@ object SplendidEnchants : Plugin() {
         AttainListener.initialize()
         GrindstoneListener.initialize()
         VillagerListener.initialize()
+        ExpListener.initialize()
 
         console().sendMessage("|- Reloading GUIs...")
         MainMenuUI.reload()
         ItemCheckUI.reload()
         EnchantSearchUI.reload()
         FilterRarityUI.reload()
+        FilterTargetUI.reload()
+        FilterGroupUI.reload()
+        AnvilUI.reload()
 
         console().sendMessage("                            ")
         console().sendMessage("Reloaded SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")

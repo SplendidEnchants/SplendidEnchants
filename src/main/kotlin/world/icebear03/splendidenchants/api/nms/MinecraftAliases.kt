@@ -1,12 +1,5 @@
 package world.icebear03.splendidenchants.api.nms
 
-/**
- * SplendidEnchants
- * world.icebear03.splendidenchants.api.nms.MinecraftAliases
- *
- * @author mical
- * @since 2023/6/22 3:23 PM
- */
 // 1.16
 typealias NMS16PacketPlayOutBoss = net.minecraft.server.v1_16_R3.PacketPlayOutBoss
 

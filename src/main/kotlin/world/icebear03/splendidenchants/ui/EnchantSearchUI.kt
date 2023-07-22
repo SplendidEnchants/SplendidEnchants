@@ -95,7 +95,6 @@ object EnchantSearchUI {
                 }
             }
 
-
             onClick { event ->
                 event.isCancelled = true
                 if (event.rawSlot in shape && event.rawSlot !in slots) {

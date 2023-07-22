@@ -8,16 +8,16 @@ import taboolib.module.nms.nmsProxy
 import taboolib.module.nms.sendPacket
 import world.icebear03.splendidenchants.`object`.Overlay
 
-/**
- * SplendidEnchants
- * world.icebear03.splendidenchants.api.nms.NMS
- *
- * @author mical
- * @since 2023/6/21 10:14 PM
- */
 abstract class NMS {
 
-    abstract fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor)
+    abstract fun sendBossBar(
+        player: Player,
+        message: String,
+        progress: Float,
+        time: Int,
+        overlay: Overlay,
+        color: BarColor
+    )
 
     abstract fun toBukkitItemStack(item: Any): ItemStack
 

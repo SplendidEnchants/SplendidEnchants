@@ -12,13 +12,6 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
 import world.icebear03.splendidenchants.util.YamlUpdater
 
-/**
- * SplendidEnchants
- * world.icebear03.splendidenchants.ui.MainMenuUI
- *
- * @author Mical
- * @since 2023/7/11 21:45
- */
 @MenuComponent("Menu")
 object MainMenuUI {
 
@@ -77,8 +70,8 @@ object MainMenuUI {
 
     @MenuComponent
     private val anvil = MenuFunctionBuilder {
-        onClick { (_, _, _, _) ->
-            TODO("open")
+        onClick { (_, _, event, _) ->
+            AnvilUI.open(event.clicker)
         }
     }
 

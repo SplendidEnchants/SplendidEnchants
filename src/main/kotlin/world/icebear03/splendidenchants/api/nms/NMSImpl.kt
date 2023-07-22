@@ -15,16 +15,16 @@ import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import world.icebear03.splendidenchants.`object`.Overlay
 import java.util.*
 
-/**
- * SplendidEnchants
- * world.icebear03.splendidenchants.api.nms.NMSImpl
- *
- * @author mical
- * @since 2023/6/21 10:28 PM
- */
 class NMSImpl : NMS() {
 
-    override fun sendBossBar(player: Player, message: String, progress: Float, time: Int, overlay: Overlay, color: BarColor) {
+    override fun sendBossBar(
+        player: Player,
+        message: String,
+        progress: Float,
+        time: Int,
+        overlay: Overlay,
+        color: BarColor
+    ) {
         val uuid = UUID.randomUUID()
         when (MinecraftVersion.major) {
             // 1.16

@@ -36,7 +36,7 @@ template:
         keyword: Menu$item_check
   'C':
     material: PLAYER_HEAD
-    name: "&c铁砧检查器"
+    name: "&c铁砧模拟器"
     lore:
       - "&8| &7在这里预览铁砧拼合的结果"
       - "&8| &7或得知&e为什么不能进行拼合"
@@ -51,10 +51,10 @@ template:
         keyword: Menu$anvil
   'D':
     material: PLAYER_HEAD
-    name: "&c砂轮检查器"
+    name: "&c砂轮模拟器"
     lore:
-      - "&8| &7在这里预览砂轮磨砂的结果"
-      - "&8| &7或了解&e返还经验值的计算过程"
+      - "&8| &7在这里进行砂轮磨砂"
+      - "&8| &7查询磨砂&e返还经验值"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGU5OWJmYTYxZmU1NTJmMWU2NjM2YjAzZmJlNDBmNGU0NzBjM2IzY2IxNGY3MGU5MDEyODEzNzkwZWFkNTY4ZiJ9fX0="
