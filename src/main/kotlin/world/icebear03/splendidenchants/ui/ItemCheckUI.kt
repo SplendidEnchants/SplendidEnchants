@@ -2,19 +2,22 @@
 
 package world.icebear03.splendidenchants.ui
 
+import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
+import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
+import taboolib.platform.util.modifyLore
 import world.icebear03.splendidenchants.api.ItemAPI
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
-import world.icebear03.splendidenchants.ui.util.applyReplaceMap
 import world.icebear03.splendidenchants.util.YamlUpdater
 
 /**
@@ -41,7 +44,7 @@ object ItemCheckUI {
         config = MenuConfiguration(source)
     }
 
-    fun open(player: Player) {
+    fun open(player: Player, item: ItemStack? = null) {
         if (!::config.isInitialized) {
             config = MenuConfiguration(source)
         }
@@ -49,17 +52,17 @@ object ItemCheckUI {
             virtualize()
             val (shape, templates) = config
             rows(shape.rows)
-            val slots = shape["ItemCheck\$information"].toList()
+            val slots = shape["ItemCheck\$enchant"].toList()
             slots(slots)
-            elements { ItemAPI.getEnchants(player.equipment.itemInMainHand).toList() }
+            elements { ItemAPI.getEnchants(item).toList() }
 
             onBuild { _, inventory ->
-                shape.all("ItemCheck\$information", "Previous", "Next") { slot, index, item, _ ->
+                shape.all("ItemCheck\$enchant", "ItemCheck\$item", "Previous", "Next") { slot, index, item, _ ->
                     inventory.setItem(slot, item(slot, index))
                 }
             }
 
-            val template = templates.require("ItemCheck\$information")
+            val template = templates.require("ItemCheck\$enchant")
             onGenerate { _, element, index, slot ->
                 template(slot, index, element, player)
             }
@@ -80,21 +83,57 @@ object ItemCheckUI {
                 }
             }
 
+            shape["ItemCheck\$item"].first().let { slot ->
+                set(
+                    slot,
+                    templates("ItemCheck\$item", slot, 0, false, "Fallback", item)
+                )
+            }
+
+
             onClick { event ->
                 event.isCancelled = true
                 if (event.rawSlot in shape && event.rawSlot !in slots) {
                     templates[event.rawSlot]?.handle(event)
+                }
+                if (event.rawSlot !in shape) {
+                    val clicked = event.virtualEvent().clickItem
+                    if (clicked.type != Material.AIR)
+                        open(player, clicked)
                 }
             }
         }
     }
 
     @MenuComponent
-    private val information = MenuFunctionBuilder {
+    private val enchant = MenuFunctionBuilder {
         onBuild { (_, _, _, _, icon, args) ->
-            val (enchant, level) = args[0] as Pair<SplendidEnchant, Int>
-            val player = args[1] as Player
-            (icon to level) applyReplaceMap (enchant to player)
+            val pair = args[0] as Pair<SplendidEnchant, Int>
+            val enchant = pair.first
+            val replaceMap = enchant.displayer.getReplaceMap(pair.second)
+            icon.modifyLore {
+                this.replaceAll {
+                    it.replaceWithOrder(*replaceMap.toArray())
+                }
+            }
+            val name = icon.itemMeta.displayName
+            ItemAPI.setName(icon, name.replaceWithOrder(*replaceMap.toArray()))
+            ItemAPI.setSkull(icon, enchant.rarity.skull)
+
+            icon
+        }
+    }
+
+    @MenuComponent
+    private val item = MenuFunctionBuilder {
+        onBuild { (_, _, _, _, icon, args) ->
+            if (args[0] == null)
+                icon
+            else
+                args[0] as ItemStack
+        }
+        onClick { (_, _, event, _) ->
+            open(event.clicker, null)
         }
     }
 

@@ -60,7 +60,11 @@ data class EnchantGroup(
         }
 
         fun isIn(enchant: Enchantment, group: String): Boolean {
-            return groups[group]?.enchantNames?.contains(EnchantAPI.getName(enchant)) ?: false || groups[group]?.enchantNames?.contains(
+            return isIn(enchant, groups[group])
+        }
+
+        fun isIn(enchant: Enchantment, group: EnchantGroup?): Boolean {
+            return group?.enchantNames?.contains(EnchantAPI.getName(enchant)) ?: false || group?.enchantNames?.contains(
                 EnchantAPI.getId(enchant)
             ) ?: false
         }
@@ -71,6 +75,10 @@ data class EnchantGroup(
 
         fun getSplendidEnchants(group: String): List<SplendidEnchant> {
             return groups[group]?.enchants ?: emptyList()
+        }
+
+        fun fromName(name: String): EnchantGroup {
+            return groups[name] ?: groups["所有物品"]!!
         }
     }
 }

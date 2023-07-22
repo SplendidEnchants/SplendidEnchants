@@ -1,4 +1,4 @@
-title: "筛选器: 类型/定位"
+title: "筛选器: 类型定位"
 shape:
   - 'FFFFFFFFF'
   - 'FTTTTTTTF'
@@ -21,12 +21,12 @@ template:
 
   'B':
     material: PLAYER_HEAD
-    name: "&b回到菜单"
+    name: "&b回到附魔大全"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjU5NmNlNTg3NWMzZGM1ZTliOThlZWYyMmIxMjFlZTEwMDQzNzMyMGFmOGZmZDMyOGYzMWU4MWQyYzk0Mzk2NCJ9fX0="
       - ==: Functional
-        keyword: EnchantSearch$back
+        keyword: FilterGroup$back
 
   'P':
     material: PLAYER_HEAD
@@ -59,13 +59,11 @@ template:
 
   'T':
     material: PLAYER_HEAD
-    name: "&b{type}"
+    name: "&r{name}"
     lore:
-      - "&8| &7左击 &a只看此类型的附魔"
-      - "&8| &7右击 &c不看此类型的附魔"
+      - "&8| &7左击 &a✓只看适合此类物品的附魔"
+      - "&8| &7中键 &e੦清除当前筛选"
+      - "&8| &7右击 &c✗不看适合此类物品的附魔"
     feature:
       - ==: Functional
         keyword: FilterGroup$filter
-        on: GREEN_STAINED_GLASS_PANE
-        off: RED_STAINED_GLASS_PANE
-        #TODO 加头颅

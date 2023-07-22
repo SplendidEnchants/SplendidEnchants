@@ -26,7 +26,7 @@ template:
 
   'B':
     material: PLAYER_HEAD
-    name: "&b回到菜单"
+    name: "&b回到附魔主菜单"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjU5NmNlNTg3NWMzZGM1ZTliOThlZWYyMmIxMjFlZTEwMDQzNzMyMGFmOGZmZDMyOGYzMWU4MWQyYzk0Mzk2NCJ9fX0="
@@ -86,7 +86,7 @@ template:
     name: "&b筛选 &7>> &e按类型/定位"
     lore:
       - "&8| &7当前筛选的类型/定位: "
-      - "&7    {types}"
+      - "&7    {groups}"
       - "&7"
       - "&8| &7点击选择显示或不显示特定类型/定位的附魔"
       - "&8| &7中键清除当前筛选"
@@ -94,7 +94,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkyYTBhMzY5Yzg5ZTRiYTJjOTNkMWNhN2Y1YzY1MDkwOTVlMGI5YmUyNWI3MzIxNmVhODgyZGM2NzFjMWE3NiJ9fX0="
       - ==: Functional
-        keyword: EnchantSearch$filter_type
+        keyword: EnchantSearch$filter_group
 
   'Z':
     material: PLAYER_HEAD

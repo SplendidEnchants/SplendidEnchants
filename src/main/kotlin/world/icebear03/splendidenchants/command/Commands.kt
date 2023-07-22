@@ -5,14 +5,11 @@ import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.mainCommand
 import taboolib.expansion.createHelper
 import world.icebear03.splendidenchants.command.sub.*
-import world.icebear03.splendidenchants.enchant.EnchantLoader
 
 @CommandHeader(name = "splendidenchants", aliases = ["se", "spe", "nereusopus", "no", "nerous"])
 object Commands {
 
-    val enchantNamesAndIds = EnchantLoader.enchantById.keys.toList().toMutableList().also {
-        it.addAll(EnchantLoader.enchantByName.keys.toList())
-    }
+    val enchantNamesAndIds = mutableListOf<String>()
 
     @CommandBody
     val main = mainCommand {

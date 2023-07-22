@@ -7,6 +7,7 @@ import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getDataFolder
 import taboolib.library.reflex.Reflex.Companion.getProperty
 import taboolib.library.reflex.Reflex.Companion.setProperty
+import world.icebear03.splendidenchants.command.Commands
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import java.io.File
@@ -70,6 +71,10 @@ object EnchantLoader {
         }
 
         Enchantment::class.java.setProperty("acceptingNew", value = false, isStatic = true)
+
+        Commands.enchantNamesAndIds.addAll(enchantById.keys.toList().toMutableList().also {
+            it.addAll(enchantByName.keys.toList())
+        })
 
         console().sendMessage("    Successfully load §6${enchantById.size} enchants")
     }

@@ -57,7 +57,7 @@ object EnchantSearchUI {
                 shape.all(
                     "EnchantSearch\$enchant", "Previous", "Next",
                     "EnchantSearch\$filter_rarity", "EnchantSearch\$filter_target",
-                    "EnchantSearch\$filter_type", "EnchantSearch\$filter_string"
+                    "EnchantSearch\$filter_group", "EnchantSearch\$filter_string"
                 ) { slot, index, item, _ ->
                     inventory.setItem(slot, item(slot, index))
                 }
@@ -83,7 +83,7 @@ object EnchantSearchUI {
                 }
             }
 
-            val tmp = listOf("rarity", "target", "type", "string")
+            val tmp = listOf("rarity", "target", "group", "string")
             tmp.forEach {
                 shape["EnchantSearch\$filter_$it"].first().let { slot ->
                     set(
@@ -147,12 +147,36 @@ object EnchantSearchUI {
         onBuild { (_, _, _, _, icon, args) ->
             icon.variable("targets", args[0] as List<String>)
         }
+
+        onClick { (_, _, event, _) ->
+            val clickType = event.virtualEvent().clickType
+            val player = event.clicker
+            if (clickType == ClickType.MIDDLE) {
+                player.closeInventory()
+                EnchantFilter.clearFilter(player, EnchantFilter.FilterType.TARGET)
+                open(player)
+            } else {
+                FilterTargetUI.open(event.clicker)
+            }
+        }
     }
 
     @MenuComponent
-    private val filter_type = MenuFunctionBuilder {
+    private val filter_group = MenuFunctionBuilder {
         onBuild { (_, _, _, _, icon, args) ->
-            icon.variable("types", args[0] as List<String>)
+            icon.variable("groups", args[0] as List<String>)
+        }
+
+        onClick { (_, _, event, _) ->
+            val clickType = event.virtualEvent().clickType
+            val player = event.clicker
+            if (clickType == ClickType.MIDDLE) {
+                player.closeInventory()
+                EnchantFilter.clearFilter(player, EnchantFilter.FilterType.GROUP)
+                open(player)
+            } else {
+                FilterGroupUI.open(event.clicker)
+            }
         }
     }
 

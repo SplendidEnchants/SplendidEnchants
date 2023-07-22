@@ -39,8 +39,20 @@ object EnchantFilter {
                     run {
                         val result = when (it.key) {
                             RARITY -> pair.first as Rarity == enchant.rarity
-                            TARGET -> enchant.targets.contains(pair.first as Target)
-                            TYPE -> EnchantGroup.isIn(enchant, pair.first.toString())
+                            TARGET -> {
+                                val target = pair.first as Target
+                                if (enchant.targets.contains(pair.first as Target)) true
+                                else {
+                                    var flag = true
+                                    enchant.targets.forEach {
+                                        if (!target.types.containsAll(it.types))
+                                            flag = false
+                                    }
+                                    flag
+                                }
+                            }
+
+                            GROUP -> EnchantGroup.isIn(enchant, pair.first as EnchantGroup)
                             STRING -> {
                                 enchant.basicData.name.contains(pair.first.toString()) ||
                                         enchant.basicData.id.contains(pair.first.toString()) ||
@@ -92,7 +104,12 @@ object EnchantFilter {
                     target.name
                 }
 
-                TYPE, STRING -> {
+                GROUP -> {
+                    val group = it.first as EnchantGroup
+                    group.name
+                }
+
+                STRING -> {
                     it.first
                 }
             }
@@ -133,7 +150,7 @@ object EnchantFilter {
             player, type, when (type) {
                 RARITY -> Rarity.fromIdOrName(value)
                 TARGET -> Target.fromIdOrName(value)
-                TYPE -> value
+                GROUP -> EnchantGroup.fromName(value)
                 STRING -> value
             }, state
         )
@@ -158,7 +175,7 @@ object EnchantFilter {
     enum class FilterType(val displayName: String) {
         RARITY("品质"),
         TARGET("物品类别"),
-        TYPE("类型/定位"),
+        GROUP("类型/定位"),
         STRING("名字/描述");
     }
 
