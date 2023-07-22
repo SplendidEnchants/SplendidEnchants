@@ -23,7 +23,7 @@ import world.icebear03.splendidenchants.util.YamlUpdater
 object MainMenuUI {
 
     init {
-        YamlUpdater.loadAndUpdate("gui/menu.yml", listOf())
+        YamlUpdater.loadAndUpdate("gui/menu.yml")
     }
 
     @Config("gui/menu.yml")

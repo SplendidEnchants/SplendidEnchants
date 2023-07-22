@@ -23,7 +23,6 @@ object EnchantFilter {
 
     fun filter(filters: MutableMap<FilterType, MutableList<Pair<Any, FilterStatement>>>): List<SplendidEnchant> {
         return all.filter { enchant ->
-            println("--------------------------")
             var flag = true
 
             filters.forEach {
@@ -43,7 +42,6 @@ object EnchantFilter {
                             TARGET -> enchant.targets.contains(pair.first as Target)
                             TYPE -> EnchantGroup.isIn(enchant, pair.first.toString())
                             STRING -> {
-                                println(enchant.basicData.name + " " + pair.first.toString())
                                 enchant.basicData.name.contains(pair.first.toString()) ||
                                         enchant.basicData.id.contains(pair.first.toString()) ||
                                         enchant.displayer.generalDescription.contains(pair.first.toString())
@@ -54,7 +52,6 @@ object EnchantFilter {
                                 ON -> onFlag = true
                                 OFF -> offFlag = true
                             }
-                            println(enchant.basicData.name + "满足：" + it.key + " 这是" + pair.second)
                         }
                     }
                 }
@@ -62,8 +59,9 @@ object EnchantFilter {
                 if (!onExists)
                     onFlag = true
 
-                println("       $onFlag $offFlag")
-                if (!onFlag || offFlag)
+                if (offFlag)
+                    flag = false
+                if (!onFlag)
                     flag = false
             }
             flag
@@ -111,6 +109,11 @@ object EnchantFilter {
         filterMap[player.uniqueId] = mutableMapOf()
     }
 
+    fun clearFilter(player: Player, type: FilterType) {
+        createIfNotExists(player)
+        filterMap[player.uniqueId]!![type] = mutableListOf()
+    }
+
     fun clearAll() {
         filterMap.clear()
     }
@@ -141,7 +144,7 @@ object EnchantFilter {
     }
 
     enum class FilterStatement(val symbol: String) {
-        ON("§7√"),
-        OFF("§c×");
+        ON("§a✓"),
+        OFF("§c✗");
     }
 }

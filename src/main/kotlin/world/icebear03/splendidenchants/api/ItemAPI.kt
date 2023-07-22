@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
+import org.serverct.parrot.parrotx.function.textured
 import taboolib.platform.util.giveItem
 import taboolib.platform.util.modifyLore
 import taboolib.platform.util.modifyMeta
@@ -168,5 +169,9 @@ object ItemAPI {
             meta.removeEnchant(enchant)
         }
         return meta
+    }
+
+    fun setSkull(item: ItemStack, skull: String): ItemStack {
+        return item.textured(skull)
     }
 }

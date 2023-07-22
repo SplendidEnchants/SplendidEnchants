@@ -59,11 +59,12 @@ template:
       - "&7    {rarities}"
       - "&7"
       - "&8| &7点击选择显示或不显示特定品质的附魔"
+      - "&8| &7中键清除当前筛选"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzg2YjgwMjZhNjU5NmQ5MjJiM2I5ZTI0NWM2YjNmYWYzMTdhY2Q0ZjNjOTU3YTU4ZmE4NTNhZjY2MzJhOWViMiJ9fX0="
-        #- ==: Functional
-        #keyword: EnchantSearch$enchant
+      - ==: Functional
+        keyword: EnchantSearch$filter_rarity
 
   'X':
     material: PLAYER_HEAD
@@ -73,11 +74,12 @@ template:
       - "&7    {targets}"
       - "&7"
       - "&8| &7点击选择显示或不显示特定物品类别的附魔"
+      - "&8| &7中键清除当前筛选"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjZlYTIxMzU4Mzg0NjE1MzQzNzJmMmRhNmM4NjJkMjFjZDVmM2QyYzcxMTlmMmJiNjc0YmJkNDI3OTEifX19"
-        #- ==: Functional
-      #  keyword: EnchantSearch$back
+      - ==: Functional
+        keyword: EnchantSearch$filter_target
 
   'Y':
     material: PLAYER_HEAD
@@ -87,11 +89,13 @@ template:
       - "&7    {types}"
       - "&7"
       - "&8| &7点击选择显示或不显示特定类型/定位的附魔"
+      - "&8| &7中键清除当前筛选"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkyYTBhMzY5Yzg5ZTRiYTJjOTNkMWNhN2Y1YzY1MDkwOTVlMGI5YmUyNWI3MzIxNmVhODgyZGM2NzFjMWE3NiJ9fX0="
-        #- ==: Functional
-      #  keyword: EnchantSearch$back
+      - ==: Functional
+        keyword: EnchantSearch$filter_type
+
   'Z':
     material: PLAYER_HEAD
     name: "&b筛选 &7>> &e按名字/描述"
@@ -99,15 +103,17 @@ template:
       - "&8| &7当前筛选的名字/描述: "
       - "&7    {strings}"
       - "&7"
-      - "&8| &7点击选择显示或不显示含有特定名字/描述的附魔"
+      - "&8| &7左击只看含有特定字段的附魔"
+      - "&8| &7右击不看含有特定字段的附魔"
+      - "&8| &7中键清除当前筛选"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmEyYWZhN2JiMDYzYWMxZmYzYmJlMDhkMmM1NThhN2RmMmUyYmFjZGYxNWRhYzJhNjQ2NjJkYzQwZjhmZGJhZCJ9fX0="
-        #- ==: Functional
-      #  keyword: EnchantSearch$back
+      - ==: Functional
+        keyword: EnchantSearch$filter_string
   'E':
     material: PLAYER_HEAD
-    name: "{color}{name} {roman_level}"
+    name: "{color}{name}"
     lore:
       - "&8| &7附魔: {color}{name}"
       - "&8| &7等级: &e{level} / &c{max_level}"

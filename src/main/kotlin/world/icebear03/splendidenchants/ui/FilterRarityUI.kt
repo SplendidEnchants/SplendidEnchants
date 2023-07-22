@@ -22,11 +22,12 @@ import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.util.EnchantFilter
 import world.icebear03.splendidenchants.util.YamlUpdater
 
-@MenuComponent("FilterRarity")
-object EnchantSearchUI {
+
+@MenuComponent("EnchantSearch")
+object FilterRarityUI {
 
     init {
-        YamlUpdater.loadAndUpdate("gui/filter_rarity.yml")
+        YamlUpdater.loadAndUpdate("gui/enchant_search.yml")
     }
 
     @Config("gui/enchant_search.yml")

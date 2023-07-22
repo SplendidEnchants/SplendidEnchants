@@ -147,7 +147,11 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
 
         //生成可能存在的占位符和对应值
-        fun getReplaceMap(level: Int?, player: Player?, item: ItemStack?): ArrayList<Pair<String, String>> {
+        fun getReplaceMap(
+            level: Int?,
+            player: Player? = null,
+            item: ItemStack? = null
+        ): ArrayList<Pair<String, String>> {
             val tmp = variable.generateReplaceMap(level, player, item)
             val l = (level ?: basicData.maxLevel)
             tmp += basicData.id to "id"
@@ -213,7 +217,11 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                 ?: modifiable[variable]!!.second
         }
 
-        fun generateReplaceMap(level: Int?, player: Player?, item: ItemStack?): ArrayList<Pair<String, String>> {
+        fun generateReplaceMap(
+            level: Int?,
+            player: Player? = null,
+            item: ItemStack? = null
+        ): ArrayList<Pair<String, String>> {
             val list = arrayListOf<Pair<String, String>>()
             variableSet.forEach {
                 when (it.value) {

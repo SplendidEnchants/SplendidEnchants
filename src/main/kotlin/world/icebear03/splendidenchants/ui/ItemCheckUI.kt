@@ -28,7 +28,7 @@ import world.icebear03.splendidenchants.util.YamlUpdater
 object ItemCheckUI {
 
     init {
-        YamlUpdater.loadAndUpdate("gui/item_check.yml", listOf())
+        YamlUpdater.loadAndUpdate("gui/item_check.yml")
     }
 
     @Config("gui/item_check.yml")
