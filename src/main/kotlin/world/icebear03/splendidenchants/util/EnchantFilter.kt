@@ -118,22 +118,41 @@ object EnchantFilter {
         filterMap.clear()
     }
 
-    fun addFilter(player: Player, type: FilterType, value: String, state: FilterStatement) {
+    fun getStatement(player: Player, type: FilterType, value: Any): FilterStatement? {
         createIfNotExists(player)
-        val key: Any = when (type) {
-            RARITY -> Rarity.fromIdOrName(value)
-            TARGET -> Target.fromIdOrName(value)
-            TYPE -> value
-            STRING -> value
+        val pairs = filterMap[player.uniqueId]!![type] ?: return null
+        pairs.forEach {
+            if (it.first == value)
+                return it.second
         }
-        if (!filterMap[player.uniqueId]!!.containsKey(type))
-            filterMap[player.uniqueId]!![type] = mutableListOf()
-        filterMap[player.uniqueId]!![type]!! += key to state
+        return null
     }
 
-    fun removeFilter(player: Player, type: FilterType) {
+    fun addFilter(player: Player, type: FilterType, value: String, state: FilterStatement) {
+        addFilter(
+            player, type, when (type) {
+                RARITY -> Rarity.fromIdOrName(value)
+                TARGET -> Target.fromIdOrName(value)
+                TYPE -> value
+                STRING -> value
+            }, state
+        )
+    }
+
+    fun addFilter(player: Player, type: FilterType, value: Any, state: FilterStatement) {
         createIfNotExists(player)
-        filterMap[player.uniqueId]!![type] = mutableListOf()
+        if (!filterMap[player.uniqueId]!!.containsKey(type))
+            filterMap[player.uniqueId]!![type] = mutableListOf()
+        filterMap[player.uniqueId]!![type]!! += value to state
+    }
+
+    fun clearFilter(player: Player, type: FilterType, value: Any) {
+        createIfNotExists(player)
+        val pairs = filterMap[player.uniqueId]!![type] ?: return
+        pairs.toList().forEach {
+            if (it.first == value)
+                pairs.remove(it)
+        }
     }
 
     enum class FilterType(val displayName: String) {

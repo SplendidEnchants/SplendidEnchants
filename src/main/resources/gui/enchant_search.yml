@@ -103,9 +103,9 @@ template:
       - "&8| &7当前筛选的名字/描述: "
       - "&7    {strings}"
       - "&7"
-      - "&8| &7左击只看含有特定字段的附魔"
-      - "&8| &7右击不看含有特定字段的附魔"
-      - "&8| &7中键清除当前筛选"
+      - "&8| &7左击 &a✓只看含有特定字段的附魔"
+      - "&8| &7中键 &e੦清除当前筛选"
+      - "&8| &7右击 &c✗不看含有特定字段的附魔"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmEyYWZhN2JiMDYzYWMxZmYzYmJlMDhkMmM1NThhN2RmMmUyYmFjZGYxNWRhYzJhNjQ2NjJkYzQwZjhmZGJhZCJ9fX0="

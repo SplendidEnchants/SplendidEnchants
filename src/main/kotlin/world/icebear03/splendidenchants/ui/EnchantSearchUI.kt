@@ -22,11 +22,11 @@ import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.util.EnchantFilter
 import world.icebear03.splendidenchants.util.YamlUpdater
 
-@MenuComponent("FilterRarity")
+@MenuComponent("EnchantSearch")
 object EnchantSearchUI {
 
     init {
-        YamlUpdater.loadAndUpdate("gui/filter_rarity.yml")
+        YamlUpdater.loadAndUpdate("gui/enchant_search.yml")
     }
 
     @Config("gui/enchant_search.yml")
@@ -129,8 +129,16 @@ object EnchantSearchUI {
             icon.variable("rarities", args[0] as List<String>)
         }
 
-        onClick {
-
+        onClick { (_, _, event, _) ->
+            val clickType = event.virtualEvent().clickType
+            val player = event.clicker
+            if (clickType == ClickType.MIDDLE) {
+                player.closeInventory()
+                EnchantFilter.clearFilter(player, EnchantFilter.FilterType.RARITY)
+                open(player)
+            } else {
+                FilterRarityUI.open(event.clicker)
+            }
         }
     }
 
@@ -156,7 +164,6 @@ object EnchantSearchUI {
         onClick { (_, _, event, _) ->
             val clickType = event.virtualEvent().clickType
             val player = event.clicker
-            player.closeInventory()
             if (clickType == ClickType.MIDDLE) {
                 EnchantFilter.clearFilter(player, EnchantFilter.FilterType.STRING)
                 open(player)
@@ -164,6 +171,7 @@ object EnchantSearchUI {
             when (clickType) {
                 ClickType.LEFT, ClickType.RIGHT -> {
                     //TODO 自定义语言
+                    player.closeInventory()
                     player.sendMessage("§e请在聊天栏中输入字段...")
                     player.nextChat {
                         player.sendMessage("§a输入完成")

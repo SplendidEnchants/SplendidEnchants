@@ -13,6 +13,7 @@ import world.icebear03.splendidenchants.listener.mechanism.AttainListener
 import world.icebear03.splendidenchants.listener.mechanism.GrindstoneListener
 import world.icebear03.splendidenchants.listener.mechanism.VillagerListener
 import world.icebear03.splendidenchants.ui.EnchantSearchUI
+import world.icebear03.splendidenchants.ui.FilterRarityUI
 import world.icebear03.splendidenchants.ui.ItemCheckUI
 import world.icebear03.splendidenchants.ui.MainMenuUI
 import world.icebear03.splendidenchants.util.EnchantFilter
@@ -85,6 +86,7 @@ object SplendidEnchants : Plugin() {
         MainMenuUI.reload()
         ItemCheckUI.reload()
         EnchantSearchUI.reload()
+        FilterRarityUI.reload()
 
         console().sendMessage("                            ")
         console().sendMessage("Reloaded SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")

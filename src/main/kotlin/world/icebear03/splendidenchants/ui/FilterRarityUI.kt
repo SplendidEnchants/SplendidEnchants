@@ -2,35 +2,37 @@
 
 package world.icebear03.splendidenchants.ui
 
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import org.serverct.parrot.parrotx.function.variable
+import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.persistence.PersistentDataType
+import org.serverct.parrot.parrotx.function.variables
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
-import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
-import taboolib.platform.util.modifyLore
-import taboolib.platform.util.nextChat
+import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.util.EnchantFilter
 import world.icebear03.splendidenchants.util.YamlUpdater
 
 
-@MenuComponent("EnchantSearch")
+@MenuComponent("FilterRarity")
 object FilterRarityUI {
 
     init {
-        YamlUpdater.loadAndUpdate("gui/enchant_search.yml")
+        YamlUpdater.loadAndUpdate("gui/filter_rarity.yml")
     }
 
-    @Config("gui/enchant_search.yml")
+    @Config("gui/filter_rarity.yml")
     private lateinit var source: Configuration
     private lateinit var config: MenuConfiguration
 
@@ -44,33 +46,30 @@ object FilterRarityUI {
         if (!::config.isInitialized) {
             config = MenuConfiguration(source)
         }
-        player.openMenu<Linked<SplendidEnchant>>(config.title().colored()) {
+        player.openMenu<Linked<Rarity>>(config.title().colored()) {
             virtualize()
             val (shape, templates) = config
             rows(shape.rows)
-            val slots = shape["EnchantSearch\$enchant"].toList()
+            val slots = shape["FilterRarity\$filter"].toList()
             slots(slots)
-            elements {
-                EnchantFilter.filter(player)
-            }
+            elements { Rarity.rarities.values.toList() }
 
             onBuild { _, inventory ->
                 shape.all(
-                    "EnchantSearch\$enchant", "Previous", "Next",
-                    "EnchantSearch\$filter_rarity", "EnchantSearch\$filter_target",
-                    "EnchantSearch\$filter_type", "EnchantSearch\$filter_string"
+                    "Previous", "Next",
+                    "FilterRarity\$filter"
                 ) { slot, index, item, _ ->
                     inventory.setItem(slot, item(slot, index))
                 }
             }
 
-            val template_enchant = templates.require("EnchantSearch\$enchant")
+            val template_filter = templates.require("FilterRarity\$filter")
             onGenerate { _, member, index, slot ->
-                template_enchant(slot, index, member)
+                template_filter(slot, index, member, player)
             }
 
             onClick { event, member ->
-                template_enchant.handle(event, member)
+                template_filter.handle(event, member)
             }
 
             shape["Previous"].first().let { slot ->
@@ -84,19 +83,6 @@ object FilterRarityUI {
                 }
             }
 
-            val tmp = listOf("rarity", "target", "type", "string")
-            tmp.forEach {
-                shape["EnchantSearch\$filter_$it"].first().let { slot ->
-                    set(
-                        slot, templates(
-                            "EnchantSearch\$filter_$it", slot, 0, false, "Fallback",
-                            EnchantFilter.generateLore(EnchantFilter.FilterType.valueOf(it.uppercase()), player)
-                        )
-                    )
-                }
-            }
-
-
             onClick { event ->
                 event.isCancelled = true
                 if (event.rawSlot in shape && event.rawSlot !in slots) {
@@ -106,80 +92,71 @@ object FilterRarityUI {
         }
     }
 
+    val key = NamespacedKey.minecraft("rarity")
+
     @MenuComponent
-    private val enchant = MenuFunctionBuilder {
+    private val filter = MenuFunctionBuilder {
         onBuild { (_, _, _, _, icon, args) ->
-            val enchant = args[0] as SplendidEnchant
-            val replaceMap = enchant.displayer.getReplaceMap(enchant.maxLevel)
-            icon.modifyLore {
-                this.replaceAll {
-                    it.replaceWithOrder(*replaceMap.toArray())
+            val rarity = args[0] as Rarity
+            val player = args[1] as Player
+            icon.variables {
+                when (it) {
+                    "color" -> listOf(rarity.color)
+                    "name" -> listOf(rarity.name)
+                    else -> listOf()
                 }
             }
-            val name = icon.itemMeta.displayName
-            ItemAPI.setName(icon, name.replaceWithOrder(*replaceMap.toArray()))
-            ItemAPI.setSkull(icon, enchant.rarity.skull)
+            ItemAPI.setSkull(icon, rarity.skull)
+
+            val statement = EnchantFilter.getStatement(player, EnchantFilter.FilterType.RARITY, rarity)
+
+            when (statement) {
+                EnchantFilter.FilterStatement.ON ->
+                    icon.type = Material.GREEN_STAINED_GLASS_PANE
+
+                EnchantFilter.FilterStatement.OFF ->
+                    icon.type = Material.RED_STAINED_GLASS_PANE
+
+                else -> {}
+            }
+
+            icon.modifyMeta<ItemMeta> {
+                this.persistentDataContainer.set(
+                    key, PersistentDataType.STRING, rarity.id
+                )
+            }
 
             icon
         }
-    }
 
-    @MenuComponent
-    private val filter_rarity = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) ->
-            icon.variable("rarities", args[0] as List<String>)
-        }
-
-        onClick {
-
-        }
-    }
-
-    @MenuComponent
-    private val filter_target = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) ->
-            icon.variable("targets", args[0] as List<String>)
-        }
-    }
-
-    @MenuComponent
-    private val filter_type = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) ->
-            icon.variable("types", args[0] as List<String>)
-        }
-    }
-
-    @MenuComponent
-    private val filter_string = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) ->
-            icon.variable("strings", args[0] as List<String>)
-        }
         onClick { (_, _, event, _) ->
             val clickType = event.virtualEvent().clickType
             val player = event.clicker
-            player.closeInventory()
+            val item = event.virtualEvent().clickItem
+
+            if (item.type == Material.AIR)
+                return@onClick
+            val rarity =
+                Rarity.fromIdOrName(item.itemMeta.persistentDataContainer.get(key, PersistentDataType.STRING)!!)
+
             if (clickType == ClickType.MIDDLE) {
-                EnchantFilter.clearFilter(player, EnchantFilter.FilterType.STRING)
+                EnchantFilter.clearFilter(player, EnchantFilter.FilterType.RARITY, rarity)
                 open(player)
             }
             when (clickType) {
                 ClickType.LEFT, ClickType.RIGHT -> {
-                    //TODO 自定义语言
-                    player.sendMessage("§e请在聊天栏中输入字段...")
-                    player.nextChat {
-                        player.sendMessage("§a输入完成")
-                        EnchantFilter.addFilter(
-                            player,
-                            EnchantFilter.FilterType.STRING,
-                            it,
-                            when (clickType) {
-                                ClickType.LEFT -> EnchantFilter.FilterStatement.ON
-                                ClickType.RIGHT -> EnchantFilter.FilterStatement.OFF
-                                else -> EnchantFilter.FilterStatement.ON
-                            }
-                        )
-                        open(player)
-                    }
+                    EnchantFilter.clearFilter(player, EnchantFilter.FilterType.RARITY, rarity)
+                    EnchantFilter.addFilter(
+                        player,
+                        EnchantFilter.FilterType.RARITY,
+                        rarity,
+                        when (clickType) {
+                            ClickType.LEFT -> EnchantFilter.FilterStatement.ON
+                            ClickType.RIGHT -> EnchantFilter.FilterStatement.OFF
+                            else -> EnchantFilter.FilterStatement.ON
+                        }
+                    )
+                    open(player)
                 }
 
                 else -> {}
@@ -188,9 +165,18 @@ object FilterRarityUI {
     }
 
     @MenuComponent
+    private val reset = MenuFunctionBuilder {
+        onClick { (_, _, event, _) ->
+            val player = event.clicker
+            EnchantFilter.clearFilter(player, EnchantFilter.FilterType.RARITY)
+            open(player)
+        }
+    }
+
+    @MenuComponent
     private val back = MenuFunctionBuilder {
         onClick { (_, _, event, _) ->
-            MainMenuUI.open(event.clicker)
+            EnchantSearchUI.open(event.clicker)
         }
     }
 }

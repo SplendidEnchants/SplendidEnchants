@@ -59,12 +59,11 @@ template:
 
   'T':
     material: PLAYER_HEAD
-    name: "&b{type}"
+    name: "&b{color}{name}"
     lore:
-      - "&8| &7左击 &a只看此类型的附魔"
-      - "&8| &7右击 &c不看此类型的附魔"
+      - "&8| &7左击 &a✓只看此品质的附魔"
+      - "&8| &7中键 &e੦清除当前筛选"
+      - "&8| &7右击 &c✗不看此品质的附魔"
     feature:
       - ==: Functional
         keyword: FilterRarity$filter
-        on: GREEN_STAINED_GLASS_PANE
-        off: RED_STAINED_GLASS_PANE
