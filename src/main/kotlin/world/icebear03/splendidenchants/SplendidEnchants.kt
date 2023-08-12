@@ -35,11 +35,11 @@ object SplendidEnchants : Plugin() {
         Config.initialize()
 
         console().sendMessage("|- Loading Enchants...")
-        Rarity.initialize()
-        Target.initialize()
+        Rarity.load()
+        Target.load()
         EnchantDisplayer.initialize()
         EnchantLoader.initialize()
-        EnchantGroup.initialize()
+        EnchantGroup.load()
 
         console().sendMessage("|- Loading Mechanisms...")
         AnvilListener.initialize()
@@ -52,7 +52,7 @@ object SplendidEnchants : Plugin() {
         console().sendMessage("                            ")
         console().sendMessage("Installed SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
         console().sendMessage("| Version: §r3.0.0")
-        console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §bxiaozhangup")
+        console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §fxiaozhangup")
     }
 
     fun reload() {
@@ -64,11 +64,11 @@ object SplendidEnchants : Plugin() {
 
         console().sendMessage("|- Reloading Enchants...")
         EnchantLoader.resetSort()
-        Rarity.initialize()
-        Target.initialize()
+        Rarity.load()
+        Target.load()
         EnchantDisplayer.initialize()
         EnchantLoader.initialize(true)
-        EnchantGroup.initialize()
+        EnchantGroup.load()
         EnchantFilter.clearAll()
 
         console().sendMessage("|- Reloading Mechanisms...")
@@ -90,6 +90,6 @@ object SplendidEnchants : Plugin() {
         console().sendMessage("                            ")
         console().sendMessage("Reloaded SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
         console().sendMessage("| Version: §r3.0.0")
-        console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §bxiaozhangup")
+        console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §fxiaozhangup")
     }
 }

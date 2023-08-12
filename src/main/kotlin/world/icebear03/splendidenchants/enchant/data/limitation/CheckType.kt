@@ -1,8 +1,6 @@
 package world.icebear03.splendidenchants.enchant.data.limitation
 
 enum class CheckType(vararg types: LimitType) {
-
-    //TODO 应当改为可配置 就像2.7那样
     ATTAIN(
         LimitType.PAPI_EXPRESSION,
         LimitType.PERMISSION,
@@ -12,18 +10,14 @@ enum class CheckType(vararg types: LimitType) {
         LimitType.DEPENDENCE_ENCHANT,
         LimitType.MAX_CAPABILITY,
         LimitType.TARGET,
-        LimitType.DISABLE_WORLD
     ), // 从战利品/附魔台中获得附魔物品时
     MERCHANT(
-        LimitType.PAPI_EXPRESSION,
-        LimitType.PERMISSION,
         LimitType.CONFLICT_GROUP,
         LimitType.CONFLICT_ENCHANT,
         LimitType.DEPENDENCE_GROUP,
         LimitType.DEPENDENCE_ENCHANT,
         LimitType.MAX_CAPABILITY,
-        LimitType.TARGET,
-        LimitType.DISABLE_WORLD
+        LimitType.TARGET
     ), // 生成村民交易中的附魔时
     ANVIL(
         LimitType.CONFLICT_GROUP,
@@ -31,23 +25,16 @@ enum class CheckType(vararg types: LimitType) {
         LimitType.DEPENDENCE_GROUP,
         LimitType.DEPENDENCE_ENCHANT,
         LimitType.MAX_CAPABILITY,
-        LimitType.TARGET,
-        LimitType.DISABLE_WORLD
+        LimitType.TARGET
     ), // 进行铁砧拼合物品附魔时
     USE(
-        LimitType.CONFLICT_GROUP,
-        LimitType.CONFLICT_ENCHANT,
-        LimitType.DEPENDENCE_GROUP,
-        LimitType.DEPENDENCE_ENCHANT,
+        LimitType.PAPI_EXPRESSION,
+        LimitType.DISABLE_WORLD,
         LimitType.TARGET,
-        LimitType.DISABLE_WORLD
+        LimitType.SLOT
     ); // 使用物品上的附魔时
 
-    val limitTypes = hashSetOf<LimitType>()
+    val limitTypes = mutableSetOf(*types)
 
-    init {
-        limitTypes.addAll(arrayListOf(*types))
-    }
-
-    fun containsType(limitType: LimitType): Boolean = limitTypes.contains(limitType)
+    fun has(limitType: LimitType): Boolean = limitTypes.contains(limitType)
 }

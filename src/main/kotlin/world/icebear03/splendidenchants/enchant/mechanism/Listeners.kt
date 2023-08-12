@@ -54,7 +54,7 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSect
             if (listenersById[it]!!.first == eventPriority) {
 
                 val replacerMap =
-                    belonging.variable.generateReplaceMap(
+                    belonging.variable.variables(
                         ItemAPI.getLevel(item, belonging),
                         player,
                         item
@@ -66,7 +66,7 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSect
                     if (!canContinue)
                         return
 
-                    val refreshed = belonging.variable.generateReplaceMap(
+                    val refreshed = belonging.variable.variables(
                         ItemAPI.getLevel(item, belonging),
                         player,
                         item

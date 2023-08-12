@@ -3,82 +3,47 @@ package world.icebear03.splendidenchants.enchant
 import org.bukkit.enchantments.Enchantment
 import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
-import world.icebear03.splendidenchants.api.EnchantAPI
-import world.icebear03.splendidenchants.enchant.data.Rarity
+import world.icebear03.splendidenchants.api.enchant
+import world.icebear03.splendidenchants.api.enchants
+import world.icebear03.splendidenchants.enchant.data.rarity
 import world.icebear03.splendidenchants.util.loadAndUpdate
-import java.util.concurrent.ConcurrentHashMap
+
+
+val groups = mutableMapOf<String, EnchantGroup>()
 
 data class EnchantGroup(
     val name: String,
-    val enchantNames: List<String>,
-    val maxCoexist: Int,
-    val skull: String
+    val enchants: List<SplendidEnchant>,
+    val skull: String?,
+    val maxCoexist: Int
 ) {
-
-    val enchants = mutableListOf<SplendidEnchant>()
-
-    init {
-        enchantNames.forEach {
-            val enchant = EnchantAPI.getSplendidEnchant(it)
-            if (enchant != null)
-                enchants += enchant
-        }
-    }
 
     companion object {
 
-        val groups = ConcurrentHashMap<String, EnchantGroup>()
-
-        fun initialize() {
+        fun load() {
             groups.clear()
 
-            val groupConfig = Configuration.loadAndUpdate("enchants/group.yml")
-            groupConfig.getKeys(false).forEach {
-                val enchants = mutableListOf<String>()
-                if (groupConfig.contains("$it.enchants")) {
-                    enchants += groupConfig.getStringList("$it.enchants").toMutableList()
-                }
+            Configuration.loadAndUpdate("enchants/group.yml").run {
+                getKeys(false).forEach { name ->
+                    val enchants = getStringList("$name.enchants").mapNotNull { enchant(it) }.toMutableList()
+                    getStringList("$name.rarities").forEach { enchants += enchants(rarity(it)) }
 
-                if (groupConfig.contains("$it.rarities")) {
-                    groupConfig.getStringList("$it.rarities").forEach {
-                        val rarity = Rarity.fromIdOrName(it)
-                        EnchantAPI.getSplendidEnchants(rarity).forEach { enchant ->
-                            enchants += enchant.basicData.name
-                        }
-                    }
+                    groups[name] = EnchantGroup(
+                        name,
+                        enchants,
+                        getString("$name.skull"),
+                        getInt("$name.max_coexist", 1),
+                    )
                 }
-
-                groups[it] = EnchantGroup(
-                    it,
-                    enchants,
-                    groupConfig.getInt("$it.max_coexist", 1),
-                    groupConfig.getString("$it.skull", "")!!
-                )
             }
 
             console().sendMessage("    Successfully load §6${groups.size} groups")
         }
-
-        fun isIn(enchant: Enchantment, group: String): Boolean {
-            return isIn(enchant, groups[group])
-        }
-
-        fun isIn(enchant: Enchantment, group: EnchantGroup?): Boolean {
-            return group?.enchantNames?.contains(EnchantAPI.getName(enchant)) ?: false || group?.enchantNames?.contains(
-                EnchantAPI.getId(enchant)
-            ) ?: false
-        }
-
-        fun maxCoexist(group: String): Int {
-            return groups[group]?.maxCoexist ?: 1
-        }
-
-        fun getSplendidEnchants(group: String): List<SplendidEnchant> {
-            return groups[group]?.enchants ?: emptyList()
-        }
-
-        fun fromName(name: String): EnchantGroup {
-            return groups[name] ?: groups["所有物品"]!!
-        }
     }
 }
+
+fun enchantGroup(name: String?): EnchantGroup? = groups[name]
+
+fun Enchantment.isIn(name: String): Boolean = isIn(enchantGroup(name))
+
+fun Enchantment.isIn(group: EnchantGroup?): Boolean = group?.enchants?.find { it.key == key } != null

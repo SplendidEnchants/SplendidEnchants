@@ -2,7 +2,6 @@ package world.icebear03.splendidenchants.enchant
 
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
-import taboolib.common.io.newFolder
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getDataFolder
 import taboolib.library.reflex.Reflex.Companion.getProperty
@@ -10,92 +9,92 @@ import taboolib.library.reflex.Reflex.Companion.setProperty
 import world.icebear03.splendidenchants.command.Commands
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
+import world.icebear03.splendidenchants.util.missingConfig
 import java.io.File
 
 object EnchantLoader {
 
-    val enchantById = mutableMapOf<String, SplendidEnchant>()
-    val enchantByName = mutableMapOf<String, SplendidEnchant>()
-    val enchantsByRarity = mutableMapOf<Rarity, MutableSet<SplendidEnchant>>()
-    val enchantsByTarget = mutableMapOf<Target, MutableSet<SplendidEnchant>>()
+    //id-enchant
+    val BY_ID = mutableMapOf<String, SplendidEnchant>()
 
-    val keyMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byKey", true)
-    val nameMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byName", true)
+    //displayname-enchant
+    val BY_NAME = mutableMapOf<String, SplendidEnchant>()
+    val BY_RARITY = mutableMapOf<Rarity, MutableList<SplendidEnchant>>()
+    val BY_TARGET = mutableMapOf<Target, MutableList<SplendidEnchant>>()
+
+    //id key-enchant
+    private val keyMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byKey", true)!!
+
+    //id-enchant
+    private val nameMap = Enchantment::class.java.getProperty<HashMap<*, *>>("byName", true)!!
 
     fun resetSort() {
-        enchantsByRarity.clear()
-        enchantsByTarget.clear()
+        BY_RARITY.clear()
+        BY_TARGET.clear()
     }
 
     //enchants文件夹应该为若干文件夹，每个文件夹内为各个附魔配置
     fun initialize(reload: Boolean = false) {
+        //注册附魔的准备工作
         Enchantment::class.java.setProperty("acceptingNew", value = true, isStatic = true)
+        //也许可以自动扫描并释放所有内容？ FIXME
         val directory = File(getDataFolder(), "enchants/")
         if (!directory.exists()) directory.mkdirs()
 
         //记录重载时加载过的附魔
-        val tmp = mutableSetOf<String>()
+        val loaded = mutableSetOf<String>()
 
-        newFolder(getDataFolder(), "enchants").listFiles { dir, _ -> dir.isDirectory }?.forEach { folder ->
+        directory.listFiles { dir, _ -> dir.isDirectory }?.forEach { folder ->
             folder.listFiles()?.forEach { file ->
+                //因此，文件名必须与basic.id一致
                 val id = file.nameWithoutExtension
-                if (reload && enchantById.containsKey(id)) {
-                    val enchant = enchantById[id]!!
-                    enchant.config.load()
-                    tmp += id
+                if (reload && BY_ID.containsKey(id)) {
+                    BY_ID[id]!!.config.load()?.let { missingConfig(file, it) }
+                    loaded += id
                 } else {
-                    val key = NamespacedKey.fromString(id)!!
+                    val key = NamespacedKey.minecraft(id)
                     val enchant = SplendidEnchant(file, key)
 
                     // 注册附魔
-                    if (!folder.name.equals("原版附魔")) {
-                        keyMap?.remove(enchant.key)
-                        nameMap?.remove(enchant.name)
+                    if (folder.name != "原版附魔") {
+                        keyMap.remove(key)
+                        nameMap.remove(id)
                         Enchantment.registerEnchantment(enchant)
                     }
-                    enchantById[id] = enchant
-                    enchantByName[enchant.basicData.name] = enchant
-                    enchantsByRarity[enchant.rarity]!! += enchant
-                    enchant.targets.forEach {
-                        enchantsByTarget[it]!! += enchant
+
+                    //添加map entry
+                    BY_ID[id] = enchant
+                    BY_NAME[enchant.basicData.name] = enchant
+                    BY_RARITY.getOrPut(enchant.rarity) { mutableListOf() } += enchant
+                    enchant.targets.forEach { target ->
+                        BY_TARGET.getOrPut(target) { mutableListOf() } += enchant
                     }
                 }
             }
         }
 
         //重载后已经被删除的附魔，需要取消注册
-        if (reload) {
-            enchantById.keys.filter { !tmp.contains(it) }.forEach {
-                unregister(enchantById[it]!!)
-            }
-        }
-
+        if (reload) BY_ID.keys.filter { !loaded.contains(it) }.forEach { unregister(it) }
+        //还原附魔注册设定
         Enchantment::class.java.setProperty("acceptingNew", value = false, isStatic = true)
+        //重新生成TabList
+        Commands.enchantNamesAndIds.clear()
+        Commands.enchantNamesAndIds.addAll(BY_ID.map { it.key } + BY_NAME.map { it.key })
 
-        Commands.enchantNamesAndIds.addAll(enchantById.keys.toList().toMutableList().also {
-            it.addAll(enchantByName.keys.toList())
-        })
-
-        console().sendMessage("    Successfully load §6${enchantById.size} enchants")
+        console().sendMessage("    Successfully load §6${BY_ID.size} enchants")
     }
 
-    @Deprecated("useless")
-    fun unregister() {
-        enchantById.values.toList().forEach {
-            unregister(it)
+    private fun unregister(id: String) {
+        val enchant = BY_ID[id] ?: return
+        if (!enchant.isIn("原版附魔")) {
+            keyMap.remove(enchant.key)
+            nameMap.remove(enchant.name)
         }
-    }
-
-    fun unregister(enchant: SplendidEnchant) {
-        if (!EnchantGroup.isIn(enchant, "原版附魔")) {
-            keyMap?.remove(enchant.key)
-            nameMap?.remove(enchant.name)
-        }
-        enchantById.remove(enchant.basicData.id)
-        enchantByName.remove(enchant.basicData.name)
-        enchantsByRarity[enchant.rarity]!!.remove(enchant)
-        enchant.targets.forEach {
-            enchantsByTarget[it]!!.remove(enchant)
+        BY_ID.remove(enchant.basicData.id)
+        BY_NAME.remove(enchant.basicData.name)
+        BY_RARITY[enchant.rarity]!!.remove(enchant)
+        enchant.targets.forEach { target ->
+            BY_TARGET[target]!!.remove(enchant)
         }
     }
 }

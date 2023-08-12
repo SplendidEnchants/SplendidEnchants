@@ -108,7 +108,7 @@ object EnchantSearchUI {
     private val enchant = MenuFunctionBuilder {
         onBuild { (_, _, _, _, icon, args) ->
             val enchant = args[0] as SplendidEnchant
-            val replaceMap = enchant.displayer.getReplaceMap(enchant.maxLevel)
+            val replaceMap = enchant.displayer.holders(enchant.maxLevel)
             icon.modifyLore {
                 this.replaceAll {
                     it.replaceWithOrder(*replaceMap.toArray())

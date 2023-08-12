@@ -13,7 +13,7 @@ import java.util.*
 
 object EnchantFilter {
 
-    val all = EnchantLoader.enchantByName.values
+    val all = EnchantLoader.BY_NAME.values
     val filterMap = mutableMapOf<UUID, MutableMap<FilterType, MutableList<Pair<Any, FilterStatement>>>>()
 
     fun filter(player: Player): List<SplendidEnchant> {

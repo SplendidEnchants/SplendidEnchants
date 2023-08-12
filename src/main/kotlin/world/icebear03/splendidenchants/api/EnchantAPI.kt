@@ -12,12 +12,8 @@ import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 
 object EnchantAPI {
 
-    fun getSplendidEnchants(rarity: Rarity): List<SplendidEnchant> {
-        return EnchantLoader.enchantsByRarity[rarity]!!.toList()
-    }
-
     fun getSplendidEnchant(idOrName: String): SplendidEnchant? {
-        return EnchantLoader.enchantById[idOrName] ?: EnchantLoader.enchantByName[idOrName]
+        return EnchantLoader.BY_ID[idOrName] ?: EnchantLoader.BY_NAME[idOrName]
     }
 
     fun getSplendidEnchant(enchant: Enchantment): SplendidEnchant {
@@ -39,7 +35,7 @@ object EnchantAPI {
         item: ItemStack,
         checkType: CheckType = CheckType.ANVIL
     ): List<SplendidEnchant> {
-        return EnchantLoader.enchantById.values.filter {
+        return EnchantLoader.BY_ID.values.filter {
             it.limitations.checkAvailable(
                 checkType,
                 player,
@@ -73,12 +69,20 @@ object EnchantAPI {
 
     fun randomEnchant(rarity: Rarity?, lv: Int?): Pair<SplendidEnchant, Int> {
         val enchant = if (rarity == null) {
-            EnchantLoader.enchantById.values.random()
+            EnchantLoader.BY_ID.values.random()
         } else {
-            EnchantLoader.enchantsByRarity[rarity]!!.random()
+            EnchantLoader.BY_RARITY[rarity]!!.random()
         }
         val level = lv ?: random(enchant.startLevel, enchant.maxLevel)
         return enchant to level
 
     }
+}
+
+fun enchant(identifier: String): SplendidEnchant? {
+    return EnchantLoader.BY_NAME[identifier] ?: EnchantLoader.BY_ID[identifier]
+}
+
+fun enchants(rarity: Rarity?): List<SplendidEnchant> {
+    return EnchantLoader.BY_RARITY[rarity]?.toList() ?: listOf()
 }

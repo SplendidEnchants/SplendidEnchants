@@ -3,7 +3,6 @@
 package world.icebear03.splendidenchants.api
 
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -11,7 +10,6 @@ import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
-import org.bukkit.persistence.PersistentDataType
 import org.serverct.parrot.parrotx.function.textured
 import taboolib.platform.util.giveItem
 import taboolib.platform.util.modifyLore
@@ -37,39 +35,8 @@ object ItemAPI {
         player.giveItem(createBook(mapOf(enchant to level)))
     }
 
-    fun getEnchants(item: ItemStack?): Map<SplendidEnchant, Int> {
-        return item?.itemMeta?.let { meta ->
-            if (meta is EnchantmentStorageMeta) {
-                meta.storedEnchants
-            } else {
-                meta.enchants
-            }.mapKeys { (key, _) -> EnchantAPI.getSplendidEnchant(key) }
-        } ?: emptyMap()
-    }
-
-    fun getEnchants(meta: ItemMeta?): Map<SplendidEnchant, Int> {
-        return meta?.let {
-            if (meta is EnchantmentStorageMeta) {
-                meta.storedEnchants
-            } else {
-                meta.enchants
-            }.mapKeys { (key, _) -> EnchantAPI.getSplendidEnchant(key) }
-        } ?: emptyMap()
-    }
-
     fun containsEnchant(item: ItemStack?, enchant: Enchantment): Boolean {
         return (item?.itemMeta?.getEnchantLevel(enchant) ?: 0) > 0
-    }
-
-    fun <T, Z> getItemData(item: ItemStack?, dataKey: String, type: PersistentDataType<T, Z>): Z? {
-        if (item == null) return null
-        if (item.itemMeta == null) return null
-        val meta = item.itemMeta!!
-        val pdc = meta.persistentDataContainer
-        val key = NamespacedKey.fromString("splendidenchant_$dataKey")!!
-        if (!pdc.has(key, type))
-            return null
-        return pdc.get(key, type)
     }
 
     fun getLevel(item: ItemStack?, enchant: Enchantment): Int {
@@ -178,3 +145,11 @@ object ItemAPI {
         return item
     }
 }
+
+val ItemStack.fixedEnchants
+    get(): Map<SplendidEnchant, Int> {
+        return itemMeta?.let { meta ->
+            (if (meta is EnchantmentStorageMeta) meta.storedEnchants
+            else meta.enchants).mapKeys { (key, _) -> EnchantAPI.getSplendidEnchant(key) }
+        } ?: emptyMap()
+    }

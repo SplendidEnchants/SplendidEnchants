@@ -10,7 +10,7 @@ import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
 infix fun Pair<ItemStack, Int>.applyReplaceMap(data: Pair<SplendidEnchant, Player>): ItemStack {
-    val replaceMap = data.first.displayer.getReplaceMap(second, data.second, first)
+    val replaceMap = data.first.displayer.holders(second, data.second, first)
     return first.modifyMeta<ItemMeta> {
         replaceMap.forEach {
             setDisplayName(displayName.replaceWithOrder(it))

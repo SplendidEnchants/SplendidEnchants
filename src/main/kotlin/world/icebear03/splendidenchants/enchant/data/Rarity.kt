@@ -3,51 +3,40 @@ package world.icebear03.splendidenchants.enchant.data
 import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.Config
-import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.util.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
+
+val rarities = ConcurrentHashMap<String, Rarity>()
+lateinit var defaultRarity: Rarity
 
 data class Rarity(
     val id: String,
     val name: String,
     val color: String,
     val weight: Int,
-    val skull: String
+    val skull: String?
 ) {
-    init {
-        EnchantLoader.enchantsByRarity[this] = mutableSetOf()
-    }
-
-    override fun toString(): String {
-        return name
-    }
 
     companion object {
-
-        val rarities = ConcurrentHashMap<String, Rarity>()
-
-        lateinit var defaultRarity: Rarity
-
-        fun initialize() {
+        fun load() {
             rarities.clear()
 
-            val rarityConfig = Configuration.loadAndUpdate("enchants/rarity.yml")
-            rarityConfig.getKeys(false).forEach {
-                rarities[it] = Rarity(
-                    it,
-                    rarityConfig.getString("$it.name")!!,
-                    rarityConfig.getString("$it.color")!!,
-                    rarityConfig.getInt("$it.weight"),
-                    rarityConfig.getString("$it.skull", "")!!
-                )
+            Configuration.loadAndUpdate("enchants/rarity.yml").run {
+                getKeys(false).forEach { id ->
+                    rarities[id] = Rarity(
+                        id,
+                        getString("$id.name")!!,
+                        getString("$id.color")!!,
+                        getInt("$id.weight"),
+                        getString("$id.skull")
+                    )
+                }
             }
             defaultRarity = rarities[Config.config.getString("default_rarity", "common")]!!
 
             console().sendMessage("    Successfully load §6${rarities.size} rarities")
         }
-
-        fun fromIdOrName(idOrName: String): Rarity {
-            return rarities[idOrName] ?: rarities.values.firstOrNull { it.name == idOrName } ?: defaultRarity
-        }
     }
 }
+
+fun rarity(identifier: String?): Rarity? = rarities[identifier] ?: rarities.values.find { it.name == identifier }

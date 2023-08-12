@@ -4,64 +4,49 @@ import org.bukkit.Material
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
-import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.util.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
+
+val targets = ConcurrentHashMap<String, Target>()
 
 data class Target(
     val id: String,
     val name: String,
     val capability: Int,
-    val activeSlots: Set<EquipmentSlot>,
-    val typeNames: List<String>,
-    val skull: String
+    val activeSlots: List<EquipmentSlot>,
+    val types: List<Material>,
+    val skull: String?
 ) {
 
-    val types = typeNames.map { Material.valueOf(it) }
-
-    init {
-        EnchantLoader.enchantsByTarget[this] = mutableSetOf()
-    }
-
     companion object {
-
-        val targets = ConcurrentHashMap<String, Target>()
-
-        fun initialize() {
+        fun load() {
             targets.clear()
+            targets["unknown"] = Target("unknown", "未定义", 32, listOf(), Material.entries, "")
 
-            val targetConfig = Configuration.loadAndUpdate("enchants/target.yml")
-            targetConfig.getKeys(false).forEach {
-                targets[it] = Target(
-                    it,
-                    targetConfig.getString("$it.name")!!,
-                    targetConfig.getInt("$it.max"),
-                    targetConfig.getStringList("$it.active_slots").map { s -> EquipmentSlot.valueOf(s) }.toSet(),
-                    targetConfig.getStringList("$it.types"),
-                    targetConfig.getString("$it.skull", "")!!
-                )
+            Configuration.loadAndUpdate("enchants/target.yml").run {
+                getKeys(false).forEach { id ->
+                    targets[id] = Target(
+                        id,
+                        getString("$id.name")!!,
+                        getInt("$id.max"),
+                        getStringList("$id.active_slots").map { EquipmentSlot.valueOf(it) },
+                        getStringList("$id.types").map { Material.valueOf(it) },
+                        getString("$id.skull")
+                    )
+                }
             }
-            targets["unknown"] = Target("unknown", "未定义", 16, hashSetOf(), arrayListOf(), "")
 
             console().sendMessage("    Successfully load §6${targets.size} targets")
         }
-
-        fun fromIdOrName(idOrName: String): Target {
-            return targets[idOrName] ?: targets.values.firstOrNull { it.name == idOrName } ?: targets["unknown"]!!
-        }
-
-        fun maxCapability(type: Material): Int {
-            var ans = 32
-            for (target in targets.values) {
-                if (target.types.contains(type)) {
-                    ans = ans.coerceAtMost(target.capability)
-                }
-            }
-            return ans
-        }
-
-        fun isIn(it: Target, type: Material): Boolean {
-            return it.types.contains(type)
-        }
     }
 }
+
+fun target(identifier: String?): Target? = targets[identifier] ?: targets.values.find { it.name == identifier }
+
+fun Material.isIn(identifier: String?): Boolean = isIn(target(identifier))
+
+fun Material.isIn(target: Target?): Boolean = target?.types?.contains(this) ?: false
+
+val Material.belongedTargets get() = targets.values.filter(::isIn)
+
+val Material.capability get() = belongedTargets.minOf { it.capability }

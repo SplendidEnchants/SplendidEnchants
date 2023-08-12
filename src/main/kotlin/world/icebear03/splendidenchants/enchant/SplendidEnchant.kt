@@ -11,41 +11,62 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
-import taboolib.common.util.replaceWithOrder
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
-import taboolib.module.kether.compileToJexl
 import taboolib.platform.util.modifyMeta
-import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.api.MathAPI
 import world.icebear03.splendidenchants.api.PlayerAPI
+import world.icebear03.splendidenchants.api.numToRoman
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
+import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
+import world.icebear03.splendidenchants.enchant.data.rarity
+import world.icebear03.splendidenchants.enchant.data.target
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
+import world.icebear03.splendidenchants.util.*
 import java.io.File
-import java.util.concurrent.ConcurrentHashMap
 
 class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     var config: Config
+
+    //基础信息 ID 显示名 最大等级 是否启用
     lateinit var basicData: BasicData
+
+    //品质
     lateinit var rarity: Rarity
+
+    //附魔对象
     lateinit var targets: List<Target>
+
+    //限制，如冲突，依赖，权限
     lateinit var limitations: Limitations
+
+    //附魔显示策略
     lateinit var displayer: Displayer
+
+    //可选的属性
     lateinit var alternativeData: AlternativeData
+
+    //变量 随等级而变 / 物品上的变量 / 玩家的变量
     lateinit var variable: Variable
+
+    //自定义脚本
     lateinit var listeners: Listeners
 
     init {
         config = Config(file)
-        config.load()
+        config.load()?.let { missingConfig(file, it) }
     }
+
+    override fun hashCode(): Int = basicData.id.hashCode()
+
+    override fun equals(other: Any?): Boolean = hashCode() == other.hashCode()
 
     override fun translationKey(): String = basicData.id
 
+    @Deprecated(message = "Deprecated", replaceWith = ReplaceWith("basicData.id"))
     override fun getName(): String = basicData.id
 
     override fun getMaxLevel(): Int = basicData.maxLevel
@@ -58,9 +79,9 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     override fun isCursed(): Boolean = alternativeData.isCursed
 
-    override fun conflictsWith(enchant: Enchantment): Boolean = limitations.conflictWith(enchant)
+    override fun conflictsWith(enchant: Enchantment): Boolean = false
 
-    override fun canEnchantItem(item: ItemStack): Boolean = limitations.checkAvailable(item).first
+    override fun canEnchantItem(item: ItemStack): Boolean = limitations.checkAvailable(CheckType.ANVIL, item).first
 
     override fun displayName(level: Int): Component = Component.text(basicData.name)
 
@@ -85,84 +106,69 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
 
         fun modify(path: String, value: Any?) {
-            config.set(path, value)
+            config[path] = value
             config.saveToFile(file)
         }
 
-        fun load() {
-            basicData = BasicData(config.getConfigurationSection("basic")!!)
-            rarity = Rarity.fromIdOrName(config.getString("rarity", "null")!!)
-            targets = arrayListOf()
-            config.getStringList("targets").forEach {
-                targets += Target.fromIdOrName(it)
-            }
+        fun load(): String? {
+            basicData = BasicData(config.getConfigurationSection("basic") ?: return "basic")
+            rarity = rarity(config.getString("rarity")) ?: return "rarity"
+            targets = config.getStringList("targets").mapNotNull { target(it) }
             limitations = Limitations(this@SplendidEnchant, config.getStringList("limitations"))
-            displayer = Displayer(config.getConfigurationSection("display")!!)
+            displayer = Displayer(config.getConfigurationSection("display") ?: return "displayer")
             alternativeData = AlternativeData(config.getConfigurationSection("alternative"))
             variable = Variable(config.getConfigurationSection("variables"))
             listeners = Listeners(this@SplendidEnchant, config.getConfigurationSection("mechanisms.listeners"))
+            return null
         }
     }
 
     inner class Displayer(displayerConfig: ConfigurationSection) {
 
-        val previousFormat = displayerConfig.getString("format.previous", "{default_previous}")!!
-        val subsequentFormat = displayerConfig.getString("format.subsequent", "{default_subsequent}")!!
-        val generalDescription = displayerConfig.getString("description.general")!!
-        val specificDescription =
-            if (displayerConfig.contains("description.specific"))
-                displayerConfig.getString("description.specific")!!
-            else generalDescription
+        val previous = displayerConfig.getString("format.previous", "{default_previous}")!!
+        val subsequent = displayerConfig.getString("format.subsequent", "{default_subsequent}")!!
+        val generalDescription = displayerConfig.getString("description.general", "§7附魔介绍未设置")!!
+        val specificDescription = displayerConfig.getString("description.specific", generalDescription)!!
 
-        //生成本附魔在当前状态下的介绍
-        fun getSpecificDescription(replaceMap: ArrayList<Pair<String, String>>): String {
-            return specificDescription.replaceWithOrder(*replaceMap.toArray())
+        //生成本附魔在当前状态下的显示，在非合并模式下
+        fun display(level: Int?, player: Player?, item: ItemStack?): String {
+            return (previous.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
+                    + subsequent.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent)
+                    ).replace(holders(level, player, item))
         }
 
-        //生成本附魔在当前状态下的显示（在物品lore中）
-        fun getSpecificDisplay(level: Int?, player: Player?, item: ItemStack?): String {
-            return (previousFormat.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
-                    + subsequentFormat.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent)
-                    ).replaceWithOrder(*getReplaceMap(level, player, item).toArray())
+        //生成本附魔在当前状态下的显示，在合并模式下
+        fun displays(
+            level: Int? = null,
+            player: Player? = null,
+            item: ItemStack? = null,
+            index: Int? = null
+        ): Map<String, String> {
+            val suffix = index?.let { "_$it" } ?: ""
+            val replaceMap = holders(level, player, item)
+            return mapOf(
+                "previous$suffix" to previous.replace("{default_previous}", EnchantDisplayer.defaultPrevious).replace(replaceMap),
+                "subsequent$suffix" to subsequent.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent).replace(replaceMap)
+            )
         }
 
-        //生成{previous_1}等的替换map
-        fun getSpecificDisplayMap(
-            level: Int?,
-            player: Player?,
-            item: ItemStack?,
-            order: Int?
-        ): ArrayList<Pair<String, String>> {
-            val suffix = if (order == null) "" else "_$order"
-            val tmp = arrayListOf<Pair<String, String>>()
-            val replaceMap = getReplaceMap(level, player, item)
-            tmp += previousFormat.replace(
-                "{default_previous}", EnchantDisplayer.defaultPrevious
-            ).replaceWithOrder(*replaceMap.toArray()) to "previous$suffix"
-            tmp += subsequentFormat.replace(
-                "{default_subsequent}",
-                EnchantDisplayer.defaultSubsequent
-            ).replaceWithOrder(*replaceMap.toArray()) to "subsequent$suffix"
-            return tmp
-        }
-
-        //生成可能存在的占位符和对应值
-        fun getReplaceMap(
-            level: Int?,
+        //生成本附魔在当前状态下的变量替换map
+        fun holders(
+            level: Int? = null,
             player: Player? = null,
             item: ItemStack? = null
-        ): ArrayList<Pair<String, String>> {
-            val tmp = variable.generateReplaceMap(level, player, item)
-            val l = (level ?: basicData.maxLevel)
-            tmp += basicData.id to "id"
-            tmp += basicData.name to "name"
-            tmp += "" + l to "level"
-            tmp += MathAPI.numToRoman(l, maxLevel == 1) to "roman_level"
-            tmp += MathAPI.numToRoman(l, maxLevel == 1, hasPreviousBlank = true) to "roman_level_with_a_blank"
-            tmp += "" + basicData.maxLevel to "max_level"
-            tmp += rarity.color to "color"
-            tmp += rarity.name to "rarity"
-            tmp += getSpecificDescription(tmp) to "description"
+        ): Map<String, String> {
+            val tmp = variable.variables(level, player, item).toMutableMap()
+            val lv = level ?: basicData.maxLevel
+            tmp["id"] = basicData.id
+            tmp["name"] = basicData.name
+            tmp["level"] = "$lv"
+            tmp["roman_level"] = lv.numToRoman(maxLevel == 1)
+            tmp["roman_level_with_a_blank"] = lv.numToRoman(maxLevel == 1, true)
+            tmp["max_level"] = "${basicData.maxLevel}"
+            tmp["color"] = rarity.color
+            tmp["rarity"] = rarity.name
+            tmp["description"] = specificDescription.replace(tmp)
             return tmp
         }
     }
@@ -170,90 +176,70 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
     inner class Variable(variableConfig: ConfigurationSection?) {
 
         //所有变量 变量名 - 类型(leveled,player_related,modifiable)
-        val variableSet = ConcurrentHashMap<String, String>()
+        val variables = mutableMapOf<String, VariableType>()
 
         //变量名 - 公式
-        private val leveled = ConcurrentHashMap<String, String>()
+        val leveled = mutableMapOf<String, String>()
 
         //变量名 - PAPI变量
-        private val playerRelated = ConcurrentHashMap<String, String>()
+        val playerRelated = mutableMapOf<String, String>()
 
         //变量名 - 初始值
-        private val modifiable = ConcurrentHashMap<String, Pair<String, String>>()
+        val modifiable = mutableMapOf<String, Pair<String, String>>()
 
         init {
             variableConfig?.run {
-                getConfigurationSection("leveled").asMap().forEach { (key, value) ->
-                    leveled[key] = value as String
-                    variableSet[key] = "leveled"
+                getConfigurationSection("leveled").asMap().forEach { (variable, expression) ->
+                    leveled[variable] = expression.toString()
+                    variables[variable] = VariableType.LEVELED
                 }
-                getConfigurationSection("player_related").asMap().forEach { (key, value) ->
-                    playerRelated[key] = value as String
-                    variableSet[key] = "player_related"
+                getConfigurationSection("player_related").asMap().forEach { (variable, expression) ->
+                    playerRelated[variable] = expression.toString()
+                    variables[variable] = VariableType.PLAYER_RELATED
                 }
-                getConfigurationSection("modifiable").asMap().forEach { (key, value) ->
-                    val parts = (value as String).split('=')
-                    modifiable[key] = parts[0] to parts[1]
-                    variableSet[key] = "modifiable"
+                getConfigurationSection("modifiable").asMap().forEach { (variable, expression) ->
+                    val parts = expression.toString().split('=')
+                    modifiable[variable] = parts[0] to parts[1]
+                    variables[variable] = VariableType.MODIFIABLE
                 }
             }
         }
 
-        private fun leveled(variable: String, level: Int?): String {
-            return if (level == null) variable else leveled[variable]!!.compileToJexl().eval(mapOf("level" to level))
-                .toString()
-        }
+        private fun leveled(variable: String, level: Int?): String = level?.let { leveled[variable]!!.calculate("level" to "$level") } ?: variable
 
-        private fun playerRelated(variable: String, player: Player?): String {
-            return if (player == null) variable else PlayerAPI.convertPlaceHolders(variable, player)
-        }
+        private fun playerRelated(variable: String, player: Player?): String = player?.let { PlayerAPI.convertPlaceHolders(variable, player) } ?: variable
 
         private fun modifiable(variable: String, item: ItemStack?): String {
-            return if (item == null) variable else ItemAPI.getItemData(
-                item,
-                modifiable[variable]!!.first,
-                PersistentDataType.STRING
-            )
-                ?: modifiable[variable]!!.second
+            val pair = modifiable[variable]!!
+            return item?.let { it.itemMeta[pair.first, PersistentDataType.STRING] ?: pair.second } ?: variable
         }
 
-        fun generateReplaceMap(
+        fun variables(
             level: Int?,
             player: Player? = null,
             item: ItemStack? = null
-        ): ArrayList<Pair<String, String>> {
-            val list = arrayListOf<Pair<String, String>>()
-            variableSet.forEach {
-                when (it.value) {
-                    "leveled" -> {
-                        list.add(leveled(it.key, level) to it.key)
-                    }
-
-                    "player_related" -> {
-                        list.add(playerRelated(it.key, player) to it.key)
-                    }
-
-                    "modifiable" -> {
-                        list.add(modifiable(it.key, item) to it.key)
-                    }
+        ): Map<String, String> {
+            return variables.mapValues { (variable, type) ->
+                when (type) {
+                    VariableType.LEVELED -> leveled(variable, level)
+                    VariableType.PLAYER_RELATED -> playerRelated(variable, player)
+                    VariableType.MODIFIABLE -> modifiable(variable, item)
                 }
             }
-            return list
         }
 
-        fun modifyVariable(item: ItemStack, variable: String, value: String): ItemStack {
-            return item.modifyMeta<ItemMeta> {
-                val pdc = this.persistentDataContainer
-                pdc.set(
-                    NamespacedKey.fromString("splendidenchant_" + modifiable[variable]!!.first)!!,
-                    PersistentDataType.STRING,
-                    value
-                )
-            }
+        fun modifyVariable(item: ItemStack, variable: String, value: String): ItemStack = item.modifyMeta<ItemMeta> {
+            this["splendidenchant_" + modifiable[variable]!!.first, PersistentDataType.STRING] = value
         }
     }
 
-    inner class AlternativeData(config: ConfigurationSection?) {
+    enum class VariableType {
+        LEVELED,
+        PLAYER_RELATED,
+        MODIFIABLE
+    }
+
+    inner class AlternativeData(alternativeDataConfig: ConfigurationSection?) {
 
         var grindstoneable: Boolean = true
         var weight: Int = 100
@@ -263,7 +249,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         var isDiscoverable: Boolean = true
 
         init {
-            config?.run {
+            alternativeDataConfig?.run {
                 grindstoneable = getBoolean("grindstoneable", true)
                 weight = getInt("weight", 100)
                 isTreasure = getBoolean("is_treasure", false)
@@ -274,22 +260,24 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
     }
 
-    inner class BasicData(config: ConfigurationSection) {
+    inner class BasicData(basicDataConfig: ConfigurationSection) {
 
         var enable: Boolean
         var disableWorlds: List<String>
         var id: String
         var name: String
         var maxLevel: Int
-        private val key: NamespacedKey
+        val key: NamespacedKey
 
         init {
-            enable = config.getBoolean("enable", true)
-            disableWorlds = config.getStringList("disable_worlds")
-            id = config.getString("id")!!
-            name = config.getString("name")!!
-            maxLevel = config.getInt("max_level")
-            key = NamespacedKey.fromString(id, null) ?: error("minecraft")
+            basicDataConfig.run {
+                enable = getBoolean("enable", true)
+                disableWorlds = getStringList("disable_worlds")
+                id = getString("id") ?: missingConfig(config.file, "basic")
+                this@BasicData.name = getString("name") ?: id
+                maxLevel = getInt("max_level")
+                key = NamespacedKey.minecraft(id)
+            }
         }
     }
 }

@@ -103,7 +103,7 @@ object ItemCheckUI {
         onBuild { (_, _, _, _, icon, args) ->
             val pair = args[0] as Pair<SplendidEnchant, Int>
             val enchant = pair.first
-            val replaceMap = enchant.displayer.getReplaceMap(pair.second)
+            val replaceMap = enchant.displayer.holders(pair.second)
             icon.modifyLore {
                 this.replaceAll {
                     it.replaceWithOrder(*replaceMap.toArray())
