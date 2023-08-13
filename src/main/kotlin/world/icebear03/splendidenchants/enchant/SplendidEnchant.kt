@@ -14,9 +14,10 @@ import org.bukkit.persistence.PersistentDataType
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
+import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.modifyMeta
-import world.icebear03.splendidenchants.api.PlayerAPI
-import world.icebear03.splendidenchants.api.numToRoman
+import world.icebear03.splendidenchants.api.error.missingConfig
+import world.icebear03.splendidenchants.api.roman
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
@@ -24,7 +25,10 @@ import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import world.icebear03.splendidenchants.enchant.data.rarity
 import world.icebear03.splendidenchants.enchant.data.target
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
-import world.icebear03.splendidenchants.util.*
+import world.icebear03.splendidenchants.util.calculate
+import world.icebear03.splendidenchants.util.get
+import world.icebear03.splendidenchants.util.replace
+import world.icebear03.splendidenchants.util.set
 import java.io.File
 
 class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
@@ -163,8 +167,8 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             tmp["id"] = basicData.id
             tmp["name"] = basicData.name
             tmp["level"] = "$lv"
-            tmp["roman_level"] = lv.numToRoman(maxLevel == 1)
-            tmp["roman_level_with_a_blank"] = lv.numToRoman(maxLevel == 1, true)
+            tmp["roman_level"] = lv.roman(maxLevel == 1)
+            tmp["roman_level_with_a_blank"] = lv.roman(maxLevel == 1, true)
             tmp["max_level"] = "${basicData.maxLevel}"
             tmp["color"] = rarity.color
             tmp["rarity"] = rarity.name
@@ -207,7 +211,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
         private fun leveled(variable: String, level: Int?): String = level?.let { leveled[variable]!!.calculate("level" to "$level") } ?: variable
 
-        private fun playerRelated(variable: String, player: Player?): String = player?.let { PlayerAPI.convertPlaceHolders(variable, player) } ?: variable
+        private fun playerRelated(variable: String, player: Player?): String = player?.let { variable.replacePlaceholder(player) } ?: variable
 
         private fun modifiable(variable: String, item: ItemStack?): String {
             val pair = modifiable[variable]!!

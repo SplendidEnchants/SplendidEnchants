@@ -1,17 +1,17 @@
-package world.icebear03.splendidenchants.enchant
+package world.icebear03.splendidenchants.enchant.data
 
 import org.bukkit.enchantments.Enchantment
 import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
-import world.icebear03.splendidenchants.api.enchant
-import world.icebear03.splendidenchants.api.enchants
-import world.icebear03.splendidenchants.enchant.data.rarity
+import world.icebear03.splendidenchants.api.splendidEt
+import world.icebear03.splendidenchants.api.splendidEts
+import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.util.loadAndUpdate
 
 
-val groups = mutableMapOf<String, EnchantGroup>()
+val groups = mutableMapOf<String, Group>()
 
-data class EnchantGroup(
+data class Group(
     val name: String,
     val enchants: List<SplendidEnchant>,
     val skull: String?,
@@ -25,10 +25,10 @@ data class EnchantGroup(
 
             Configuration.loadAndUpdate("enchants/group.yml").run {
                 getKeys(false).forEach { name ->
-                    val enchants = getStringList("$name.enchants").mapNotNull { enchant(it) }.toMutableList()
-                    getStringList("$name.rarities").forEach { enchants += enchants(rarity(it)) }
+                    val enchants = getStringList("$name.enchants").mapNotNull { splendidEt(it) }.toMutableList()
+                    getStringList("$name.rarities").forEach { enchants += splendidEts(rarity(it)) }
 
-                    groups[name] = EnchantGroup(
+                    groups[name] = Group(
                         name,
                         enchants,
                         getString("$name.skull"),
@@ -42,8 +42,8 @@ data class EnchantGroup(
     }
 }
 
-fun enchantGroup(name: String?): EnchantGroup? = groups[name]
+fun group(name: String?): Group? = groups[name]
 
-fun Enchantment.isIn(name: String): Boolean = isIn(enchantGroup(name))
+fun Enchantment.isIn(name: String): Boolean = isIn(group(name))
 
-fun Enchantment.isIn(group: EnchantGroup?): Boolean = group?.enchants?.find { it.key == key } != null
+fun Enchantment.isIn(group: Group?): Boolean = group?.enchants?.find { it.key == key } != null

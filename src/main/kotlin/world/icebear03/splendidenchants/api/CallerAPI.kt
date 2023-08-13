@@ -6,28 +6,24 @@ import taboolib.common.platform.event.EventPriority
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 import world.icebear03.splendidenchants.util.TriggerSlots
 
-object CallerAPI {
+fun EventType.triggerEts(
+    event: Event,
+    priority: EventPriority,
+    slots: TriggerSlots,
+    player: Player
+) {
+    val inventory = player.inventory
+    slots.slots.forEach {
+        val item = inventory.getItem(it)
 
-    fun trigger(
-        event: Event,
-        type: EventType,
-        priority: EventPriority,
-        slots: TriggerSlots,
-        player: Player
-    ) {
-        val inventory = player.inventory
-        slots.slots.forEach {
-            val item = inventory.getItem(it)
-
-            ItemAPI.getEnchants(item).forEach { enchantPair ->
-                enchantPair.key.listeners.trigger(
-                    event,
-                    type,
-                    priority,
-                    player,
-                    item
-                )
-            }
+        item.fixedEnchants.forEach { enchantPair ->
+            enchantPair.key.listeners.trigger(
+                event,
+                this,
+                priority,
+                player,
+                item
+            )
         }
     }
 }

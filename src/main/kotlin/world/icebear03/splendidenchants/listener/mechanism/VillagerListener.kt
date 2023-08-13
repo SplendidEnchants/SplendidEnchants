@@ -7,19 +7,19 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
 import world.icebear03.splendidenchants.api.EnchantAPI
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.EnchantGroup
+import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.util.YamlUpdater
 
 object VillagerListener {
 
     var enableEnchantTrade = true
-    var tradeEnchantGroup = "可交易附魔"
+    var tradeGroup = "可交易附魔"
     var amount = 2
 
     fun initialize() {
         val config = YamlUpdater.loadAndUpdate("mechanisms/villager.yml")
         enableEnchantTrade = config.getBoolean("enable", true)
-        tradeEnchantGroup = config.getString("group", tradeEnchantGroup)!!
+        tradeGroup = config.getString("group", tradeGroup)!!
         amount = config.getInt("amount", 2)
 
         console().sendMessage("    Successfully load merchant module")
@@ -39,7 +39,7 @@ object VillagerListener {
         val item = ItemAPI.clearEnchants(result)
 
         for (i in 0 until amount) {
-            val enchant = EnchantAPI.drawInRandom(EnchantGroup.getSplendidEnchants(tradeEnchantGroup)) ?: return
+            val enchant = EnchantAPI.drawInRandom(Group.getSplendidEnchants(tradeGroup)) ?: return
             ItemAPI.addEnchant(item, enchant, enchant.maxLevel)
         }
 

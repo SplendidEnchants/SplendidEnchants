@@ -10,7 +10,7 @@ import taboolib.common.platform.function.console
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.EnchantGroup
+import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.util.YamlUpdater
 import kotlin.math.roundToInt
 
@@ -76,7 +76,7 @@ object GrindstoneListener {
             val enchant = it.key
             val level = it.value
             val maxLevel = enchant.maxLevel
-            if (EnchantGroup.isIn(enchant, blacklist)) {
+            if (Group.isIn(enchant, blacklist)) {
                 ItemAPI.addEnchant(grinded, enchant, level)
             } else {
                 var bonus = defaultBonus

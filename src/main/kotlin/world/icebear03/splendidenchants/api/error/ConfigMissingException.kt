@@ -9,3 +9,6 @@ class ConfigMissingException(val file: File, val path: String) : Exception() {
     }
 }
 
+fun missingConfig(file: File, path: String): Nothing {
+    throw ConfigMissingException(file, path)
+}

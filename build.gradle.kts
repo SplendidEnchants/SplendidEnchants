@@ -25,7 +25,7 @@ taboolib {
     install("platform-bukkit")
     install("expansion-command-helper")
     classifier = null
-    version = "6.0.11-31"
+    version = "6.0.12-9"
 
     relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
 }
@@ -53,7 +53,7 @@ dependencies {
     compileOnly("ink.ptms.core:v12001:12001:mapped")
     compileOnly("ink.ptms.core:v12001:12001:universal")
 
-    taboo("org.tabooproject.taboolib:module-parrotx:1.4.23")
+    taboo("org.tabooproject.taboolib:module-parrotx:1.5.4")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }

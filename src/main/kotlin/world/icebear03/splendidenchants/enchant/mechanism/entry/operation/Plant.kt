@@ -5,7 +5,7 @@ import org.bukkit.block.data.Ageable
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.platform.util.takeItem
-import world.icebear03.splendidenchants.api.PlayerAPI
+import world.icebear03.splendidenchants.api.blockLookingAt
 
 object Plant {
 
@@ -47,7 +47,7 @@ object Plant {
         if (sideLength <= 1)
             return
 
-        val block = PlayerAPI.lookingAtBlock(player, 6.0) ?: return
+        val block = player.blockLookingAt(6.0) ?: return
 
         val down = -sideLength / 2
         var up = sideLength / 2

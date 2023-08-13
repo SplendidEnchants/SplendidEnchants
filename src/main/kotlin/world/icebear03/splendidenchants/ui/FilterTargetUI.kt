@@ -18,8 +18,8 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Target
-import world.icebear03.splendidenchants.util.EnchantFilter
 import world.icebear03.splendidenchants.util.YamlUpdater
 
 

@@ -6,15 +6,14 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import taboolib.module.kether.compileToJexl
 import taboolib.platform.compat.replacePlaceholder
-import world.icebear03.splendidenchants.api.enchant
 import world.icebear03.splendidenchants.api.fixedEnchants
+import world.icebear03.splendidenchants.api.splendidEt
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.data.belongedTargets
 import world.icebear03.splendidenchants.enchant.data.capability
+import world.icebear03.splendidenchants.enchant.data.group
 import world.icebear03.splendidenchants.enchant.data.isIn
 import world.icebear03.splendidenchants.enchant.data.limitation.LimitType.*
-import world.icebear03.splendidenchants.enchant.enchantGroup
-import world.icebear03.splendidenchants.enchant.isIn
 
 class Limitations(
     private val belonging: SplendidEnchant,
@@ -53,10 +52,10 @@ class Limitations(
             SLOT -> itemType.belongedTargets.any { it.activeSlots.contains(slot) }
             TARGET -> itemType.isIn(value)
             MAX_CAPABILITY -> itemType.capability > enchants.size
-            DEPENDENCE_ENCHANT -> return enchants.containsKey(enchant(value))
-            CONFLICT_ENCHANT -> return !enchants.containsKey(enchant(value))
+            DEPENDENCE_ENCHANT -> return enchants.containsKey(splendidEt(value))
+            CONFLICT_ENCHANT -> return !enchants.containsKey(splendidEt(value))
             DEPENDENCE_GROUP -> enchants.any { (enchant, _) -> enchant.isIn(value) }
-            CONFLICT_GROUP -> enchants.count { (enchant, _) -> enchant.isIn(value) } < (enchantGroup(value)?.maxCoexist ?: 10000)
+            CONFLICT_GROUP -> enchants.count { (enchant, _) -> enchant.isIn(value) } < (group(value)?.maxCoexist ?: 10000)
             else -> true
         }
     }

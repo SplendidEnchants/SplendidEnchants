@@ -30,7 +30,4 @@ object Commands {
 
     @CommandBody(permission = "splendidenchants.reload")
     val reload = commandReload
-
-    @CommandBody(permission = "splendidenchants.test")
-    val test = commandTest
 }

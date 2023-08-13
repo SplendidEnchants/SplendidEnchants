@@ -1,16 +1,17 @@
 package world.icebear03.splendidenchants
 
+import org.serverct.parrot.parrotx.mechanism.Reloadables
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.module.chat.colored
+import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
-import world.icebear03.splendidenchants.enchant.EnchantGroup
+import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.EnchantLoader
+import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.listener.mechanism.*
-import world.icebear03.splendidenchants.ui.*
-import world.icebear03.splendidenchants.util.EnchantFilter
 
 object SplendidEnchants : Plugin() {
 
@@ -37,9 +38,9 @@ object SplendidEnchants : Plugin() {
         console().sendMessage("|- Loading Enchants...")
         Rarity.load()
         Target.load()
-        EnchantDisplayer.initialize()
-        EnchantLoader.initialize()
-        EnchantGroup.load()
+        EnchantDisplayer.load()
+        EnchantLoader.load()
+        Group.load()
 
         console().sendMessage("|- Loading Mechanisms...")
         AnvilListener.initialize()
@@ -49,10 +50,13 @@ object SplendidEnchants : Plugin() {
         ExpListener.initialize()
 
         console().sendMessage("|- Loading GUIs...")
+        Reloadables.execute()
+
         console().sendMessage("                            ")
         console().sendMessage("Installed SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
         console().sendMessage("| Version: §r3.0.0")
         console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §fxiaozhangup")
+        console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
     }
 
     fun reload() {
@@ -66,10 +70,10 @@ object SplendidEnchants : Plugin() {
         EnchantLoader.resetSort()
         Rarity.load()
         Target.load()
-        EnchantDisplayer.initialize()
-        EnchantLoader.initialize(true)
-        EnchantGroup.load()
-        EnchantFilter.clearAll()
+        EnchantDisplayer.load()
+        EnchantLoader.load(true)
+        Group.load()
+        onlinePlayers.forEach { EnchantFilter.clearFilters(it) }
 
         console().sendMessage("|- Reloading Mechanisms...")
         AnvilListener.initialize()
@@ -79,17 +83,12 @@ object SplendidEnchants : Plugin() {
         ExpListener.initialize()
 
         console().sendMessage("|- Reloading GUIs...")
-        MainMenuUI.reload()
-        ItemCheckUI.reload()
-        EnchantSearchUI.reload()
-        FilterRarityUI.reload()
-        FilterTargetUI.reload()
-        FilterGroupUI.reload()
-        AnvilUI.reload()
+        Reloadables.execute()
 
         console().sendMessage("                            ")
         console().sendMessage("Reloaded SplendidEnchants in §6${System.currentTimeMillis() - stamp}ms")
         console().sendMessage("| Version: §r3.0.0")
         console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §fxiaozhangup")
+        console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
     }
 }

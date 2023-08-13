@@ -1,155 +1,77 @@
-@file:Suppress("deprecation")
-
 package world.icebear03.splendidenchants.api
 
-import org.bukkit.Material
-import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.serverct.parrot.parrotx.function.textured
-import taboolib.platform.util.giveItem
-import taboolib.platform.util.modifyLore
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
-object ItemAPI {
-
-    fun setLore(item: ItemStack?, lore: List<String>): ItemStack? {
-        return if (item?.itemMeta == null) null else item.clone().modifyLore {
-            clear()
-            addAll(lore)
-        }
+var ItemStack.name
+    get() = itemMeta?.displayName
+    set(value) {
+        modifyMeta<ItemMeta> { setDisplayName(value) }
     }
 
-    fun createBook(enchants: Map<Enchantment, Int>): ItemStack {
-        return ItemStack(Material.ENCHANTED_BOOK).modifyMeta<ItemMeta> {
-            setEnchants(this, enchants)
-        }
+var ItemStack.damage
+    get() = (itemMeta as? Damageable)?.damage ?: 0
+    set(value) {
+        modifyMeta<Damageable> { damage = value }
     }
 
-    fun giveBook(player: Player, enchant: SplendidEnchant, level: Int = enchant.maxLevel) {
-        player.giveItem(createBook(mapOf(enchant to level)))
+var ItemMeta.fixedEnchants
+    get(): Map<SplendidEnchant, Int> {
+        return (if (this is EnchantmentStorageMeta) storedEnchants
+        else enchants).mapKeys { (enchant, _) -> enchant.splendidEt() }
+    }
+    set(value) {
+        clearEts()
+        if (this is EnchantmentStorageMeta) storedEnchants.putAll(value)
+        else enchants.putAll(value)
     }
 
-    fun containsEnchant(item: ItemStack?, enchant: Enchantment): Boolean {
-        return (item?.itemMeta?.getEnchantLevel(enchant) ?: 0) > 0
+var ItemStack.fixedEnchants
+    get(): Map<SplendidEnchant, Int> = itemMeta?.fixedEnchants ?: emptyMap()
+    set(value) {
+        modifyMeta<ItemMeta> { fixedEnchants = value }
     }
 
-    fun getLevel(item: ItemStack?, enchant: Enchantment): Int {
-        return item?.itemMeta?.let { meta ->
-            if (meta is EnchantmentStorageMeta) {
-                meta.storedEnchants[enchant]
-            } else {
-                meta.getEnchantLevel(enchant)
-            }
-        } ?: 0
-    }
+fun ItemMeta.etLevel(enchant: SplendidEnchant) = fixedEnchants[enchant] ?: -1
 
-    fun isBook(item: ItemStack): Boolean {
-        return item.itemMeta is EnchantmentStorageMeta
-    }
+fun ItemStack.etLevel(enchant: SplendidEnchant) = itemMeta.etLevel(enchant)
 
-    //注意原meta会更改
-    fun addEnchant(meta: ItemMeta, enchant: SplendidEnchant, level: Int): ItemMeta {
-        if (meta is EnchantmentStorageMeta) {
-            meta.addStoredEnchant(enchant, level, true)
-        } else {
-            meta.addEnchant(enchant, level, true)
-        }
-        return meta
-    }
-
-    fun addEnchant(item: ItemStack, enchant: SplendidEnchant, level: Int): ItemStack {
-        return if (item.itemMeta == null) item else item.modifyMeta<ItemMeta> {
-            addEnchant(this, enchant, level)
-        }
-    }
-
-    //注意原meta会更改
-    fun setEnchants(meta: ItemMeta, enchants: Map<Enchantment, Int>): ItemMeta {
-        if (meta is EnchantmentStorageMeta) {
-            enchants.forEach { meta.addStoredEnchant(it.key, it.value, true); }
-        } else {
-            enchants.forEach { meta.addEnchant(it.key, it.value, true); }
-        }
-        return meta
-    }
-
-    fun setEnchants(item: ItemStack, enchants: Map<Enchantment, Int>): ItemStack {
-        return if (item.itemMeta == null) item else item.clone().modifyMeta<ItemMeta> {
-            setEnchants(this, enchants)
-        }
-    }
-
-    fun clearEnchants(item: ItemStack): ItemStack {
-        return if (item.itemMeta == null) item else item.clone().modifyMeta<ItemMeta> {
-            clearEnchants(this)
-        }
-    }
-
-    fun clearEnchants(meta: ItemMeta): ItemMeta {
-        if (meta is EnchantmentStorageMeta) {
-            getEnchants(meta).forEach {
-                meta.removeStoredEnchant(it.key)
-            }
-        } else {
-            getEnchants(meta).forEach {
-                meta.removeEnchant(it.key)
-            }
-        }
-        return meta
-    }
-
-    fun getName(item: ItemStack?): String? {
-        return item?.itemMeta?.displayName
-    }
-
-    fun setName(item: ItemStack?, name: String?): ItemStack? {
-        return item?.modifyMeta<ItemMeta> {
-            setDisplayName(name)
-        }
-    }
-
-    fun getDamage(item: ItemStack?): Int? {
-        return (item?.itemMeta as? Damageable)?.damage
-    }
-
-    fun setDamage(item: ItemStack?, damage: Int?): ItemStack? {
-        return item?.modifyMeta<Damageable> {
-            this.damage = damage ?: return@modifyMeta
-        }
-    }
-
-    fun removeEnchant(item: ItemStack, enchant: SplendidEnchant): ItemStack {
-        return if (item.itemMeta == null) item else item.modifyMeta<ItemMeta> {
-            removeEnchant(this, enchant)
-        }
-    }
-
-    fun removeEnchant(meta: ItemMeta, enchant: SplendidEnchant): ItemMeta {
-        if (meta is EnchantmentStorageMeta) {
-            meta.removeStoredEnchant(enchant)
-        } else {
-            meta.removeEnchant(enchant)
-        }
-        return meta
-    }
-
-    fun setSkull(item: ItemStack, skull: String): ItemStack {
-        if (item.itemMeta is SkullMeta)
-            return item.textured(skull)
-        return item
-    }
+fun ItemMeta.addEt(enchant: SplendidEnchant, level: Int = enchant.maxLevel) {
+    if (this is EnchantmentStorageMeta) storedEnchants[enchant] = level
+    else enchants[enchant] = level
 }
 
-val ItemStack.fixedEnchants
-    get(): Map<SplendidEnchant, Int> {
-        return itemMeta?.let { meta ->
-            (if (meta is EnchantmentStorageMeta) meta.storedEnchants
-            else meta.enchants).mapKeys { (key, _) -> EnchantAPI.getSplendidEnchant(key) }
-        } ?: emptyMap()
-    }
+fun ItemStack.addEt(enchant: SplendidEnchant, level: Int = enchant.maxLevel) {
+    modifyMeta<ItemMeta> { addEt(enchant, level) }
+}
+
+fun ItemMeta.removeEt(enchant: SplendidEnchant) {
+    if (this is EnchantmentStorageMeta) removeStoredEnchant(enchant)
+    else removeEnchant(enchant)
+}
+
+fun ItemStack.removeEt(enchant: SplendidEnchant) {
+    modifyMeta<ItemMeta> { removeEt(enchant) }
+}
+
+fun ItemMeta.clearEts() {
+    if (this is EnchantmentStorageMeta) storedEnchants.clear()
+    else enchants.clear()
+}
+
+fun ItemStack.clearEts() {
+    modifyMeta<ItemMeta> { clearEts() }
+}
+
+fun ItemStack.skull(skull: String) {
+    if (skull.length <= 20) modifyMeta<SkullMeta> { owner = skull }
+    else textured(skull)
+}
+
+val ItemStack.isEnchantedBook get() = itemMeta is EnchantmentStorageMeta

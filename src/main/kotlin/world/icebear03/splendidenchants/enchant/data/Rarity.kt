@@ -1,6 +1,7 @@
 package world.icebear03.splendidenchants.enchant.data
 
 import taboolib.common.platform.function.console
+import taboolib.module.chat.colored
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.Config
 import world.icebear03.splendidenchants.util.loadAndUpdate
@@ -16,6 +17,8 @@ data class Rarity(
     val weight: Int,
     val skull: String?
 ) {
+
+    fun display(): String = "$color$name".colored()
 
     companion object {
         fun load() {

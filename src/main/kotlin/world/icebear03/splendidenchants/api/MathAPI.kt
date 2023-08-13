@@ -1,7 +1,7 @@
 package world.icebear03.splendidenchants.api
 
-fun Int.numToRoman(ignoreI: Boolean, hasPreviousBlank: Boolean = false): String {
-    if (this == 1 && ignoreI)
+fun Int.roman(simplified: Boolean = false, blank: Boolean = false): String {
+    if (this == 1 && simplified)
         return ""
     var number = this
     var rNumber = StringBuilder()
@@ -20,5 +20,5 @@ fun Int.numToRoman(ignoreI: Boolean, hasPreviousBlank: Boolean = false): String 
             }
         }
     }
-    return if (hasPreviousBlank) " $rNumber" else rNumber.toString()
+    return if (blank) " $rNumber" else rNumber.toString()
 }

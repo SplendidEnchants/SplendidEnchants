@@ -18,8 +18,8 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.enchant.EnchantGroup
-import world.icebear03.splendidenchants.util.EnchantFilter
+import world.icebear03.splendidenchants.enchant.EnchantFilter
+import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.util.YamlUpdater
 
 
@@ -44,13 +44,13 @@ object FilterGroupUI {
         if (!::config.isInitialized) {
             config = MenuConfiguration(source)
         }
-        player.openMenu<Linked<EnchantGroup>>(config.title().colored()) {
+        player.openMenu<Linked<Group>>(config.title().colored()) {
             virtualize()
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["FilterGroup\$filter"].toList()
             slots(slots)
-            elements { EnchantGroup.groups.values.toList() }
+            elements { Group.groups.values.toList() }
 
             onBuild { _, inventory ->
                 shape.all(
@@ -95,7 +95,7 @@ object FilterGroupUI {
     @MenuComponent
     private val filter = MenuFunctionBuilder {
         onBuild { (_, _, _, _, icon, args) ->
-            val group = args[0] as EnchantGroup
+            val group = args[0] as Group
             val player = args[1] as Player
             icon.variables {
                 when (it) {
@@ -134,7 +134,7 @@ object FilterGroupUI {
             if (item.type == Material.AIR)
                 return@onClick
             val group =
-                EnchantGroup.fromName(item.itemMeta.persistentDataContainer.get(key, PersistentDataType.STRING)!!)!!
+                Group.fromName(item.itemMeta.persistentDataContainer.get(key, PersistentDataType.STRING)!!)!!
 
             if (clickType == ClickType.MIDDLE) {
                 EnchantFilter.clearFilter(player, EnchantFilter.FilterType.GROUP, group)

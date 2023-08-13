@@ -2,14 +2,17 @@ package world.icebear03.splendidenchants.enchant
 
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
+import taboolib.common.io.runningResources
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getDataFolder
 import taboolib.library.reflex.Reflex.Companion.getProperty
 import taboolib.library.reflex.Reflex.Companion.setProperty
+import world.icebear03.splendidenchants.api.error.missingConfig
 import world.icebear03.splendidenchants.command.Commands
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
-import world.icebear03.splendidenchants.util.missingConfig
+import world.icebear03.splendidenchants.enchant.data.isIn
+import world.icebear03.splendidenchants.util.YamlUpdater
 import java.io.File
 
 object EnchantLoader {
@@ -34,12 +37,13 @@ object EnchantLoader {
     }
 
     //enchants文件夹应该为若干文件夹，每个文件夹内为各个附魔配置
-    fun initialize(reload: Boolean = false) {
+    fun load(reload: Boolean = false) {
         //注册附魔的准备工作
         Enchantment::class.java.setProperty("acceptingNew", value = true, isStatic = true)
-        //也许可以自动扫描并释放所有内容？ FIXME
+
+        //输出所有附魔的文件
+        releaseEnchantFiles()
         val directory = File(getDataFolder(), "enchants/")
-        if (!directory.exists()) directory.mkdirs()
 
         //记录重载时加载过的附魔
         val loaded = mutableSetOf<String>()
@@ -82,6 +86,16 @@ object EnchantLoader {
         Commands.enchantNamesAndIds.addAll(BY_ID.map { it.key } + BY_NAME.map { it.key })
 
         console().sendMessage("    Successfully load §6${BY_ID.size} enchants")
+    }
+
+    fun releaseEnchantFiles() {
+        runningResources.filter {
+            it.endsWith(".yml")
+                    && it.startsWith("enchants/")
+                    && it.count { c -> c == '/' } == 2
+        }.forEach {
+            YamlUpdater.loadAndUpdate(it)
+        }
     }
 
     private fun unregister(id: String) {
