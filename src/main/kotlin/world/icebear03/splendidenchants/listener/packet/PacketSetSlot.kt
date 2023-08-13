@@ -5,7 +5,7 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.nms.MinecraftVersion
 import taboolib.module.nms.PacketSendEvent
 import taboolib.platform.util.isAir
-import world.icebear03.splendidenchants.api.nms.NMS
+import world.icebear03.splendidenchants.api.internal.nms.NMS
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
 object PacketSetSlot {

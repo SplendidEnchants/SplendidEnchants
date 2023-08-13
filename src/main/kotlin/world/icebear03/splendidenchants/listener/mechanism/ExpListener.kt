@@ -7,7 +7,7 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
 import taboolib.module.kether.compileToJexl
-import world.icebear03.splendidenchants.util.YamlUpdater
+import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import kotlin.math.roundToInt
 
 

@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.api.nms
+package world.icebear03.splendidenchants.api.internal.nms
 
 // 1.16
 typealias NMS16PacketPlayOutBoss = net.minecraft.server.v1_16_R3.PacketPlayOutBoss

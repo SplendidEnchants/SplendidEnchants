@@ -16,8 +16,8 @@ import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
 import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.modifyMeta
-import world.icebear03.splendidenchants.api.error.missingConfig
-import world.icebear03.splendidenchants.api.roman
+import world.icebear03.splendidenchants.api.*
+import world.icebear03.splendidenchants.api.internal.error.missingConfig
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
@@ -25,10 +25,6 @@ import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import world.icebear03.splendidenchants.enchant.data.rarity
 import world.icebear03.splendidenchants.enchant.data.target
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
-import world.icebear03.splendidenchants.util.calculate
-import world.icebear03.splendidenchants.util.get
-import world.icebear03.splendidenchants.util.replace
-import world.icebear03.splendidenchants.util.set
 import java.io.File
 
 class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {

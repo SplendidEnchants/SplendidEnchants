@@ -5,6 +5,7 @@ import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.module.chat.colored
 import taboolib.platform.util.onlinePlayers
+import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.EnchantLoader
@@ -48,6 +49,8 @@ object SplendidEnchants : Plugin() {
         GrindstoneListener.initialize()
         VillagerListener.initialize()
         ExpListener.initialize()
+
+        FurtherOperation.load()
 
         console().sendMessage("|- Loading GUIs...")
         Reloadables.execute()

@@ -4,7 +4,7 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.nms.PacketReceiveEvent
 import taboolib.platform.util.isAir
-import world.icebear03.splendidenchants.api.nms.NMS
+import world.icebear03.splendidenchants.api.internal.nms.NMS
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
 object PacketSetCreativeSlot {

@@ -4,7 +4,7 @@ import taboolib.common.platform.function.console
 import taboolib.module.chat.colored
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.Config
-import world.icebear03.splendidenchants.util.loadAndUpdate
+import world.icebear03.splendidenchants.api.internal.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
 
 val rarities = ConcurrentHashMap<String, Rarity>()

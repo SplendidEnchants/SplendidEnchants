@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.util
+package world.icebear03.splendidenchants.api.internal
 
 import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.releaseResourceFile

@@ -10,7 +10,7 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
-import world.icebear03.splendidenchants.util.YamlUpdater
+import world.icebear03.splendidenchants.api.internal.YamlUpdater
 
 @MenuComponent("Menu")
 object MainMenuUI {

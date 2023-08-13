@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.util
+package world.icebear03.splendidenchants.api
 
 import taboolib.module.kether.compileToJexl
 

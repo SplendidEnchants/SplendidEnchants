@@ -10,12 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import taboolib.common.platform.function.console
 import taboolib.platform.util.modifyMeta
-import world.icebear03.splendidenchants.api.addEt
-import world.icebear03.splendidenchants.api.fixedEnchants
-import world.icebear03.splendidenchants.api.isEnchantedBook
-import world.icebear03.splendidenchants.api.splendidEt
+import world.icebear03.splendidenchants.api.*
+import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.data.rarities
-import world.icebear03.splendidenchants.util.*
 import kotlin.math.min
 
 object EnchantDisplayer {

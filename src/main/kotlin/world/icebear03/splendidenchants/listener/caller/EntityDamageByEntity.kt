@@ -9,9 +9,9 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
 import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.internal.FurtherOperation
+import world.icebear03.splendidenchants.api.internal.PermissionChecker
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
-import world.icebear03.splendidenchants.util.FurtherOperation
-import world.icebear03.splendidenchants.util.PermissionChecker
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -59,7 +59,7 @@ object EntityDamageByEntity {
 //            println("${System.currentTimeMillis()}权限检查攻击，取消 $priority")
             return
         }
-        if (FurtherOperation.hadRun(event)) {
+        if (FurtherOperation.hadOperated(event)) {
 //            println("${System.currentTimeMillis()}已经处理的攻击，取消 $priority")
             return
         }

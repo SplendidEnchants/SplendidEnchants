@@ -10,8 +10,8 @@ import taboolib.common.platform.function.console
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.compileToJexl
 import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.data.Group
-import world.icebear03.splendidenchants.util.YamlUpdater
 import kotlin.math.roundToInt
 
 

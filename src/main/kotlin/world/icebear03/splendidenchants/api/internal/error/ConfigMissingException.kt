@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.api.error
+package world.icebear03.splendidenchants.api.internal.error
 
 import taboolib.common.platform.function.severe
 import java.io.File

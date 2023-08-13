@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.api.nms
+package world.icebear03.splendidenchants.api.internal.nms
 
 import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player

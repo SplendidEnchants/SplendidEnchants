@@ -3,10 +3,10 @@ package world.icebear03.splendidenchants.enchant.data
 import org.bukkit.enchantments.Enchantment
 import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
+import world.icebear03.splendidenchants.api.internal.loadAndUpdate
 import world.icebear03.splendidenchants.api.splendidEt
 import world.icebear03.splendidenchants.api.splendidEts
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
-import world.icebear03.splendidenchants.util.loadAndUpdate
 
 
 val groups = mutableMapOf<String, Group>()
@@ -26,7 +26,7 @@ data class Group(
             Configuration.loadAndUpdate("enchants/group.yml").run {
                 getKeys(false).forEach { name ->
                     val enchants = getStringList("$name.enchants").mapNotNull { splendidEt(it) }.toMutableList()
-                    getStringList("$name.rarities").forEach { enchants += splendidEts(rarity(it)) }
+                    getStringList("$name.rarities").forEach { enchants += rarity(it)?.let { rarity -> splendidEts(rarity) } ?: listOf() }
 
                     groups[name] = Group(
                         name,

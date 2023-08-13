@@ -18,9 +18,9 @@ import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyLore
 import taboolib.platform.util.nextChat
 import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
-import world.icebear03.splendidenchants.util.YamlUpdater
 
 @MenuComponent("EnchantSearch")
 object EnchantSearchUI {

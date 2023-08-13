@@ -4,7 +4,7 @@ import org.bukkit.Material
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
-import world.icebear03.splendidenchants.util.loadAndUpdate
+import world.icebear03.splendidenchants.api.internal.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
 
 val targets = ConcurrentHashMap<String, Target>()

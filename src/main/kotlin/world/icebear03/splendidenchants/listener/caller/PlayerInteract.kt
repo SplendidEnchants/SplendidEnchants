@@ -8,8 +8,8 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.platform.util.isOffhand
 import world.icebear03.splendidenchants.api.CallerAPI
+import world.icebear03.splendidenchants.api.internal.TriggerSlots
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
-import world.icebear03.splendidenchants.util.TriggerSlots
 
 object PlayerInteract {
 

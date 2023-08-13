@@ -1,4 +1,4 @@
-package world.icebear03.splendidenchants.util
+package world.icebear03.splendidenchants.api.internal
 
 import org.bukkit.Bukkit
 import org.bukkit.block.Block
@@ -18,63 +18,39 @@ object FurtherOperation {
     val lastDamageTracker = mutableMapOf<UUID, Int>()
     val lastBreakTracker = mutableMapOf<UUID, Int>()
 
-    init {
+    fun load() {
         submit(delay = 0L, period = 20L) {
             val tick = Bukkit.getCurrentTick()
-            lastDamageTracker.filter {
-                tick - it.value >= 20
-            }.forEach {
-                lastDamageTracker.remove(it.key)
-            }
-            lastBreakTracker.filter {
-                tick - it.value >= 20
-            }.forEach {
-                lastBreakTracker.remove(it.key)
-            }
+            lastDamageTracker.values.removeIf { tick - it >= 20 }
+            lastBreakTracker.values.removeIf { tick - it >= 20 }
         }
     }
 
     fun addStamp(event: Event) {
-        if (event is EntityDamageByEntityEvent) {
-            val key = event.damager.uniqueId
-            lastDamageTracker[key] = Bukkit.getCurrentTick()
-        }
-        if (event is BlockBreakEvent) {
-            val key = event.player.uniqueId
-            lastBreakTracker[key] = Bukkit.getCurrentTick()
-        }
+        if (event is EntityDamageByEntityEvent)
+            lastDamageTracker[event.damager.uniqueId] = Bukkit.getCurrentTick()
+        if (event is BlockBreakEvent)
+            lastBreakTracker[event.player.uniqueId] = Bukkit.getCurrentTick()
     }
 
     fun delStamp(event: Event) {
-        if (event is EntityDamageByEntityEvent) {
-            val key = event.damager.uniqueId
-            lastDamageTracker.remove(key)
-        }
-        if (event is BlockBreakEvent) {
-            val key = event.player.uniqueId
-            lastBreakTracker.remove(key)
-        }
+        if (event is EntityDamageByEntityEvent)
+            lastDamageTracker.remove(event.damager.uniqueId)
+        if (event is BlockBreakEvent)
+            lastBreakTracker.remove(event.player.uniqueId)
     }
 
-    fun hadRun(event: Event): Boolean {
-        if (event is EntityDamageByEntityEvent) {
-            val key = event.damager.uniqueId
-            if (lastDamageTracker.containsKey(key)) {
-                val tick = lastDamageTracker[key]!!
-                if (tick >= Bukkit.getCurrentTick() - 1) {
+    fun hadOperated(event: Event): Boolean {
+        if (event is EntityDamageByEntityEvent)
+            lastDamageTracker[event.damager.uniqueId]?.let {
+                if (it >= Bukkit.getCurrentTick() - 1)
                     return true
-                }
             }
-        }
-        if (event is BlockBreakEvent) {
-            val key = event.player.uniqueId
-            if (lastBreakTracker.containsKey(key)) {
-                val tick = lastBreakTracker[key]!!
-                if (tick >= Bukkit.getCurrentTick() - 1) {
+        if (event is BlockBreakEvent)
+            lastDamageTracker[event.player.uniqueId]?.let {
+                if (it >= Bukkit.getCurrentTick() - 1)
                     return true
-                }
             }
-        }
         return false
     }
 

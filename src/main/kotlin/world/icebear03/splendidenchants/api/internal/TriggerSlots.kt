@@ -1,8 +1,8 @@
-package world.icebear03.splendidenchants.util
+package world.icebear03.splendidenchants.api.internal
 
 import org.bukkit.inventory.EquipmentSlot
 
-enum class TriggerSlots(slotSet: Set<EquipmentSlot>) {
+enum class TriggerSlots(val slots: Set<EquipmentSlot>) {
 
     ARMORS(
         setOf(
@@ -29,6 +29,4 @@ enum class TriggerSlots(slotSet: Set<EquipmentSlot>) {
             EquipmentSlot.FEET
         )
     );
-
-    val slots = slotSet
 }

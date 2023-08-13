@@ -3,7 +3,7 @@ package world.icebear03.splendidenchants.listener.packet
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.nms.PacketSendEvent
-import world.icebear03.splendidenchants.api.nms.NMS
+import world.icebear03.splendidenchants.api.internal.nms.NMS
 
 object PacketOpenWindowMerchant {
 

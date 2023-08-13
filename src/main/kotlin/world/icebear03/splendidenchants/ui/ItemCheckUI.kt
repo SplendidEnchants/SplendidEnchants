@@ -17,8 +17,8 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyLore
 import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
-import world.icebear03.splendidenchants.util.YamlUpdater
 
 @MenuComponent("ItemCheck")
 object ItemCheckUI {

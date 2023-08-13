@@ -1,7 +1,6 @@
-package world.icebear03.splendidenchants.util
+package world.icebear03.splendidenchants.api.internal
 
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
@@ -12,26 +11,25 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
+import world.icebear03.splendidenchants.api.serialized
 import java.util.*
 
 object PermissionChecker {
 
-    val checkingBlocks = mutableMapOf<Pair<Location, UUID>, Boolean>()
+    val checkingBlocks = mutableMapOf<Pair<String, UUID>, Boolean>()
     val checkingDamages = mutableMapOf<Pair<UUID, UUID>, Boolean>()
 
     fun hasBlockPermission(player: Player, block: Block): Boolean {
         val event = BlockBreakEvent(block, player)
-        val pair = block.location to player.uniqueId
+        val pair = block.location.serialized to player.uniqueId
         checkingBlocks[pair] = true
         Bukkit.getPluginManager().callEvent(event)
-        val flag = checkingBlocks[pair]!!
-        checkingBlocks.remove(pair)
-        return flag
+        return checkingBlocks.remove(pair)!!
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL, ignoreCancelled = false)
     fun event(event: BlockBreakEvent) {
-        val loc = event.block.location
+        val loc = event.block.location.serialized
         val uuid = event.player.uniqueId
         if (checkingBlocks[loc to uuid] != null) {
             checkingBlocks[loc to uuid] = !event.isCancelled
@@ -40,12 +38,10 @@ object PermissionChecker {
     }
 
     fun isChecking(event: Event): Boolean {
-        if (event is BlockBreakEvent) {
-            return checkingBlocks.containsKey(event.block.location to event.player.uniqueId)
-        }
-        if (event is EntityDamageByEntityEvent) {
+        if (event is BlockBreakEvent)
+            return checkingBlocks.containsKey(event.block.location.serialized to event.player.uniqueId)
+        if (event is EntityDamageByEntityEvent)
             return checkingDamages.containsKey(event.damager.uniqueId to event.entity.uniqueId)
-        }
         return false
     }
 
