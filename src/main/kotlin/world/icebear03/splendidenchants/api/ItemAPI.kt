@@ -43,6 +43,7 @@ fun ItemMeta.etLevel(enchant: SplendidEnchant) = fixedEnchants[enchant] ?: -1
 fun ItemStack.etLevel(enchant: SplendidEnchant) = itemMeta.etLevel(enchant)
 
 fun ItemMeta.addEt(enchant: SplendidEnchant, level: Int = enchant.maxLevel) {
+    removeEt(enchant)
     if (this is EnchantmentStorageMeta) storedEnchants[enchant] = level
     else enchants[enchant] = level
 }
