@@ -21,11 +21,10 @@ fun splendidEts(rarity: Rarity) = EnchantLoader.BY_RARITY[rarity]?.toList() ?: l
 
 fun SplendidEnchant.book(level: Int = maxLevel) = ItemStack(Material.ENCHANTED_BOOK).modifyMeta<ItemMeta> { addEt(this@book, level) }
 
-fun etsAvailable(
+fun ItemStack.etsAvailable(
     checkType: CheckType = CheckType.ANVIL,
-    item: ItemStack,
     player: Player? = null
-) = EnchantLoader.BY_ID.values.filter { it.limitations.checkAvailable(checkType, item, player).first }
+) = EnchantLoader.BY_ID.values.filter { it.limitations.checkAvailable(checkType, this, player).first }
 
 fun Collection<SplendidEnchant>.drawEt() = RandomList(*associate { it.rarity to it.rarity.weight }.toList().toTypedArray()).random()?.drawEt()
 fun Rarity.drawEt() = RandomList(*splendidEts(this).associateWith { it.alternativeData.weight }.toList().toTypedArray()).random()

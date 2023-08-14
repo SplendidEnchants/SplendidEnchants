@@ -22,5 +22,5 @@ enchant_cost:
 
 #vip权限的玩家，可以节省经验等级
 privilege:
-  - "splendidenchants.privilege.anvil.vip:{cost_level}-1"
-  - "splendidenchants.privilege.anvil.svip:{cost_level}-2"
+  - "splendidenchants.privilege.anvil.vip:{cost}-1"
+  - "splendidenchants.privilege.anvil.svip:{cost}-2"

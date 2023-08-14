@@ -67,7 +67,7 @@ object AnvilUI {
             val a = dataItem[uuid]!!["a"]
             val b = dataItem[uuid]!!["b"]
             if (a != null && b != null) {
-                val resultPair = AnvilListener.combine(a as ItemStack, b as ItemStack, player)
+                val resultPair = AnvilListener.anvil(a as ItemStack, b as ItemStack, player)
                 val result = resultPair.first
                 val levelCost = AnvilListener.finalCost(resultPair.second, player)
 

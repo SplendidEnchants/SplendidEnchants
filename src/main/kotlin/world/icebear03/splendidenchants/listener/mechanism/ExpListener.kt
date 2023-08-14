@@ -6,98 +6,65 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
-import taboolib.module.kether.compileToJexl
+import world.icebear03.splendidenchants.api.calcToInt
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
-import kotlin.math.roundToInt
 
 
 object ExpListener {
 
     var enable: Boolean = false
-    val expFormula = mutableMapOf<Int, String>()
+    val expFormulas = mutableListOf<Pair<Int, String>>()
     val privilege = mutableMapOf<String, String>()
 
     fun initialize() {
-        val config = YamlUpdater.loadAndUpdate("mechanisms/exp.yml")
+        YamlUpdater.loadAndUpdate("mechanisms/exp.yml").run {
+            enable = getBoolean("enable", false)
 
-        enable = config.getBoolean("enable", false)!!
+            expFormulas.clear()
+            getConfigurationSection("exp_per_level")?.let {
+                expFormulas.addAll(it.getKeys(false).map { path -> path.toInt() to it.getString(path)!! })
+            }
 
-        expFormula.clear()
-        val section = config.getConfigurationSection("exp_per_level")!!
-        section.getKeys(false).forEach {
-            expFormula[it.toInt()] = section.getString("$it")!!
-        }
-
-        privilege.clear()
-        config.getStringList("privilege").forEach { it ->
-            privilege[it.split(":")[0]] = it.split(":")[1]
+            privilege.clear()
+            privilege.putAll(getStringList("privilege").map { it.split(":")[0] to it.split(":")[1] })
         }
 
         console().sendMessage("    Successfully load exp module")
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onExp(event: PlayerExpChangeEvent) {
         if (!enable)
             return
 
         val player = event.player
         val level = player.level //currentLevel
-        val expAttained = finalAttain(event.amount.toFloat(), player)
+        val attained = finalAttain(event.amount, player)
 
         val percent = player.exp
 
-        val expNeedToUpgrade = getExpPerLevel(level)
+        val expNeedToUpgrade = modified(level)
         val exp = percent * expNeedToUpgrade
+        val newExp = exp + attained
 
         event.amount = 0
 
         submit {
-            val newExp = exp + expAttained
-            if (newExp >= expNeedToUpgrade) {
-                player.level = level + 1
-                val leftExp = newExp - expNeedToUpgrade
-                player.exp = leftExp / getExpPerLevel(level + 1)
-            } else {
-                player.exp = newExp / expNeedToUpgrade
-            }
+            player.exp = if (newExp >= expNeedToUpgrade) {
+                player.level += 1
+                (newExp - expNeedToUpgrade) / modified(level + 1)
+            } else newExp / expNeedToUpgrade
         }
     }
 
-    fun getExpPerLevel(level: Int): Int {
-        var tmp = -1
-        var formula = ""
-        expFormula.forEach {
-            if (it.key in (tmp + 1)..level) {
-                tmp = it.key
-                formula = it.value
-            }
-        }
-        if (formula.isEmpty())
-            return getExpPerLevelInVanilla(level)
-        else
-            return formula.replace("{level}", "$level").compileToJexl().eval() as Int
-    }
+    fun modified(level: Int) = expFormulas.lastOrNull { it.first <= level }?.second?.calcToInt("level" to level) ?: vanilla(level)
 
-    fun getExpPerLevelInVanilla(level: Int): Int {
-        return if (level <= 15) {
-            2 * level + 7
-        } else if (level <= 30) {
-            5 * level - 38
-        } else {
-            9 * level - 158
-        }
-    }
+    fun vanilla(level: Int) = if (level <= 15) 2 * level + 7
+    else if (level <= 30) 5 * level - 38
+    else 9 * level - 158
 
-    fun finalAttain(origin: Float, player: Player): Int {
-        var maxAttain = origin
-        privilege.forEach {
-            if (player.hasPermission(it.key)) {
-                val newRefund = it.value.replace("{exp}", origin.toString()).compileToJexl().eval() as Float
-                maxAttain = maxOf(maxAttain, newRefund)
-            }
-        }
-
-        return maxOf(0, maxAttain.roundToInt())
-    }
+    fun finalAttain(origin: Int, player: Player) = privilege.maxOf { (perm, expression) ->
+        if (player.hasPermission(perm)) expression.calcToInt("exp" to origin)
+        else origin
+    }.coerceAtLeast(0)
 }

@@ -2,15 +2,20 @@ package world.icebear03.splendidenchants.listener.mechanism
 
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
+import org.bukkit.inventory.AnvilInventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
-import taboolib.module.kether.compileToJexl
-import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
+import world.icebear03.splendidenchants.enchant.data.belongedTargets
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
+import kotlin.math.roundToInt
 
 object AnvilListener {
 
@@ -23,144 +28,128 @@ object AnvilListener {
     var newEnchantExtraCost = 2
     var enchantCostPerLevel = "6.0/{max_level}"
 
-    var allowDiffenrentMaterial = false
+    var allowDifferentMaterial = false
     var privilege = mutableMapOf<String, String>()
 
-    fun initialize() {
-        val config = YamlUpdater.loadAndUpdate("mechanisms/anvil.yml")
-        allowUnsafeLevel = config.getBoolean("limit.unsafe_level", true)
-        allowUnsafeCombine = config.getBoolean("limit.unsafe_combine", false)
+    fun load() {
+        YamlUpdater.loadAndUpdate("mechanisms/anvil.yml").run {
+            allowUnsafeLevel = getBoolean("limit.unsafe_level", true)
+            allowUnsafeCombine = getBoolean("limit.unsafe_combine", false)
 
-        maxCost = config.getInt("max_cost", 100)
-        renameCost = config.getInt("rename_cost", 3)
-        repairCost = config.getInt("repair_cost", 5)
-        newEnchantExtraCost = config.getInt("enchant_cost.new_extra", 2)
-        enchantCostPerLevel = config.getString("enchant_cost.per_level", enchantCostPerLevel)!!
+            maxCost = getInt("max_cost", 100)
+            renameCost = getInt("rename_cost", 3)
+            repairCost = getInt("repair_cost", 5)
+            newEnchantExtraCost = getInt("enchant_cost.new_extra", 2)
+            enchantCostPerLevel = getString("enchant_cost.per_level", enchantCostPerLevel)!!
 
-        allowDiffenrentMaterial = config.getBoolean("allow_different_material", false)
-        privilege.clear()
-        config.getStringList("privilege").forEach { it ->
-            privilege[it.split(":")[0]] = it.split(":")[1]
+            allowDifferentMaterial = getBoolean("allow_different_material", false)
+            privilege.clear()
+            privilege.putAll(getStringList("privilege").map { it.split(":")[0] to it.split(":")[1] })
         }
 
         console().sendMessage("    Successfully load anvil module")
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    fun event(event: PrepareAnvilEvent) {
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun anvil(event: PrepareAnvilEvent) {
         val inv = event.inventory
-        val first = inv.firstItem
-        val second = inv.secondItem
-        val result = inv.result
-        val renameText = inv.renameText
         val player = event.viewers[0] as Player
 
-        if (first == null)
-            return
+        val a = inv.firstItem ?: return
+        val b = inv.secondItem
 
-        //重命名
-        //如果交给原版处理rename，则会丢附魔
-        if (second == null) {
-            if (renameText != ItemAPI.getName(first)) {
-                inv.repairCost = finalCost(renameCost + 0.0, player)
-                event.result = ItemAPI.setName(first.clone(), renameText)
-            }
-            return
+        val renameText = inv.renameText
+
+        val result = anvil(a, b, player, renameText)
+
+        result.first ?: return
+        event.result = result.first
+        inv.repairCost = result.second
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun complete(event: InventoryClickEvent) {
+        val inv = event.inventory
+        val type = event.slotType
+        if (type == InventoryType.SlotType.RESULT && inv is AnvilInventory) {
+            inv.firstItem = null
+            inv.secondItem = null
         }
+    }
 
-        //修理
-        //如果交给原版处理durability，则会丢附魔
-        if (ItemAPI.getEnchants(second).isEmpty()) {
-            var cost = repairCost
-            val item = ItemAPI.setDamage(first.clone(), ItemAPI.getDamage(result))
+    fun anvil(a: ItemStack, b: ItemStack?, player: Player, name: String?): Pair<ItemStack?, Int> {
+        val typeA = a.type
+        val typeB = b?.type ?: Material.AIR
 
-            if (renameText != ItemAPI.getName(first)) {
+        val result = a.clone()
+        var cost = 0.0
+
+        name?.let {
+            if (it.isNotBlank()) {
+                a.name = it
                 cost += renameCost
-                event.result = ItemAPI.setName(item, renameText)
-            } else {
-                event.result = item
-            }
-            inv.repairCost = finalCost(cost + 0.0, player)
-            return
-        }
-
-        //拼合附魔（重点！）
-        val resultAndCost = combine(first, second, player)
-        var cost = resultAndCost.second + 0.0
-        if (cost <= 0 || resultAndCost.first == null) {
-            event.result = null
-            return
-        }
-        if (resultAndCost.first!!.isSimilar(first)) {
-            event.result = null
-            return
-        }
-
-        if (renameText != ItemAPI.getName(first)) {
-            cost += renameCost
-            event.result = ItemAPI.setName(resultAndCost.first!!, renameText)
-        } else {
-            event.result = resultAndCost.first
-        }
-
-        inv.repairCost = finalCost(cost, player)
-    }
-
-    //返回的是 新物品，耗费经验
-    fun combine(first: ItemStack, second: ItemStack, player: Player): Pair<ItemStack?, Double> {
-        if (first.type != second.type && second.type != Material.ENCHANTED_BOOK) {
-            return null to 0.0
-        }
-
-        val result = first.clone()
-        var costLevel = 0.0
-        for (it in ItemAPI.getEnchants(second)) {
-            val enchant = it.key
-            val level = it.value
-            val maxLevel = it.key.maxLevel
-            var originLevel = ItemAPI.getLevel(result, enchant)
-            var newLevel = originLevel
-
-            if (enchant.limitations.checkAvailable(CheckType.ANVIL, player, first).first) {
-                val perLevel = enchantCostPerLevel.replace("{max_level}", it.key.maxLevel.toString()).compileToJexl()
-                    .eval() as Double
-                //是新的附魔
-                if (originLevel <= 0) {
-                    originLevel = 0
-                    costLevel += newEnchantExtraCost
-                }
-                if (originLevel < level) {
-                    newLevel = level
-                    //不允许超出最高级
-                    if (level >= maxLevel) {
-                        if (!allowUnsafeLevel) {
-                            newLevel = maxLevel
-                        }
-                    }
-                }
-                if (originLevel == level) {
-                    if (level >= maxLevel && !allowUnsafeCombine) {
-                        continue
-                    }
-                    newLevel = level + 1
-                }
-                ItemAPI.addEnchant(result, enchant, newLevel)
-                costLevel += perLevel * (newLevel - originLevel)
             }
         }
-        return result to costLevel
-    }
-
-    fun finalCost(origin: Double, player: Player): Int {
-        var minCost = origin
-        privilege.forEach {
-            if (player.hasPermission(it.key)) {
-                val newCost = it.value.replace("{cost_level}", origin.toString()).compileToJexl().eval() as Double
-                minCost = minOf(minCost, newCost)
-            }
+        val fixed = durabilityFixed(typeA, typeB)
+        if (a.itemMeta is Damageable && fixed >= 0) {
+            a.damage = maxOf(0, a.damage - fixed)
+            cost += repairCost
         }
 
-        //不能低于1级，不能高于设定好的上限等级
-        return minOf(maxCost, maxOf(minCost, 1.0).toInt())
+        if (typeA == typeB || typeB == Material.ENCHANTED_BOOK ||
+            (allowDifferentMaterial && typeB.belongedTargets.any { !typeA.belongedTargets.contains(it) })
+        ) b!!.fixedEnchants.filterKeys { it.limitations.checkAvailable(CheckType.ANVIL, a, player).first }.forEach { (enchant, lv) ->
+            val old = a.etLevel(enchant)
+            val new = if (old < lv) {
+                if (old <= 0) cost += newEnchantExtraCost
+                if (lv > enchant.maxLevel && !allowUnsafeLevel) return@forEach
+                lv
+            } else if (old == lv) {
+                if (old >= enchant.maxLevel && !allowUnsafeCombine) return@forEach
+                lv + 1
+            } else return@forEach
+            result.addEt(enchant, new)
+            cost += enchantCostPerLevel.calcToDouble("max_level" to enchant.maxLevel) * (new - old)
+        }
+
+        if (cost == 0.0 || result == a)
+            return null to 0
+
+        return result to finalCost(cost, player)
     }
+
+    fun durabilityFixed(type: Material, fixer: Material, amount: Int = 1): Int {
+        val typeS = type.toString()
+        val fixerS = fixer.toString()
+        val isArmor = typeS.contains("HELMET") ||
+                typeS.contains("CHESTPLATE") ||
+                typeS.contains("LEGGINGS") ||
+                typeS.contains("BOOTS") ||
+                type == Material.SHIELD
+        var fixed = -1
+        if (typeS.startsWith("WOODEN_") && fixerS.endsWith("PLANKS"))
+            fixed = if (isArmor) 84 else 14
+        if (typeS.startsWith("STONE_") && (fixer == Material.BLACKSTONE || fixer == Material.COBBLESTONE || fixer == Material.DEEPSLATE))
+            fixed = 32
+        if (typeS.startsWith("IRON_") && fixer == Material.IRON_INGOT)
+            fixed = if (isArmor) 56 else 62
+        if (typeS.startsWith("DIAMOND_") && fixer == Material.DIAMOND)
+            fixed = if (isArmor) 123 else 390
+        if (typeS.startsWith("NETHERITE_") && fixer == Material.NETHERITE_INGOT)
+            fixed = if (isArmor) 138 else 507
+        if (typeS.startsWith("GOLD_") && fixer == Material.GOLD_INGOT)
+            fixed = if (isArmor) 26 else 8
+        if (typeS.startsWith("LEATHER_") && fixer == Material.LEATHER)
+            fixed = 18
+        if (type == Material.ELYTRA && fixer == Material.PHANTOM_MEMBRANE)
+            fixed = 108
+        if (type == Material.TURTLE_HELMET && fixer == Material.SCUTE)
+            fixed = 68
+        return (fixed * amount).coerceAtMost(type.maxDurability.toInt())
+    }
+
+    fun finalCost(origin: Double, player: Player) = privilege.minOf { (perm, expression) ->
+        if (player.hasPermission(perm)) expression.calcToInt("cost" to origin)
+        else origin.roundToInt()
+    }.coerceAtMost(maxCost).coerceAtLeast(1)
 }

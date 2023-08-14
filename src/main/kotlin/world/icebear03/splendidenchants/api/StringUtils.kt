@@ -1,17 +1,20 @@
 package world.icebear03.splendidenchants.api
 
 import taboolib.module.kether.compileToJexl
+import kotlin.math.roundToInt
 
-fun String.replace(holders: List<Pair<String, String>>): String {
+fun String.replace(holders: List<Pair<String, Any>>): String {
     var tmp = this
-    holders.forEach { (holder, value) -> tmp = tmp.replace("{$holder}", value) }
+    holders.forEach { (holder, value) -> tmp = tmp.replace("{$holder}", "$value") }
     return tmp
 }
 
-fun String.replace(holders: Map<String, String>): String = replace(holders.toList())
+fun String.replace(holders: Map<String, Any>): String = replace(holders.toList())
 
-fun String.replace(vararg holders: Pair<String, String>): String = replace(holders.toList())
+fun String.replace(vararg holders: Pair<String, Any>): String = replace(holders.toList())
 
-fun String.calculate(holders: List<Pair<String, String>>): String = replace(holders).compileToJexl().eval().toString()
-fun String.calculate(holders: Map<String, String>): String = calculate(holders.toList())
-fun String.calculate(vararg holders: Pair<String, String>): String = calculate(holders.toList())
+fun String.calculate(holders: List<Pair<String, Any>>): String = replace(holders).compileToJexl().eval().toString()
+fun String.calculate(holders: Map<String, Any>): String = calculate(holders.toList())
+fun String.calculate(vararg holders: Pair<String, Any>): String = calculate(holders.toList())
+fun String.calcToDouble(vararg holders: Pair<String, Any>): Double = calculate(*holders).toDouble()
+fun String.calcToInt(vararg holders: Pair<String, Any>): Int = calcToDouble(*holders).roundToInt()

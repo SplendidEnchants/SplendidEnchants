@@ -44,7 +44,7 @@ object SplendidEnchants : Plugin() {
         Group.load()
 
         console().sendMessage("|- Loading Mechanisms...")
-        AnvilListener.initialize()
+        AnvilListener.load()
         AttainListener.initialize()
         GrindstoneListener.initialize()
         VillagerListener.initialize()
@@ -79,7 +79,7 @@ object SplendidEnchants : Plugin() {
         onlinePlayers.forEach { EnchantFilter.clearFilters(it) }
 
         console().sendMessage("|- Reloading Mechanisms...")
-        AnvilListener.initialize()
+        AnvilListener.load()
         AttainListener.initialize()
         GrindstoneListener.initialize()
         VillagerListener.initialize()
