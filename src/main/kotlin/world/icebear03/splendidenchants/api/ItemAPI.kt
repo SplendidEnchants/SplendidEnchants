@@ -32,10 +32,10 @@ var ItemMeta.fixedEnchants
         else enchants.putAll(value)
     }
 
-var ItemStack.fixedEnchants
-    get(): Map<SplendidEnchant, Int> = itemMeta?.fixedEnchants ?: emptyMap()
+var ItemStack?.fixedEnchants
+    get(): Map<SplendidEnchant, Int> = this?.itemMeta?.fixedEnchants ?: emptyMap()
     set(value) {
-        modifyMeta<ItemMeta> { fixedEnchants = value }
+        this?.modifyMeta<ItemMeta> { fixedEnchants = value }
     }
 
 fun ItemMeta.etLevel(enchant: SplendidEnchant) = fixedEnchants[enchant] ?: -1

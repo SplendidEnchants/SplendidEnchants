@@ -5,10 +5,9 @@ import org.bukkit.inventory.MerchantRecipe
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
-import world.icebear03.splendidenchants.api.EnchantAPI
-import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
-import world.icebear03.splendidenchants.enchant.data.Group
+import world.icebear03.splendidenchants.enchant.data.group
 
 object VillagerListener {
 
@@ -17,41 +16,31 @@ object VillagerListener {
     var amount = 2
 
     fun initialize() {
-        val config = YamlUpdater.loadAndUpdate("mechanisms/villager.yml")
-        enableEnchantTrade = config.getBoolean("enable", true)
-        tradeGroup = config.getString("group", tradeGroup)!!
-        amount = config.getInt("amount", 2)
+        YamlUpdater.loadAndUpdate("mechanisms/villager.yml").run {
+            enableEnchantTrade = getBoolean("enable", true)
+            tradeGroup = getString("group", tradeGroup)!!
+            amount = getInt("amount", 2)
+        }
 
         console().sendMessage("    Successfully load merchant module")
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun event(event: VillagerAcquireTradeEvent) {
-        val result = event.recipe.result.clone()
+    fun acquireTrade(event: VillagerAcquireTradeEvent) {
+        val origin = event.recipe
+        val result = origin.result.clone()
 
-        if (ItemAPI.getEnchants(result).isEmpty())
-            return
-        if (!enableEnchantTrade) {
-            event.isCancelled = true
-            return
+        result.fixedEnchants.isEmpty() so { return }
+        enableEnchantTrade or { event.isCancelled = true;return }
+
+        result.clearEts()
+        repeat(amount) { result.addEt((group(tradeGroup)?.enchants ?: listOf()).filter { it.alternativeData.isTradeable }.drawEt() ?: return@repeat) }
+
+        origin.run origin@{
+            event.recipe = MerchantRecipe(
+                result, uses, maxUses, hasExperienceReward(), villagerExperience,
+                priceMultiplier, demand, specialPrice, shouldIgnoreDiscounts()
+            ).run new@{ this@new.ingredients = this@origin.ingredients; this }
         }
-
-        val item = ItemAPI.clearEnchants(result)
-
-        for (i in 0 until amount) {
-            val enchant = EnchantAPI.drawInRandom(Group.getSplendidEnchants(tradeGroup)) ?: return
-            ItemAPI.addEnchant(item, enchant, enchant.maxLevel)
-        }
-
-        val recipe = MerchantRecipe(
-            item,
-            event.recipe.uses,
-            event.recipe.maxUses,
-            event.recipe.hasExperienceReward(),
-            event.recipe.villagerExperience,
-            event.recipe.priceMultiplier
-        )
-        recipe.ingredients = event.recipe.ingredients
-        event.recipe = recipe
     }
 }
