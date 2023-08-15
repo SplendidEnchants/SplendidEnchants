@@ -7,7 +7,7 @@ grindstone:
 #请注意，只有使用本插件提供的砂轮界面，以下配置才会生效！！！
 
 #每条附魔返还的经验点数公式
-exp_per_enchant: "30*{level}/{max_level}*{rarity_bonus}"
+exp_per_enchant: "30*{level}/{max_level}*{bonus}"
 #磨砂的物品同时含有多个附魔，返还的经验是
 #每个附魔之和（true）
 #还是返还最多的附魔（false）
@@ -27,5 +27,5 @@ blacklist_group: 不可磨砂类附魔
 
 #拥有不同权限可以增加返还的经验
 privilege:
-  - "splendidenchants.privilege.grindstone.vip:{refund_exp}*1.25"
-  - "splendidenchants.privilege.grindstone.svip:{refund_exp}*1.5"
+  - "splendidenchants.privilege.grindstone.vip:{refund}*1.25"
+  - "splendidenchants.privilege.grindstone.svip:{refund}*1.5"

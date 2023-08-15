@@ -16,7 +16,7 @@ fun Player.removeCd(key: String) {
     stamps[uniqueId]!!.remove(key)
 }
 
-fun Player.clearCd(key: String) {
+fun Player.clearCd() {
     stamps[uniqueId]!!.clear()
 }
 
@@ -26,7 +26,10 @@ fun Player.checkCd(key: String, cd: Double, info: Boolean = false): Pair<Boolean
     if (!stamps[uniqueId]!!.containsKey(key))
         return true to 0.0
     val tmp = (cd - (System.currentTimeMillis() - stamps[uniqueId]!![key]!!) / 1000.0).format(1)
-    return (tmp <= 0.0) to maxOf(tmp, 0.0)
+    return if (tmp <= 0.0) {
+        sendMessage("冷却中，还需${tmp}秒")
+        true to -1.0
+    } else false to maxOf(tmp, 0.0)
 }
 
 object CooldownData {

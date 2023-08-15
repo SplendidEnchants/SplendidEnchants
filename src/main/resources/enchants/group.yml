@@ -60,6 +60,9 @@
 诅咒类附魔:
   rarities:
     - 诅咒
+不可磨砂类附魔:
+  rarities:
+    - 诅咒
 可交易附魔:
   rarities:
     - 普通

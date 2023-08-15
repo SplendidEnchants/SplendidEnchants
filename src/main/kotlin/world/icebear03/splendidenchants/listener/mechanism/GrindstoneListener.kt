@@ -1,17 +1,17 @@
 package world.icebear03.splendidenchants.listener.mechanism
 
+import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
+import org.bukkit.entity.ExperienceOrb
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryOpenEvent
-import org.bukkit.event.inventory.InventoryType
+import org.bukkit.event.inventory.PrepareGrindstoneEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
-import taboolib.common.util.replaceWithOrder
-import taboolib.module.kether.compileToJexl
-import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
-import world.icebear03.splendidenchants.enchant.data.Group
+import world.icebear03.splendidenchants.enchant.data.isIn
+import java.util.*
 import kotlin.math.roundToInt
 
 
@@ -27,88 +27,78 @@ object GrindstoneListener {
     var privilege = mutableMapOf<String, String>()
 
     fun initialize() {
-        val config = YamlUpdater.loadAndUpdate("mechanisms/grindstone.yml")
-        enableVanilla = config.getBoolean("grindstone.vanilla", false)
-        enableCustomGrindstone = config.getBoolean("grindstone.custom", true)
+        YamlUpdater.loadAndUpdate("mechanisms/grindstone.yml").run {
+            enableVanilla = getBoolean("grindstone.vanilla", false)
+            enableCustomGrindstone = getBoolean("grindstone.custom", true)
 
-        expPerEnchant = config.getString("exp_per_enchant", expPerEnchant)!!
-        accumulation = config.getBoolean("accumulation", true)
-        val section = config.getConfigurationSection("rarity_bonus")!!
-        rarityBonus.clear()
-        section.getKeys(false).forEach {
-            rarityBonus[it] = section.getDouble(it)
-        }
+            expPerEnchant = getString("exp_per_enchant", expPerEnchant)!!
+            accumulation = getBoolean("accumulation", true)
+            val section = getConfigurationSection("rarity_bonus")!!
+            rarityBonus.clear()
+            rarityBonus.putAll(section.getKeys(false).map { it to section.getDouble(it) })
 
-        defaultBonus = config.getDouble("default_bonus", 1.0)
-        blacklist = config.getString("blacklist_group", blacklist)!!
+            defaultBonus = getDouble("default_bonus", 1.0)
+            blacklist = getString("blacklist_group", blacklist)!!
 
-        privilege.clear()
-        config.getStringList("privilege").forEach { it ->
-            privilege[it.split(":")[0]] = it.split(":")[1]
+            privilege.clear()
+            AnvilListener.privilege.putAll(getStringList("privilege").map { it.split(":")[0] to it.split(":")[1] })
         }
 
         console().sendMessage("    Successfully load grindstone module")
     }
 
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun event(event: InventoryOpenEvent) {
+    val grindstoning = mutableMapOf<UUID, Int>()
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun grindstone(event: PrepareGrindstoneEvent) {
         val inv = event.inventory
-        if (inv.type == InventoryType.GRINDSTONE) {
-            if (!enableVanilla) {
-                val player = event.player
-                if (enableCustomGrindstone) {
-                    //TODO 打开砂轮界面
-                } else {
-                    player.sendMessage("本服务器未启用原版砂轮界面！")
-                    event.isCancelled = true
-                }
-            }
+        val player = (event.viewers.getOrNull(0) ?: return) as Player
+        val upper = inv.upperItem
+        val lower = inv.lowerItem
+        var exp = 0
+        val result = event.result?.clone() ?: return
+
+        result.clearEts()
+        grind(player, upper)?.let { (item, refund) ->
+            item.fixedEnchants.forEach { (enchant, level) -> result.addEt(enchant, level) }
+            exp += refund
         }
+        grind(player, lower)?.let { (item, refund) ->
+            item.fixedEnchants.forEach { (enchant, level) -> result.addEt(enchant, level) }
+            exp += refund
+        }
+        grindstoning[player.uniqueId] = exp
     }
 
-    //返回内容：磨砂后的物品，返还的经验点数
-    //如果磨砂前后不变，按理来说经验应该为0
-    fun grind(player: Player, item: ItemStack): Pair<ItemStack, Int> {
-        var cost = 0.0
-        val grinded = ItemAPI.clearEnchants(item.clone())
-        ItemAPI.getEnchants(item).forEach {
-            val enchant = it.key
-            val level = it.value
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    fun exp(event: PlayerPickupExperienceEvent) {
+        val orb = event.experienceOrb
+        val uuid = orb.triggerEntityId ?: return
+        if (orb.spawnReason != ExperienceOrb.SpawnReason.GRINDSTONE) return
+        orb.experience = grindstoning[uuid] ?: run { orb.remove(); event.isCancelled = true;return }
+    }
+
+    fun grind(player: Player, item: ItemStack?): Pair<ItemStack, Int>? {
+        var total = 0.0
+        val result = item?.clone() ?: return null
+        result.clearEts()
+        item.fixedEnchants.forEach { (enchant, level) ->
             val maxLevel = enchant.maxLevel
-            if (Group.isIn(enchant, blacklist)) {
-                ItemAPI.addEnchant(grinded, enchant, level)
-            } else {
-                var bonus = defaultBonus
-                if (rarityBonus.containsKey(enchant.rarity.id))
-                    bonus = rarityBonus[enchant.rarity.id]!!
-                if (rarityBonus.containsKey(enchant.rarity.name))
-                    bonus = rarityBonus[enchant.rarity.name]!!
-                val refund = expPerEnchant.replaceWithOrder(
-                    level to "level",
-                    maxLevel to "maxLevel",
-                    rarityBonus to "rarity_bonus"
-                ).compileToJexl().eval() as Double
-
-                if (accumulation)
-                    cost += refund
-                else
-                    cost = maxOf(cost, refund)
+            if (enchant.isIn(blacklist)) result.addEt(enchant, level)
+            else {
+                val bonus = rarityBonus[enchant.rarity.id] ?: rarityBonus[enchant.rarity.name] ?: defaultBonus
+                val refund = expPerEnchant.calcToDouble("level" to level, "max_level" to maxLevel, "bonus" to bonus)
+                if (accumulation) total += refund
+                else total = maxOf(total, refund)
             }
         }
 
-        return grinded to finalCost(cost, player)
+        return result to finalRefund(total, player)
     }
 
-    fun finalCost(origin: Double, player: Player): Int {
-        var maxRefund = origin
-        AnvilListener.privilege.forEach {
-            if (player.hasPermission(it.key)) {
-                val newRefund = it.value.replace("{refund_exp}", origin.toString()).compileToJexl().eval() as Double
-                maxRefund = maxOf(maxRefund, newRefund)
-            }
-        }
-
-        return maxOf(0, maxRefund.roundToInt())
-    }
+    fun finalRefund(origin: Double, player: Player) = privilege.maxOf { (perm, expression) ->
+        if (player.hasPermission(perm)) expression.calcToInt("refund" to origin)
+        else origin.roundToInt()
+    }.coerceAtLeast(0)
 }
