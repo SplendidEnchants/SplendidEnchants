@@ -10,13 +10,13 @@ import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
-import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.*
+import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.enchant.data.group
@@ -37,14 +37,14 @@ object FilterGroupUI {
     }
 
     fun open(player: Player) {
-        player.openMenu<Linked<Group>>(config.title().colored()) {
+        player.openMenu<Linked<Group>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["FilterGroup:filter"].toList()
             slots(slots)
             elements { groups.values.toList() }
 
-            initialize(shape, templates, "FilterGroup:filter", "Previous", "Next")
+            load(shape, templates, "FilterGroup:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterGroup:filter")

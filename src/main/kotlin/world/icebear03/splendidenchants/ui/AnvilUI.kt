@@ -8,14 +8,14 @@ import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
-import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
 import taboolib.platform.util.isAir
 import world.icebear03.splendidenchants.api.fixedEnchants
-import world.icebear03.splendidenchants.api.initialize
+import world.icebear03.splendidenchants.api.internal.colorify
+import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.setSlots
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.listener.mechanism.AnvilListener
@@ -34,12 +34,12 @@ object AnvilUI {
     }
 
     fun open(player: Player, a: ItemStack? = null, b: ItemStack? = null) {
-        player.openMenu<Basic>(config.title().colored()) {
+        player.openMenu<Basic>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             map(*shape.array)
 
-            initialize(shape, templates, "Anvil:a", "Anvil:b", "Anvil:result", "Anvil:information")
+            load(shape, templates, "Anvil:a", "Anvil:b", "Anvil:result", "Anvil:information")
 
             val info = mutableMapOf<String, String>()
             var result: ItemStack? = ItemStack(Material.AIR)

@@ -10,12 +10,12 @@ import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
-import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import world.icebear03.splendidenchants.api.*
+import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
 @MenuComponent("ItemCheck")
@@ -32,14 +32,14 @@ object ItemCheckUI {
     }
 
     fun open(player: Player, item: ItemStack? = null) {
-        player.openMenu<Linked<Pair<SplendidEnchant, Int>>>(config.title().colored()) {
+        player.openMenu<Linked<Pair<SplendidEnchant, Int>>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["ItemCheck:enchant"].toList()
             slots(slots)
             elements { item.fixedEnchants.toList() }
 
-            initialize(shape, templates, "ItemCheck:enchant", "ItemCheck:item", "Previous", "Next")
+            load(shape, templates, "ItemCheck:enchant", "ItemCheck:item", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("ItemCheck:enchant")

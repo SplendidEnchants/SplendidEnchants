@@ -1,9 +1,9 @@
 package world.icebear03.splendidenchants.enchant.data
 
 import taboolib.common.platform.function.console
-import taboolib.module.chat.colored
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.Config
+import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.internal.loadAndUpdate
 import java.util.concurrent.ConcurrentHashMap
 
@@ -18,7 +18,7 @@ data class Rarity(
     val skull: String?
 ) {
 
-    fun display(): String = "$color$name".colored()
+    fun display(): String = "$color$name".colorify()
 
     companion object {
         fun load() {

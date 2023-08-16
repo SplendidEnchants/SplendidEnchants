@@ -7,8 +7,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import taboolib.common5.RandomList
-import taboolib.module.chat.colored
 import taboolib.platform.util.modifyMeta
+import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.data.Rarity
@@ -29,4 +29,4 @@ fun ItemStack.etsAvailable(
 fun Collection<SplendidEnchant>.drawEt() = RandomList(*associate { it.rarity to it.rarity.weight }.toList().toTypedArray()).random()?.drawEt()
 fun Rarity.drawEt() = RandomList(*splendidEts(this).associateWith { it.alternativeData.weight }.toList().toTypedArray()).random()
 
-fun SplendidEnchant.display(level: Int? = null) = (rarity.color + basicData.name + (level?.roman(maxLevel == 1, true) ?: "")).colored()
+fun SplendidEnchant.display(level: Int? = null) = (rarity.color + basicData.name + (level?.roman(maxLevel == 1, true) ?: "")).colorify()

@@ -16,7 +16,7 @@ object ExpListener {
     val expFormulas = mutableListOf<Pair<Int, String>>()
     val privilege = mutableMapOf<String, String>()
 
-    fun initialize() {
+    fun load() {
         YamlUpdater.loadAndUpdate("mechanisms/exp.yml").run {
             enable = getBoolean("enable", false)
 

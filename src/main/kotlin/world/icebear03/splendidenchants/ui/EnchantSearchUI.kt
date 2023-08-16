@@ -10,13 +10,13 @@ import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
-import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.nextChat
-import world.icebear03.splendidenchants.api.initialize
+import world.icebear03.splendidenchants.api.internal.colorify
+import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.pages
 import world.icebear03.splendidenchants.api.setSlots
 import world.icebear03.splendidenchants.api.skull
@@ -38,14 +38,14 @@ object EnchantSearchUI {
     }
 
     fun open(player: Player) {
-        player.openMenu<Linked<SplendidEnchant>>(config.title().colored()) {
+        player.openMenu<Linked<SplendidEnchant>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["EnchantSearch:enchant"].toList()
             slots(slots)
             elements { EnchantFilter.filter(player) }
 
-            initialize(
+            load(
                 shape, templates,
                 "EnchantSearch:enchant", "EnchantSearch:filter_rarity", "EnchantSearch:filter_target",
                 "EnchantSearch:filter_group", "EnchantSearch:filter_string", "Previous", "Next"

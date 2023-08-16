@@ -10,13 +10,13 @@ import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
-import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.*
+import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.rarities
@@ -37,14 +37,14 @@ object FilterRarityUI {
     }
 
     fun open(player: Player) {
-        player.openMenu<Linked<Rarity>>(config.title().colored()) {
+        player.openMenu<Linked<Rarity>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["FilterRarity:filter"].toList()
             slots(slots)
             elements { rarities.values.toList() }
 
-            initialize(shape, templates, "FilterRarity:filter", "Previous", "Next")
+            load(shape, templates, "FilterRarity:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterRarity:filter")

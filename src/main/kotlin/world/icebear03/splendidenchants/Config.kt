@@ -11,7 +11,7 @@ object Config {
     lateinit var config: Configuration
         private set
 
-    fun initialize() {
+    fun load() {
         config = Configuration.loadAndUpdate("config.yml")
     }
 }

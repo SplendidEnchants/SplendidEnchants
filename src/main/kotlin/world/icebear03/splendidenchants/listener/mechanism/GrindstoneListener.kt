@@ -26,7 +26,7 @@ object GrindstoneListener {
     var blacklist = "不可磨砂类附魔"
     var privilege = mutableMapOf<String, String>()
 
-    fun initialize() {
+    fun load() {
         YamlUpdater.loadAndUpdate("mechanisms/grindstone.yml").run {
             enableVanilla = getBoolean("grindstone.vanilla", false)
             enableCustomGrindstone = getBoolean("grindstone.custom", true)

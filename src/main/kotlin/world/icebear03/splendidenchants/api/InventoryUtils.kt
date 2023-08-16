@@ -28,7 +28,7 @@ fun Basic.setSlots(
     }
 }
 
-fun Basic.initialize(
+fun Basic.load(
     shape: ShapeConfiguration,
     templates: TemplateConfiguration,
     vararg ignored: String
