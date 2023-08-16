@@ -1,39 +1,82 @@
 package world.icebear03.splendidenchants.api.internal.nms
 
-import org.bukkit.boss.BarColor
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import taboolib.library.reflex.Reflex.Companion.setProperty
-import taboolib.module.nms.nmsProxy
-import taboolib.module.nms.sendPacket
-import world.icebear03.splendidenchants.`object`.Overlay
+import taboolib.module.nms.MinecraftVersion
+import taboolib.module.nms.NMSItem
+import taboolib.platform.util.isAir
+import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
 abstract class NMS {
 
-    abstract fun sendBossBar(
-        player: Player,
-        message: String,
-        progress: Float,
-        time: Int,
-        overlay: Overlay,
-        color: BarColor
-    )
-
-    abstract fun toBukkitItemStack(item: Any): ItemStack
-
-    abstract fun toNMSItemStack(item: ItemStack): Any
-
+    /** 为原版的 MerchantRecipeList 的物品显示更多附魔 **/
     abstract fun adaptMerchantRecipe(merchantRecipeList: Any, player: Player): Any
+}
 
-    fun sendPacket(player: Player, packet: Any, vararg fields: Pair<Any, Any>) {
-        fields.forEach { packet.setProperty(it.first.toString(), it.second) }
-        player.sendPacket(packet)
-    }
+class NMSImpl : NMS() {
 
-    companion object {
+    override fun adaptMerchantRecipe(merchantRecipeList: Any, player: Player): Any {
 
-        val INSTANCE by lazy {
-            nmsProxy<NMS>()
+        fun adapt(item: Any, player: Player): Any {
+            val bkItem = NMSItem.asBukkitCopy(item)
+            if (bkItem.isAir) return item
+            return NMSItem.asNMSCopy(EnchantDisplayer.display(bkItem, player))
+        }
+
+        return when (MinecraftVersion.major) {
+            // 1.16
+            8 -> {
+                val previous = merchantRecipeList as NMS16MerchantRecipeList
+                val adapt = NMS16MerchantRecipeList()
+                for (i in 0 until previous.size) {
+                    val recipe = previous[i]!!
+                    adapt += NMS16MerchantRecipe(
+                        adapt(recipe.buyingItem1, player) as NMS16ItemStack,
+                        adapt(recipe.buyingItem2, player) as NMS16ItemStack,
+                        adapt(recipe.sellingItem, player) as NMS16ItemStack,
+                        recipe.uses,
+                        recipe.maxUses,
+                        recipe.xp,
+                        recipe.priceMultiplier,
+                        recipe.demand
+                    )
+                }
+                adapt
+            }
+            // 1.17, 1.18, 1.19, 1.20
+            in 9..12 -> {
+                val previous = merchantRecipeList as NMSMerchantRecipeList
+                val adapt = NMSMerchantRecipeList()
+                for (i in 0 until previous.size) {
+                    val recipe = previous[i]!!
+                    adapt += NMSMerchantRecipe(
+                        adapt(recipe.baseCostA, player) as NMSItemStack,
+                        adapt(recipe.costB, player) as NMSItemStack,
+                        adapt(recipe.result, player) as NMSItemStack,
+                        recipe.uses,
+                        recipe.maxUses,
+                        recipe.xp,
+                        recipe.priceMultiplier,
+                        recipe.demand
+                    )
+                }
+                adapt
+            }
+            // Unsupported
+            else -> error("Unsupported version.")
         }
     }
 }
+
+// 1.16
+typealias NMS16ItemStack = net.minecraft.server.v1_16_R3.ItemStack
+
+typealias NMS16MerchantRecipe = net.minecraft.server.v1_16_R3.MerchantRecipe
+
+typealias NMS16MerchantRecipeList = net.minecraft.server.v1_16_R3.MerchantRecipeList
+
+// Universal
+typealias NMSItemStack = net.minecraft.world.item.ItemStack
+
+typealias NMSMerchantRecipe = net.minecraft.world.item.trading.MerchantRecipe
+
+typealias NMSMerchantRecipeList = net.minecraft.world.item.trading.MerchantRecipeList

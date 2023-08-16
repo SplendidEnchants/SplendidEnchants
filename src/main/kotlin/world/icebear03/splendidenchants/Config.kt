@@ -1,6 +1,5 @@
 package world.icebear03.splendidenchants
 
-import taboolib.module.configuration.ConfigNode
 import taboolib.module.configuration.Configuration
 import world.icebear03.splendidenchants.api.internal.loadAndUpdate
 
@@ -11,9 +10,6 @@ object Config {
 
     lateinit var config: Configuration
         private set
-
-    @ConfigNode("use_mini_message")
-    var useMiniMessage: Boolean = false
 
     fun initialize() {
         config = Configuration.loadAndUpdate("config.yml")

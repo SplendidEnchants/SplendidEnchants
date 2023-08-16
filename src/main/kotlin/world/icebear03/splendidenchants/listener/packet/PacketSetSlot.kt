@@ -3,9 +3,9 @@ package world.icebear03.splendidenchants.listener.packet
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.nms.MinecraftVersion
+import taboolib.module.nms.NMSItem
 import taboolib.module.nms.PacketSendEvent
 import taboolib.platform.util.isAir
-import world.icebear03.splendidenchants.api.internal.nms.NMS
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
 object PacketSetSlot {
@@ -19,9 +19,9 @@ object PacketSetSlot {
                 else -> error("Unsupported version.") // Unsupported
             }
             val origin = e.packet.read<Any>(field)!!
-            val bkItem = NMS.INSTANCE.toBukkitItemStack(origin)
+            val bkItem = NMSItem.asBukkitCopy(origin)
             if (bkItem.isAir) return
-            val adapted = NMS.INSTANCE.toNMSItemStack(EnchantDisplayer.display(bkItem, e.player))
+            val adapted = NMSItem.asNMSCopy(EnchantDisplayer.display(bkItem, e.player))
             e.packet.write(field, adapted)
         }
     }

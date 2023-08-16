@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.listener.packet
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.nms.PacketSendEvent
+import taboolib.module.nms.nmsProxy
 import world.icebear03.splendidenchants.api.internal.nms.NMS
 
 object PacketOpenWindowMerchant {
@@ -11,7 +12,7 @@ object PacketOpenWindowMerchant {
     fun e(e: PacketSendEvent) {
         if (e.packet.name == "PacketPlayOutOpenWindowMerchant") {
             val merchant = e.packet.read<Any>("b")!!
-            e.packet.write("b", NMS.INSTANCE.adaptMerchantRecipe(merchant, e.player))
+            e.packet.write("b", nmsProxy<NMS>().adaptMerchantRecipe(merchant, e.player))
         }
     }
 }

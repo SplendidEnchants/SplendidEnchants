@@ -1,0 +1,58 @@
+prefix: '&6SplendidEnchants &7>> '
+command:
+  helper:
+    - ' '
+    - '   &6[SplendidEnchants](h=&7SplendidEnchants 附魔扩展插件) &f[{pluginVersion}](h=&7插件版本: &2{pluginVersion}\n&7游戏版本: &b{minecraftVersion})'
+    - ' '
+    - '  &7命令: [&f/splendidenchants &8\\[...\\]](h=&f/splendidenchants &8\\[...\\];suggest=/splendidenchants )'
+    - '  &7参数:'
+    - '{subCommands}'
+    - ' '
+  sub:
+    - '    &8- [&f{name}](h=/splendidenchants {name} {usage}&8- &7{description};suggest=/splendidenchants {name})'
+    - '      &7{description}'
+  no-description: '没有描述'
+  no-usage: ''
+  argument-missing:
+    - '&6SplendidEnchants &7>> &7指令 &f{name} &7参数不足.'
+    - '&6SplendidEnchants &7>> &7正确用法:'
+    - '&6SplendidEnchants &7>> &f/splendidenchants {name} {usage}&8- &7{description}'
+  argument-wrong:
+    - '&6SplendidEnchants &7>> &7指令 &f{name} &7参数有误.'
+    - '&6SplendidEnchants &7>> &7正确用法:'
+    - '&6SplendidEnchants &7>> &f/splendidenchants {name} {usage}&8- &7{description}'
+  argument-unknown:
+    - '&6SplendidEnchants &7>> &7指令 &f{name} &7不存在.'
+    - '&6SplendidEnchants &7>> &7你可能想要:'
+    - '&6SplendidEnchants &7>> &f{similar}'
+  incorrect-sender: '&6SplendidEnchants &7>> &7指令 &f{name} &7只能由 &f玩家 &7执行'
+  subCommands:
+    book:
+      description: ''
+      usage: ''
+      sender: '附魔书已经发送给 &e${name}'
+      receiver: '你收到了附魔书 {enchantment}'
+      fail: '控制台无法给予自己附魔书'
+    enchant:
+      description: ''
+      usage: ''
+      empty: '手持物品为空'
+      sender: '为 &e{name} &7手上的物品 {state}了附魔 {enchantment}'
+      receiver: '手上的物品被 {state}了附魔 {enchantment}'
+      fail: '控制台无法对物品进行附魔操作'
+    menu:
+      description: ''
+      usage: ''
+      fail: '控制台无法打开菜单'
+    random:
+      description: ''
+      usage: ''
+      rarity: '品质中附魔为空'
+      number: '请输入正整数'
+      sender: '给 §e{name} §7发送了随机的附魔书 {enchantment}'
+      receiver: '你收到了随机附魔书 {enchantment}'
+      fail: '控制台无法接受随机附魔书'
+    reload:
+      description: ''
+      usage: ''
+      success: '插件已经重载完毕'

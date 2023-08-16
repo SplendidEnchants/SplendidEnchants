@@ -19,13 +19,13 @@ taboolib {
     install("common-5")
     install("module-chat")
     install("module-nms")
+    install("module-nms-util")
     install("module-kether")
     install("module-configuration")
     install("module-ui")
     install("platform-bukkit")
-    install("expansion-command-helper")
     classifier = null
-    version = "6.0.12-9"
+    version = "6.0.12-13"
 
     relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
 }

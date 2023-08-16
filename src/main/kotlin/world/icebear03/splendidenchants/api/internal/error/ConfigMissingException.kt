@@ -1,14 +1,11 @@
 package world.icebear03.splendidenchants.api.internal.error
 
-import taboolib.common.platform.function.severe
+import world.icebear03.splendidenchants.api.internal.exception.EnchantException
 import java.io.File
 
-class ConfigMissingException(val file: File, val path: String) : Exception() {
-    override fun printStackTrace() {
-        severe("${file.name}缺失${path}设置")
-    }
-}
+class ConfigMissingException(val file: File, val path: String) : EnchantException("配置文件 ${file.name} 缺失配置项: $path")
 
-fun missingConfig(file: File, path: String): Nothing {
+@Suppress("NOTHING_TO_INLINE")
+inline fun missingConfig(file: File, path: String): Nothing {
     throw ConfigMissingException(file, path)
 }

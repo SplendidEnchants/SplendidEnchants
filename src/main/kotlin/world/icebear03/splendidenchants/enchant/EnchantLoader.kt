@@ -9,7 +9,7 @@ import taboolib.library.reflex.Reflex.Companion.getProperty
 import taboolib.library.reflex.Reflex.Companion.setProperty
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.api.internal.error.missingConfig
-import world.icebear03.splendidenchants.command.Commands
+import world.icebear03.splendidenchants.command.CommandHandler
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.isIn
@@ -82,8 +82,8 @@ object EnchantLoader {
         //还原附魔注册设定
         Enchantment::class.java.setProperty("acceptingNew", value = false, isStatic = true)
         //重新生成TabList
-        Commands.enchantNamesAndIds.clear()
-        Commands.enchantNamesAndIds.addAll(BY_ID.map { it.key } + BY_NAME.map { it.key })
+        CommandHandler.enchantNamesAndIds.clear()
+        CommandHandler.enchantNamesAndIds.addAll(BY_ID.map { it.key } + BY_NAME.map { it.key })
 
         console().sendMessage("    Successfully load §6${BY_ID.size} enchants")
     }
