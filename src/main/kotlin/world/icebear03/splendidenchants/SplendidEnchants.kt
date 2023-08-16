@@ -4,9 +4,9 @@ import com.mcstarrysky.starrysky.i18n.I18n
 import org.serverct.parrot.parrotx.mechanism.Reloadables
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
-import taboolib.module.chat.colored
 import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
+import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.EnchantLoader
@@ -39,7 +39,7 @@ object SplendidEnchants : Plugin() {
 
             runCatching {
                 console().sendMessage("|- Loading Config Module...")
-                Config.initialize()
+                Config.load()
 
                 console().sendMessage("|- Loading Enchants...")
                 Rarity.load()
@@ -50,10 +50,10 @@ object SplendidEnchants : Plugin() {
 
                 console().sendMessage("|- Loading Mechanisms...")
                 AnvilListener.load()
-                AttainListener.initialize()
-                GrindstoneListener.initialize()
-                VillagerListener.initialize()
-                ExpListener.initialize()
+                AttainListener.load()
+                GrindstoneListener.load()
+                VillagerListener.load()
+                ExpListener.load()
 
                 FurtherOperation.load()
 
@@ -66,7 +66,7 @@ object SplendidEnchants : Plugin() {
             console().sendMessage("                            ")
             console().sendMessage("Installed SplendidEnchants in §6${time}ms")
             console().sendMessage("| Version: §r3.0.0")
-            console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §fxiaozhangup")
+            console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
             console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
         }
     }
@@ -79,7 +79,7 @@ object SplendidEnchants : Plugin() {
                 I18n.reload()
 
                 console().sendMessage("|- Reloading Config Module...")
-                Config.initialize()
+                Config.load()
 
                 console().sendMessage("|- Reloading Enchants...")
                 EnchantLoader.resetSort()
@@ -92,10 +92,10 @@ object SplendidEnchants : Plugin() {
 
                 console().sendMessage("|- Reloading Mechanisms...")
                 AnvilListener.load()
-                AttainListener.initialize()
-                GrindstoneListener.initialize()
-                VillagerListener.initialize()
-                ExpListener.initialize()
+                AttainListener.load()
+                GrindstoneListener.load()
+                VillagerListener.load()
+                ExpListener.load()
 
                 console().sendMessage("|- Reloading GUIs...")
                 Reloadables.execute()
@@ -105,7 +105,7 @@ object SplendidEnchants : Plugin() {
             console().sendMessage("                            ")
             console().sendMessage("Reloaded SplendidEnchants in §6${time}ms")
             console().sendMessage("| Version: §r3.0.0")
-            console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colored() + " §fxiaozhangup")
+            console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
             console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
         }
     }

@@ -18,7 +18,7 @@ object VillagerListener {
     var tradeGroup = "可交易附魔"
     var amount = 2
 
-    fun initialize() {
+    fun load() {
         YamlUpdater.loadAndUpdate("mechanisms/villager.yml").run {
             enableEnchantTrade = getBoolean("enable", true)
             tradeGroup = getString("group", tradeGroup)!!

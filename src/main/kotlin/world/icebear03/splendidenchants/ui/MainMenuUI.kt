@@ -5,12 +5,12 @@ import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
-import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
-import world.icebear03.splendidenchants.api.initialize
+import world.icebear03.splendidenchants.api.internal.colorify
+import world.icebear03.splendidenchants.api.load
 
 @MenuComponent("Menu")
 object MainMenuUI {
@@ -26,15 +26,12 @@ object MainMenuUI {
     }
 
     fun open(player: Player) {
-        if (!::config.isInitialized) {
-            config = MenuConfiguration(source)
-        }
-        player.openMenu<Basic>(config.title().colored()) {
+        player.openMenu<Basic>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             map(*shape.array)
 
-            initialize(shape, templates)
+            load(shape, templates)
         }
     }
 

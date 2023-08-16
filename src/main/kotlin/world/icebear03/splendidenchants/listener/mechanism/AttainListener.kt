@@ -29,7 +29,7 @@ object AttainListener {
     var moreEnchantPrivilege = mutableMapOf<String, String>()
     var fullLevelPrivilege = "splendidenchants.privilege.table.full"
 
-    fun initialize() {
+    fun load() {
         YamlUpdater.loadAndUpdate("mechanisms/enchanting_table.yml").run {
             vanillaTable = getBoolean("vanilla_table", false)
             moreEnchantChance = getStringList("more_enchant_chance")

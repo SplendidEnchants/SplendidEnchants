@@ -70,8 +70,9 @@ fun ItemStack.clearEts() {
     modifyMeta<ItemMeta> { clearEts() }
 }
 
-fun ItemStack.skull(skull: String) {
-    if (skull.length <= 20) modifyMeta<SkullMeta> { owner = skull }
+fun ItemStack.skull(skull: String?): ItemStack {
+    skull ?: return this
+    return if (skull.length <= 20) modifyMeta<SkullMeta> { owner = skull }
     else textured(skull)
 }
 
