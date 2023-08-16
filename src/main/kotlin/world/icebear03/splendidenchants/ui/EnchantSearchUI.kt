@@ -10,6 +10,7 @@ import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
 import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
+import taboolib.common.platform.function.submit
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
@@ -46,7 +47,7 @@ object EnchantSearchUI {
             elements { EnchantFilter.filter(player) }
 
             load(
-                shape, templates,
+                shape, templates, false,
                 "EnchantSearch:enchant", "EnchantSearch:filter_rarity", "EnchantSearch:filter_target",
                 "EnchantSearch:filter_group", "EnchantSearch:filter_string", "Previous", "Next"
             )
@@ -132,7 +133,7 @@ object EnchantSearchUI {
                                 else -> EnchantFilter.FilterStatement.ON
                             }
                         )
-                        open(player)
+                        submit { open(player) }
                     }
                 }
 

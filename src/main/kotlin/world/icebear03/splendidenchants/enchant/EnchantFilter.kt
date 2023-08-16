@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.enchant
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.enchant.EnchantFilter.FilterStatement.OFF
 import world.icebear03.splendidenchants.enchant.EnchantFilter.FilterStatement.ON
 import world.icebear03.splendidenchants.enchant.EnchantFilter.FilterType.*
@@ -28,7 +29,7 @@ object EnchantFilter {
                 rules.forEach { (value, state) ->
                     if (when (type) {
                             RARITY -> value as Rarity == enchant.rarity
-                            TARGET -> enchant.targets.contains(value as Target)
+                            TARGET -> (enchant.targets.contains(value as Target) || enchant.targets.any { value.types.containsAll(it.types) })
                             GROUP -> enchant.isIn(value as Group)
                             STRING -> {
                                 enchant.basicData.name.contains(value.toString()) ||
@@ -91,6 +92,12 @@ object EnchantFilter {
     @SubscribeEvent
     fun join(event: PlayerJoinEvent) {
         filters[event.player.uniqueId] = FilterType.entries.associateWith { linkedMapOf() }
+    }
+
+    fun load() {
+        onlinePlayers.forEach {
+            filters[it.uniqueId] = FilterType.entries.associateWith { linkedMapOf() }
+        }
     }
 
     enum class FilterType(val display: String) {

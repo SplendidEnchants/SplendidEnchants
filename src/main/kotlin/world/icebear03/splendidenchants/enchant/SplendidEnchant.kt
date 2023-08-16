@@ -18,7 +18,7 @@ import taboolib.module.configuration.util.asMap
 import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.*
-import world.icebear03.splendidenchants.api.internal.error.missingConfig
+import world.icebear03.splendidenchants.api.internal.exception.missingConfig
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
@@ -167,9 +167,11 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             tmp["roman_level"] = lv.roman(maxLevel == 1)
             tmp["roman_level_with_a_blank"] = lv.roman(maxLevel == 1, true)
             tmp["max_level"] = "${basicData.maxLevel}"
-            tmp["color"] = rarity.color
             tmp["rarity"] = rarity.name
             tmp["description"] = specificDescription.replace(tmp)
+            tmp["rarity_display"] = rarity.display()
+            tmp["enchant_display"] = display()
+            tmp["enchant_display_roman"] = display(level)
             return tmp
         }
     }

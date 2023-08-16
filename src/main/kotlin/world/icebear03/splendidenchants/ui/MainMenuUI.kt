@@ -31,7 +31,7 @@ object MainMenuUI {
             rows(shape.rows)
             map(*shape.array)
 
-            load(shape, templates)
+            load(shape, templates, true)
         }
     }
 

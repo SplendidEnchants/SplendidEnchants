@@ -11,7 +11,7 @@ object PacketOpenWindowMerchant {
     @SubscribeEvent(priority = EventPriority.MONITOR)
     fun e(e: PacketSendEvent) {
         if (e.packet.name == "PacketPlayOutOpenWindowMerchant") {
-            val merchant = e.packet.read<Any>("b")!!
+            val merchant = e.packet.read<Any>("b", false)!!
             e.packet.write("b", nmsProxy<NMS>().adaptMerchantRecipe(merchant, e.player))
         }
     }

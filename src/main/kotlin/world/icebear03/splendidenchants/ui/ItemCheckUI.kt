@@ -39,7 +39,7 @@ object ItemCheckUI {
             slots(slots)
             elements { item.fixedEnchants.toList() }
 
-            load(shape, templates, "ItemCheck:enchant", "ItemCheck:item", "Previous", "Next")
+            load(shape, templates, false, "ItemCheck:enchant", "ItemCheck:item", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("ItemCheck:enchant")

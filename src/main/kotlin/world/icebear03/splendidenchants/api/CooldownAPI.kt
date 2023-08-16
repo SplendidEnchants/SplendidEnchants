@@ -4,6 +4,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.event.player.PlayerJoinEvent
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common5.format
+import taboolib.platform.util.onlinePlayers
 import java.util.*
 
 val stamps = mutableMapOf<UUID, MutableMap<String, Long>>()
@@ -36,5 +37,11 @@ object CooldownData {
     @SubscribeEvent
     fun join(event: PlayerJoinEvent) {
         stamps.putIfAbsent(event.player.uniqueId, mutableMapOf())
+    }
+
+    fun load() {
+        onlinePlayers.forEach {
+            stamps.putIfAbsent(it.uniqueId, mutableMapOf())
+        }
     }
 }

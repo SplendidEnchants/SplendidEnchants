@@ -77,13 +77,15 @@ object AttainListener {
 
         val result = enchant(player, item, cost, bonus)
 
+        player.sendMessage(result.first.toString())
+
         event.enchantsToAdd.clear()
         event.enchantsToAdd.putAll(result.first)
 
         //对书的附魔，必须手动进行，因为原版处理会掉特殊附魔
         if (item.type == Material.BOOK) {
             submit {
-                event.inventory.getItem(0)!!.fixedEnchants = result.first
+                event.inventory.setItem(0, result.second)
             }
         }
     }

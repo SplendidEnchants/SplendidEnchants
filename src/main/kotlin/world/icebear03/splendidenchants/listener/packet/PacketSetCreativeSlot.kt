@@ -12,7 +12,7 @@ object PacketSetCreativeSlot {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     fun e(e: PacketReceiveEvent) {
         if (e.packet.name == "PacketPlayInSetCreativeSlot") {
-            val origin = e.packet.read<Any>("b")!!
+            val origin = e.packet.read<Any>("b", false)!!
             val bkItem = NMSItem.asBukkitCopy(origin)
             if (bkItem.isAir) return
             val adapted = NMSItem.asNMSCopy(EnchantDisplayer.undisplay(bkItem, e.player))

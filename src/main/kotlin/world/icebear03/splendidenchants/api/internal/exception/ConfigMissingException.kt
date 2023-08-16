@@ -1,6 +1,5 @@
-package world.icebear03.splendidenchants.api.internal.error
+package world.icebear03.splendidenchants.api.internal.exception
 
-import world.icebear03.splendidenchants.api.internal.exception.EnchantException
 import java.io.File
 
 class ConfigMissingException(file: File, path: String) : EnchantException("配置文件 ${file.name} 缺失配置项: $path")

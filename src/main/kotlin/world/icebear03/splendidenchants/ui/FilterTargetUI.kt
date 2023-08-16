@@ -44,7 +44,7 @@ object FilterTargetUI {
             slots(slots)
             elements { targets.values.filter { it.id != "unknown" }.toList() }
 
-            load(shape, templates, "FilterTarget:filter", "Previous", "Next")
+            load(shape, templates, true, "FilterTarget:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterTarget:filter")

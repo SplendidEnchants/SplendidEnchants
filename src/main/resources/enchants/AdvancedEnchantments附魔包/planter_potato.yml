@@ -17,8 +17,8 @@ display:
 
 variables:
   leveled:
-    冷却: 3.5-level
-    边长: level+1
+    冷却: "3.5-{level}"
+    边长: "{level}+1"
 
 mechanisms:
   listeners:

@@ -18,7 +18,7 @@ object PacketWindowItems {
                 in 9..12 -> "c" // 1.17, 1.18, 1.19, 1.20 -> c
                 else -> error("Unsupported version.") // Unsupported
             }
-            val slots = e.packet.read<List<Any>>(field)!!.toMutableList()
+            val slots = e.packet.read<List<Any>>(field, false)!!.toMutableList()
             for (i in slots.indices) {
                 val bkItem = NMSItem.asBukkitCopy(slots[i])
                 if (bkItem.isAir) continue

@@ -8,7 +8,7 @@ import taboolib.common.platform.function.getDataFolder
 import taboolib.library.reflex.Reflex.Companion.getProperty
 import taboolib.library.reflex.Reflex.Companion.setProperty
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
-import world.icebear03.splendidenchants.api.internal.error.missingConfig
+import world.icebear03.splendidenchants.api.internal.exception.missingConfig
 import world.icebear03.splendidenchants.command.CommandHandler
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target

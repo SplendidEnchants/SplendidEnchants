@@ -43,7 +43,7 @@ data class Target(
 
 fun target(identifier: String?): Target? = targets[identifier] ?: targets.values.find { it.name == identifier }
 
-fun Material.isIn(identifier: String?): Boolean = isIn(target(identifier))
+fun Material.isIn(identifier: String?) = isIn(target(identifier))
 
 fun Material.isIn(target: Target?): Boolean = target?.types?.contains(this) ?: false
 

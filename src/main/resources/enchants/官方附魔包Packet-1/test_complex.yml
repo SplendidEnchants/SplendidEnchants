@@ -20,8 +20,8 @@ display:
 
 variables:
   leveled:
-    每只储存能量: level
-    每点能量增伤百分比: 2*level
+    每只储存能量: "{level}"
+    每点能量增伤百分比: "2*{level}"
   modifiable:
     当前累计能量: test_complex_current_total=0
     当前累计百分比: test_complex_current_total_percent=0

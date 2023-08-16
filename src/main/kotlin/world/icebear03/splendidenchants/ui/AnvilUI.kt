@@ -39,7 +39,7 @@ object AnvilUI {
             rows(shape.rows)
             map(*shape.array)
 
-            load(shape, templates, "Anvil:a", "Anvil:b", "Anvil:result", "Anvil:information")
+            load(shape, templates, false, "Anvil:a", "Anvil:b", "Anvil:result", "Anvil:information")
 
             val info = mutableMapOf<String, String>()
             var result: ItemStack? = ItemStack(Material.AIR)
@@ -92,13 +92,13 @@ object AnvilUI {
 
     @MenuComponent
     private val a = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) -> (args["a"] as ItemStack).takeIf { it.isAir } ?: icon }
+        onBuild { (_, _, _, _, icon, args) -> (args["a"] as ItemStack).takeIf { !it.isAir } ?: icon }
         onClick { (_, _, _, event, args) -> open(event.clicker, null, args["b"] as ItemStack) }
     }
 
     @MenuComponent
     private val b = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) -> (args["b"] as ItemStack).takeIf { it.isAir } ?: icon }
+        onBuild { (_, _, _, _, icon, args) -> (args["b"] as ItemStack).takeIf { !it.isAir } ?: icon }
         onClick { (_, _, _, event, args) -> open(event.clicker, args["a"] as ItemStack, null) }
     }
 

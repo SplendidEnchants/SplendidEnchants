@@ -1,6 +1,6 @@
 package world.icebear03.splendidenchants.api.internal.exception
 
-import world.icebear03.splendidenchants.api.i18n.I18n
+import com.mcstarrysky.starrysky.i18n.I18n
 import java.io.PrintStream
 import java.io.PrintWriter
 

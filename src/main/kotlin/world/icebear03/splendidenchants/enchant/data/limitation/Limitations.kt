@@ -50,7 +50,7 @@ class Limitations(
         val enchants = item.fixedEnchants
         return when (type) {
             SLOT -> itemType.belongedTargets.any { it.activeSlots.contains(slot) }
-            TARGET -> itemType.isIn(value)
+            TARGET -> belonging.targets.any { itemType.isIn(it) }
             MAX_CAPABILITY -> itemType.capability > enchants.size
             DEPENDENCE_ENCHANT -> return enchants.containsKey(splendidEt(value))
             CONFLICT_ENCHANT -> return !enchants.containsKey(splendidEt(value))

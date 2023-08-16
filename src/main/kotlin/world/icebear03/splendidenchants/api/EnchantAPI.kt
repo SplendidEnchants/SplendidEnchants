@@ -26,7 +26,11 @@ fun ItemStack.etsAvailable(
     player: Player? = null
 ) = EnchantLoader.BY_ID.values.filter { it.limitations.checkAvailable(checkType, this, player).first }
 
-fun Collection<SplendidEnchant>.drawEt() = RandomList(*associate { it.rarity to it.rarity.weight }.toList().toTypedArray()).random()?.drawEt()
+fun Collection<SplendidEnchant>.drawEt(): SplendidEnchant? {
+    val rarity = RandomList(*associate { it.rarity to it.rarity.weight }.toList().toTypedArray()).random()
+    return RandomList(*filter { rarity == it.rarity }.associateWith { it.alternativeData.weight }.toList().toTypedArray()).random()
+}
+
 fun Rarity.drawEt() = RandomList(*splendidEts(this).associateWith { it.alternativeData.weight }.toList().toTypedArray()).random()
 
 fun SplendidEnchant.display(level: Int? = null) = (rarity.color + basicData.name + (level?.roman(maxLevel == 1, true) ?: "")).colorify()

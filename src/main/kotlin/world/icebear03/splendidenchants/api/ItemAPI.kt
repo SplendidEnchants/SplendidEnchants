@@ -28,8 +28,8 @@ var ItemMeta.fixedEnchants
     }
     set(value) {
         clearEts()
-        if (this is EnchantmentStorageMeta) storedEnchants.putAll(value)
-        else enchants.putAll(value)
+        if (this is EnchantmentStorageMeta) value.forEach { (enchant, level) -> addStoredEnchant(enchant, level, true) }
+        else value.forEach { (enchant, level) -> addEnchant(enchant, level, true) }
     }
 
 var ItemStack?.fixedEnchants
@@ -44,8 +44,8 @@ fun ItemStack.etLevel(enchant: SplendidEnchant) = itemMeta.etLevel(enchant)
 
 fun ItemMeta.addEt(enchant: SplendidEnchant, level: Int = enchant.maxLevel) {
     removeEt(enchant)
-    if (this is EnchantmentStorageMeta) storedEnchants[enchant] = level
-    else enchants[enchant] = level
+    if (this is EnchantmentStorageMeta) addStoredEnchant(enchant, level, true)
+    else addEnchant(enchant, level, true)
 }
 
 fun ItemStack.addEt(enchant: SplendidEnchant, level: Int = enchant.maxLevel) {
@@ -62,8 +62,8 @@ fun ItemStack.removeEt(enchant: SplendidEnchant) {
 }
 
 fun ItemMeta.clearEts() {
-    if (this is EnchantmentStorageMeta) storedEnchants.clear()
-    else enchants.clear()
+    if (this is EnchantmentStorageMeta) storedEnchants.forEach { removeStoredEnchant(it.key) }
+    else enchants.forEach { removeEnchant(it.key) }
 }
 
 fun ItemStack.clearEts() {
@@ -72,6 +72,7 @@ fun ItemStack.clearEts() {
 
 fun ItemStack.skull(skull: String?): ItemStack {
     skull ?: return this
+    if (itemMeta !is SkullMeta) return this
     return if (skull.length <= 20) modifyMeta<SkullMeta> { owner = skull }
     else textured(skull)
 }

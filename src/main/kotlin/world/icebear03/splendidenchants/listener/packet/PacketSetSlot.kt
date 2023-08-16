@@ -18,7 +18,7 @@ object PacketSetSlot {
                 in 9..12 -> "f" // 1.17, 1.18, 1.19, 1.20 -> c
                 else -> error("Unsupported version.") // Unsupported
             }
-            val origin = e.packet.read<Any>(field)!!
+            val origin = e.packet.read<Any>(field, false)!!
             val bkItem = NMSItem.asBukkitCopy(origin)
             if (bkItem.isAir) return
             val adapted = NMSItem.asNMSCopy(EnchantDisplayer.display(bkItem, e.player))

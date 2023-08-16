@@ -44,7 +44,7 @@ object FilterGroupUI {
             slots(slots)
             elements { groups.values.toList() }
 
-            load(shape, templates, "FilterGroup:filter", "Previous", "Next")
+            load(shape, templates, true, "FilterGroup:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterGroup:filter")

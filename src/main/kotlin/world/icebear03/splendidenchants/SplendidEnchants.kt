@@ -5,6 +5,7 @@ import org.serverct.parrot.parrotx.mechanism.Reloadables
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.platform.util.onlinePlayers
+import world.icebear03.splendidenchants.api.CooldownData
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
@@ -45,6 +46,7 @@ object SplendidEnchants : Plugin() {
                 Rarity.load()
                 Target.load()
                 EnchantDisplayer.load()
+                EnchantFilter.load()
                 EnchantLoader.load()
                 Group.load()
 
@@ -56,6 +58,7 @@ object SplendidEnchants : Plugin() {
                 ExpListener.load()
 
                 FurtherOperation.load()
+                CooldownData.load()
 
                 console().sendMessage("|- Loading GUIs...")
                 Reloadables.execute()
@@ -86,6 +89,7 @@ object SplendidEnchants : Plugin() {
                 Rarity.load()
                 Target.load()
                 EnchantDisplayer.load()
+                EnchantFilter.load()
                 EnchantLoader.load(true)
                 Group.load()
                 onlinePlayers.forEach { EnchantFilter.clearFilters(it) }
@@ -96,6 +100,8 @@ object SplendidEnchants : Plugin() {
                 GrindstoneListener.load()
                 VillagerListener.load()
                 ExpListener.load()
+
+                CooldownData.load()
 
                 console().sendMessage("|- Reloading GUIs...")
                 Reloadables.execute()

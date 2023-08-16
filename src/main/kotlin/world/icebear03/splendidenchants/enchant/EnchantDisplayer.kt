@@ -15,11 +15,11 @@ import kotlin.math.min
 
 object EnchantDisplayer {
 
-    var defaultPrevious = "{color}{name} {roman_level}"
+    var defaultPrevious = "{enchant_display_roman}"
     var defaultSubsequent = "\n§8| §7{description}"
 
     var sortByLevel = true
-    lateinit var rarityOrder: List<String>
+    var rarityOrder = listOf<String>()
 
     var combine = true
     var minimal = 8
@@ -81,6 +81,11 @@ object EnchantDisplayer {
     //展示是给玩家看的，玩家必须存在
     fun display(item: ItemStack, player: Player): ItemStack {
         return item.clone().modifyMeta<ItemMeta> {
+            item.fixedEnchants.ifEmpty { return@modifyMeta }
+
+            //已经展示过了就重新展示（2.0遗留思路）（个人认为多余，可以尝试去除此处，节省性能）
+            this["display_mark", PersistentDataType.BOOLEAN]?.let { return@modifyMeta }
+
             //若本来就不需要显示附魔，就不显示了
             //注意，附魔书对应的隐藏附魔flag是HIDE POTION EFFECTS而不是HIDE ENCHANTS（1.18-是这样，1.19+未知）
             if (item.isEnchantedBook)
@@ -89,10 +94,6 @@ object EnchantDisplayer {
             else
                 if (hasItemFlag(ItemFlag.HIDE_ENCHANTS)) return@modifyMeta
                 else addItemFlags(ItemFlag.HIDE_ENCHANTS)
-
-            //已经展示过了就重新展示（2.0遗留思路）（个人认为多余，可以尝试去除此处，节省性能）
-            this["display_mark", PersistentDataType.BOOLEAN]?.let { return@modifyMeta }
-            item.fixedEnchants.ifEmpty { return@modifyMeta }
 
             //上标记
             this["display_mark", PersistentDataType.BOOLEAN] = true

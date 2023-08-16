@@ -37,6 +37,6 @@ object CommandMenu : CommandExecutor {
         get() = "menu"
 
     init {
-        CommandHandler.sub[CommandRandom.name] = this
+        CommandHandler.sub[name] = this
     }
 }

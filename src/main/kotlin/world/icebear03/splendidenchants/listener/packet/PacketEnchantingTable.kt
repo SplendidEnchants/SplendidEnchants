@@ -9,7 +9,7 @@ object PacketEnchantingTable {
     @SubscribeEvent(priority = EventPriority.MONITOR)
     fun e(e: PacketSendEvent) {
         if (e.packet.name == "PacketPlayOutWindowData") {
-            val a = e.packet.read<Int>("b")
+            val a = e.packet.read<Int>("b", false)
             if (a in 4..6) {
                 e.packet.write("c", -1)
             }

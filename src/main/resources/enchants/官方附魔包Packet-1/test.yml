@@ -53,8 +53,8 @@ alternative:
 variables:
   #跟等级有关的
   leveled:
-    击杀累计: 4-level
-    伤害增加百分比: 15.0*level
+    击杀累计: "4-{level}"
+    伤害增加百分比: "15.0*{level}"
   #跟玩家有关的
   player_related:
     等级: "%player_level%"

@@ -44,7 +44,7 @@ object FilterRarityUI {
             slots(slots)
             elements { rarities.values.toList() }
 
-            load(shape, templates, "FilterRarity:filter", "Previous", "Next")
+            load(shape, templates, true, "FilterRarity:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterRarity:filter")
@@ -70,7 +70,7 @@ object FilterRarityUI {
             }
 
             icon.modifyMeta<ItemMeta> { this["rarity", PersistentDataType.STRING] = rarity.id }
-                .variable("name", listOf(rarity.name))
+                .variable("rarity_display", listOf(rarity.display()))
                 .skull(rarity.skull)
         }
 

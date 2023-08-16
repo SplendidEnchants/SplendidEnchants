@@ -29,6 +29,6 @@ object CommandReload : CommandExecutor {
         get() = "reload"
 
     init {
-        CommandHandler.sub[CommandRandom.name] = this
+        CommandHandler.sub[name] = this
     }
 }

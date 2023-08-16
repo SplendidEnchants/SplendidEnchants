@@ -19,4 +19,4 @@ display:
 #原版附魔机制本插件不提供修改，因此此处改了也没有效果
 variables:
   leveled:
-    增加基础伤害: 2.5*level
+    增加基础伤害: "2.5*{level}"

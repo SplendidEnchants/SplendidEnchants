@@ -1,6 +1,6 @@
 #默认的格式，分为前部和后部
 format:
-  default_previous: "{color}{name}{roman_level_with_a_blank}"
+  default_previous: "{enchant_display_roman}"
   default_subsequent: "\n§8| §r{description}"
 #lore的顺序
 lore_formation:

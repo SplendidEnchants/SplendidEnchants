@@ -31,6 +31,7 @@ fun Basic.setSlots(
 fun Basic.load(
     shape: ShapeConfiguration,
     templates: TemplateConfiguration,
+    click: Boolean,
     vararg ignored: String
 ) {
     onBuild { _, inventory ->
@@ -39,12 +40,13 @@ fun Basic.load(
         }
     }
 
-    onClick {
-        it.isCancelled = true
-        if (it.rawSlot in shape) {
-            templates[it.rawSlot]?.handle(this, it)
+    if (click)
+        onClick {
+            it.isCancelled = true
+            if (it.rawSlot in shape) {
+                templates[it.rawSlot]?.handle(this, it)
+            }
         }
-    }
 }
 
 fun <T> Linked<T>.pages(
