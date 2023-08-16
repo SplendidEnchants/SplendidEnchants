@@ -1,11 +1,11 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.event
 
-import org.bukkit.entity.Player
+import org.bukkit.entity.LivingEntity
 import org.bukkit.event.Event
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 
 object Kill {
-    fun modifyEvent(e: Event, player: Player, params: List<String>, replacerMap: ArrayList<Pair<String, String>>) {
+    fun modifyEvent(e: Event, entity: LivingEntity, params: List<String>, replacerMap: MutableMap<String, String>) {
         val event = e as EntityDamageByEntityEvent
 //        var param = line.replaceFirst(":", "::").split("::")[1]
 //

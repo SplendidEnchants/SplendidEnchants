@@ -5,77 +5,44 @@ import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.library.configuration.ConfigurationSection
-import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.etLevel
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.mechanism.chain.Chain
-import java.util.concurrent.ConcurrentHashMap
 
-data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSection?) {
+class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
 
-    var belonging: SplendidEnchant = enchant
-
+    //一个listener就是 list<chain>
     //一个listenerId指向一个listener
-    val listenersById = ConcurrentHashMap<String, Pair<EventPriority, List<Chain>>>()
+    val byId = mutableMapOf<String, Pair<EventPriority, List<Chain>>>()
 
     //一个eventType指向所有该type的listeners的ids
-    val listenersByType = ConcurrentHashMap<EventType, MutableList<String>>()
+    val byType = mutableMapOf<EventType, MutableList<String>>()
 
     init {
-        config?.getKeys(false)?.forEach {
-            val id = it
-            val type = EventType.valueOf(config.getString("$id.type", "")!!)
-            val priority = EventPriority.valueOf(config.getString("$id.priority", "HIGHEST")!!)
-            val chainLines = config.getStringList("$id.chains")
-
-            val chains = mutableListOf<Chain>()
-            chainLines.forEach { chainLine ->
-                chains += Chain(this, chainLine)
-            }
-
-            listenersById[id] = priority to chains
-            if (!listenersByType.containsKey(type))
-                listenersByType[type] = mutableListOf()
-            listenersByType[type]!! += id
+        config?.getKeys(false)?.forEach { id ->
+            val type = EventType.getType(config.getString("$id.type")) ?: return@forEach
+            val priority = EventPriority.entries.find { it.name == config.getString("$id.priority", "HIGHEST") } ?: return@forEach
+            val lines = config.getStringList("$id.chains")
+            val chains = lines.map { Chain(this, it) }
+            byId[id] = priority to chains
+            byType.getOrPut(type) { mutableListOf() } += id
         }
     }
 
     fun trigger(
         event: Event,
         eventType: EventType,
-        eventPriority: EventPriority,
+        priority: EventPriority,
         entity: LivingEntity,
         item: ItemStack,
     ) {
-        if (!belonging.limitations.checkAvailable(CheckType.USE, player, item).first)
-            return
-
-        listenersByType[eventType]?.forEach {
-            if (listenersById[it]!!.first == eventPriority) {
-
-                val replacerMap =
-                    belonging.variable.variables(
-                        ItemAPI.getLevel(item, belonging),
-                        player,
-                        item
-                    )
-
-                listenersById[it]!!.second.forEach { chain ->
-//                    player.sendMessage(chain.chainLine)
-                    val canContinue = chain.trigger(event, eventType, player, item, replacerMap)
-                    if (!canContinue)
-                        return
-
-                    val refreshed = belonging.variable.variables(
-                        ItemAPI.getLevel(item, belonging),
-                        player,
-                        item
-                    )
-                    refreshed.forEach {
-                        replacerMap.removeIf { origin -> it.first == origin.first }
-                    }
-                    replacerMap.addAll(refreshed)
-                }
+        if (!enchant.limitations.checkAvailable(CheckType.USE, item, entity).first) return
+        byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach { id ->
+            val holders = mutableMapOf<String, String>()
+            byId[id]!!.second.forEach { chain ->
+                holders += enchant.variable.variables(item.etLevel(enchant), entity, item)
+                if (!chain.trigger(event, eventType, entity, item, holders)) return
             }
         }
     }

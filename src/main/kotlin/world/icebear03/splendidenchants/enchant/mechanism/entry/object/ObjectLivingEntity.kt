@@ -1,17 +1,17 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 
-import org.bukkit.Bukkit
 import org.bukkit.entity.LivingEntity
-import java.util.*
+import org.bukkit.entity.Player
+import taboolib.module.nms.getI18nName
 
 object ObjectLivingEntity {
 
     fun modifyLivingEntity(
         entity: LivingEntity,
         params: List<String>,
-        replacerMap: ArrayList<Pair<String, String>>
+        holders: Map<String, String>
     ): Boolean {
-        if (ObjectEntity.modifyEntity(entity, params, replacerMap)) return true
+        if (ObjectEntity.modifyEntity(entity, params, holders)) return true
 
         when (params[0]) {
             "" -> {}
@@ -21,12 +21,6 @@ object ObjectLivingEntity {
     }
 
     fun toString(entity: LivingEntity): String {
-        return "{LivingEntity=${entity.uniqueId}}"
-    }
-
-    fun fromString(string: String): LivingEntity? {
-        val entity = Bukkit.getEntity(UUID.fromString(string))
-        return if (entity is LivingEntity && !entity.isDead) entity
-        else null
+        return (entity as? Player)?.name ?: entity.getI18nName()
     }
 }

@@ -9,8 +9,7 @@ import world.icebear03.splendidenchants.api.blockLookingAt
 
 object Plant {
 
-    //FIXME 也许还有漏掉的种子type
-    private val seedsMap = mapOf(
+    val seedsMap = mapOf(
         Material.BEETROOT_SEEDS to Material.BEETROOTS,
         Material.MELON_SEEDS to Material.MELON_STEM,
         Material.PUMPKIN_SEEDS to Material.PUMPKIN_STEM,
@@ -20,58 +19,37 @@ object Plant {
         Material.POTATO to Material.POTATOES
     )
 
-    private fun getSeed(player: Player, seeds: String?): Material? {
-        if (seeds == null)
-            return null
-        if (seeds == "ALL") {
-            player.inventory.contents!!.forEach {
-                if (it != null) {
-                    if (seedsMap.containsKey(it.type)) {
-                        return it.type
-                    }
-                }
-            }
-        }
+    fun getSeed(player: Player, seeds: String?): Material? {
+        if (seeds == "ALL") return player.inventory.contents.find { seedsMap.containsKey(it?.type) }?.type
         try {
-            val type = Material.valueOf(seeds)
-            if (player.inventory.containsAtLeast(ItemStack(type), 1)) {
-                return type
-            }
+            val type = seeds?.let { Material.valueOf(it) } ?: return null
+            if (player.inventory.containsAtLeast(ItemStack(type), 1)) return type
         } catch (ignored: Exception) {
-
         }
         return null
     }
 
     fun plant(player: Player, sideLength: Int, seeds: String?) {
-        if (sideLength <= 1)
-            return
+        if (sideLength <= 1) return
 
         val block = player.blockLookingAt(6.0) ?: return
+        val loc = block.location
+        val type = getSeed(player, seeds) ?: return
 
         val down = -sideLength / 2
-        var up = sideLength / 2
-        if (sideLength % 2 == 0) {
-            up -= 1
-        }
+        val up = sideLength / 2 - if (sideLength % 2 == 0) 1 else 0
 
-        val location = block.location
         for (x in down until up + 1) {
             for (z in down until up + 1) {
-                val current = location.clone().add(x.toDouble(), 0.0, z.toDouble()).toHighestLocation()
-
-                if (current.block.type != Material.FARMLAND)
-                    continue
-                val seedsType = getSeed(player, seeds) ?: return
-                val newlyPlantedBlock = current.clone().add(0.0, 1.0, 0.0).block
-                if (newlyPlantedBlock.type != Material.AIR)
-                    continue
-
-                newlyPlantedBlock.setType(seedsMap[seedsType]!!, true)
-                (newlyPlantedBlock.blockData as Ageable).age = 0
-                player.inventory.takeItem(1) {
-                    it.type == seedsType
-                }
+                val current = loc.clone().add(x.toDouble(), 0.0, z.toDouble()).toHighestLocation()
+                if (current.block.type != Material.FARMLAND) continue
+                val planted = current.clone().add(0.0, 1.0, 0.0).block
+                if (planted.type != Material.AIR) continue
+                planted.type = seedsMap[type]!!
+                val data = planted.blockData as Ageable
+                data.age = 0
+                planted.blockData = data
+                player.inventory.takeItem(1) { it.type == type }
             }
         }
     }

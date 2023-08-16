@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.enchantments.EnchantmentTarget
 import org.bukkit.entity.EntityCategory
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -216,13 +217,13 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
         fun variables(
             level: Int?,
-            player: Player? = null,
+            entity: LivingEntity? = null,
             item: ItemStack? = null
         ): Map<String, String> {
             return variables.mapValues { (variable, type) ->
                 when (type) {
                     VariableType.LEVELED -> leveled(variable, level)
-                    VariableType.PLAYER_RELATED -> playerRelated(variable, player)
+                    VariableType.PLAYER_RELATED -> playerRelated(variable, entity as? Player)
                     VariableType.MODIFIABLE -> modifiable(variable, item)
                 }
             }
