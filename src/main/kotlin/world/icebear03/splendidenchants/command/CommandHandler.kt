@@ -23,8 +23,10 @@ import taboolib.common.platform.command.component.CommandBase
 import taboolib.common.platform.command.component.CommandComponent
 import taboolib.common.platform.command.component.CommandComponentLiteral
 import taboolib.common.platform.command.mainCommand
+import taboolib.common.platform.function.pluginVersion
 import taboolib.common.util.Strings
 import taboolib.module.chat.component
+import taboolib.module.nms.MinecraftVersion
 import world.icebear03.splendidenchants.api.i18n.asLangTextString
 import world.icebear03.splendidenchants.api.i18n.sendLang
 import world.icebear03.splendidenchants.command.impl.*
@@ -85,7 +87,7 @@ object CommandHandler {
                 text += sender.asLangTextString("command.sub", "name" to name, "usage" to usage, "description" to description)
             }
 
-            sender.asLangTextString("command.helper").replace("{subCommands}", text.joinToString(separator = "[](br)", prefix = "", postfix = ""))
+            sender.asLangTextString("command.helper", "pluginVersion" to pluginVersion, "minecraftVersion" to MinecraftVersion.minecraftVersion).replace("{subCommands}", text.joinToString(separator = "[](br)", prefix = "", postfix = ""))
                 .component()
                 .build { colored() }
                 .sendTo(sender)
