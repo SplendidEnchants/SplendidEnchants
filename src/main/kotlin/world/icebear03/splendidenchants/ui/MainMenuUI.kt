@@ -10,14 +10,10 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
-import world.icebear03.splendidenchants.api.internal.YamlUpdater
+import world.icebear03.splendidenchants.api.initialize
 
 @MenuComponent("Menu")
 object MainMenuUI {
-
-    init {
-        YamlUpdater.loadAndUpdate("gui/menu.yml")
-    }
 
     @Config("gui/menu.yml")
     private lateinit var source: Configuration
@@ -34,51 +30,20 @@ object MainMenuUI {
             config = MenuConfiguration(source)
         }
         player.openMenu<Basic>(config.title().colored()) {
-            virtualize()
             val (shape, templates) = config
             rows(shape.rows)
             map(*shape.array)
 
-            onBuild { _, inventory ->
-                shape.all { slot, index, item, _ ->
-                    inventory.setItem(slot, item(slot, index))
-                }
-            }
-
-            onClick {
-                it.isCancelled = true
-                if (it.rawSlot in shape) {
-                    templates[it.rawSlot]?.handle(it)
-                }
-            }
+            initialize(shape, templates)
         }
     }
 
     @MenuComponent
-    private val enchant_search = MenuFunctionBuilder {
-        onClick { (_, _, event, _) ->
-            EnchantSearchUI.open(event.clicker)
-        }
-    }
+    private val enchant_search = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> EnchantSearchUI.open(event.clicker) } }
 
     @MenuComponent
-    private val item_check = MenuFunctionBuilder {
-        onClick { (_, _, event, _) ->
-            ItemCheckUI.open(event.clicker)
-        }
-    }
+    private val item_check = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> ItemCheckUI.open(event.clicker) } }
 
     @MenuComponent
-    private val anvil = MenuFunctionBuilder {
-        onClick { (_, _, event, _) ->
-            AnvilUI.open(event.clicker)
-        }
-    }
-
-    @MenuComponent
-    private val grindstone = MenuFunctionBuilder {
-        onClick { (_, _, _, _) ->
-            TODO("open")
-        }
-    }
+    private val anvil = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> AnvilUI.open(event.clicker) } }
 }

@@ -24,7 +24,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjU5NmNlNTg3NWMzZGM1ZTliOThlZWYyMmIxMjFlZTEwMDQzNzMyMGFmOGZmZDMyOGYzMWU4MWQyYzk0Mzk2NCJ9fX0="
       - ==: Functional
-        keyword: ItemCheck$back
+        keyword: ItemCheck:back
 
   'C':
     material: PLAYER_HEAD
@@ -64,7 +64,7 @@ template:
       - "&8| &7点击查看详细信息"
     feature:
       - ==: Functional
-        keyword: ItemCheck$enchant
+        keyword: ItemCheck:enchant
 
   'I':
     material: PLAYER_HEAD
@@ -76,4 +76,4 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjViOTVkYTEyODE2NDJkYWE1ZDAyMmFkYmQzZTdjYjY5ZGMwOTQyYzgxY2Q2M2JlOWMzODU3ZDIyMmUxYzhkOSJ9fX0="
       - ==: Functional
-        keyword: ItemCheck$item
+        keyword: ItemCheck:item

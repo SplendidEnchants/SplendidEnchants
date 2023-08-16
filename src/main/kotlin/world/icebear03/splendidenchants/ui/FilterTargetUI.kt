@@ -18,17 +18,12 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Target
 
 
 @MenuComponent("FilterTarget")
 object FilterTargetUI {
-
-    init {
-        YamlUpdater.loadAndUpdate("gui/filter_target.yml")
-    }
 
     @Config("gui/filter_target.yml")
     private lateinit var source: Configuration

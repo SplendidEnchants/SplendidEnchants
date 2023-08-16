@@ -20,17 +20,12 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Rarity
 
 
 @MenuComponent("FilterRarity")
 object FilterRarityUI {
-
-    init {
-        YamlUpdater.loadAndUpdate("gui/filter_rarity.yml")
-    }
 
     @Config("gui/filter_rarity.yml")
     private lateinit var source: Configuration

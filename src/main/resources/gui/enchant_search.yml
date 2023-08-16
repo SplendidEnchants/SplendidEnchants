@@ -31,7 +31,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjU5NmNlNTg3NWMzZGM1ZTliOThlZWYyMmIxMjFlZTEwMDQzNzMyMGFmOGZmZDMyOGYzMWU4MWQyYzk0Mzk2NCJ9fX0="
       - ==: Functional
-        keyword: EnchantSearch$back
+        keyword: EnchantSearch:back
 
   'P':
     material: PLAYER_HEAD
@@ -64,7 +64,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzg2YjgwMjZhNjU5NmQ5MjJiM2I5ZTI0NWM2YjNmYWYzMTdhY2Q0ZjNjOTU3YTU4ZmE4NTNhZjY2MzJhOWViMiJ9fX0="
       - ==: Functional
-        keyword: EnchantSearch$filter_rarity
+        keyword: EnchantSearch:filter_rarity
 
   'X':
     material: PLAYER_HEAD
@@ -79,7 +79,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjZlYTIxMzU4Mzg0NjE1MzQzNzJmMmRhNmM4NjJkMjFjZDVmM2QyYzcxMTlmMmJiNjc0YmJkNDI3OTEifX19"
       - ==: Functional
-        keyword: EnchantSearch$filter_target
+        keyword: EnchantSearch:filter_target
 
   'Y':
     material: PLAYER_HEAD
@@ -94,7 +94,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkyYTBhMzY5Yzg5ZTRiYTJjOTNkMWNhN2Y1YzY1MDkwOTVlMGI5YmUyNWI3MzIxNmVhODgyZGM2NzFjMWE3NiJ9fX0="
       - ==: Functional
-        keyword: EnchantSearch$filter_group
+        keyword: EnchantSearch:filter_group
 
   'Z':
     material: PLAYER_HEAD
@@ -110,7 +110,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmEyYWZhN2JiMDYzYWMxZmYzYmJlMDhkMmM1NThhN2RmMmUyYmFjZGYxNWRhYzJhNjQ2NjJkYzQwZjhmZGJhZCJ9fX0="
       - ==: Functional
-        keyword: EnchantSearch$filter_string
+        keyword: EnchantSearch:filter_string
   'E':
     material: PLAYER_HEAD
     name: "{color}{name}"
@@ -123,4 +123,4 @@ template:
       - "&8| &7点击查看详细信息"
     feature:
       - ==: Functional
-        keyword: EnchantSearch$enchant
+        keyword: EnchantSearch:enchant

@@ -1,16 +1,21 @@
 package world.icebear03.splendidenchants.listener.caller
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent
-import org.bukkit.entity.*
+import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Projectile
+import org.bukkit.entity.Trident
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
-import world.icebear03.splendidenchants.api.ItemAPI
+import taboolib.platform.util.attacker
+import world.icebear03.splendidenchants.api.fixedEnchants
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.api.internal.PermissionChecker
+import world.icebear03.splendidenchants.api.mainHand
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -19,103 +24,54 @@ object EntityDamageByEntity {
 
     val projectileSourceItems = ConcurrentHashMap<UUID, ItemStack>()
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun event(event: EntityShootBowEvent) {
-        if (event.isCancelled)
-            return
-
-        if (event.bow == null)
-            return
-
-        projectileSourceItems[event.projectile.uniqueId] = event.bow!!
+    @SubscribeEvent(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun shoot(event: EntityShootBowEvent) {
+        val handItem = event.entity.equipment?.getItem(event.hand)
+        projectileSourceItems[event.projectile.uniqueId] = event.bow ?: handItem ?: return
     }
 
     @SubscribeEvent(priority = EventPriority.MONITOR)
-    fun event(event: EntityRemoveFromWorldEvent) {
-        projectileSourceItems.remove(event.entity.uniqueId)
-    }
+    fun remove(event: EntityRemoveFromWorldEvent) = projectileSourceItems.remove(event.entity.uniqueId)
 
     @SubscribeEvent(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    fun eventLowest(event: EntityDamageByEntityEvent) {
-        settle(event, EventPriority.LOWEST)
-    }
+    fun lowest(event: EntityDamageByEntityEvent) = settle(event, EventPriority.LOWEST)
 
     @SubscribeEvent(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun eventHigh(event: EntityDamageByEntityEvent) {
-        settle(event, EventPriority.HIGH)
-    }
+    fun high(event: EntityDamageByEntityEvent) = settle(event, EventPriority.HIGH)
 
     @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    fun eventHighest(event: EntityDamageByEntityEvent) {
-        settle(event, EventPriority.HIGHEST)
-        //HIGHEST处必带
-    }
+    fun highest(event: EntityDamageByEntityEvent) = settle(event, EventPriority.HIGHEST)
 
     private fun settle(event: EntityDamageByEntityEvent, priority: EventPriority) {
-//        println("${System.currentTimeMillis()}正在处理攻击 $priority")
-
-        //伤害生物、破坏方块的settle必带
-        if (PermissionChecker.isChecking(event)) {
-//            println("${System.currentTimeMillis()}权限检查攻击，取消 $priority")
-            return
-        }
-        if (FurtherOperation.hadOperated(event)) {
-//            println("${System.currentTimeMillis()}已经处理的攻击，取消 $priority")
-            return
-        }
-
-//        println("${System.currentTimeMillis()}这是未处理的攻击，添加时间戳 $priority")
+        if (PermissionChecker.isChecking(event)) return
+        if (FurtherOperation.hadOperated(event)) return
         FurtherOperation.addStamp(event)
-        //-------------------------
 
-        val damageEntity = event.damager
-        val damagedEntity = event.entity
-        var isProjectile = false
+        val attacker = event.attacker ?: return
+        val damager = event.damager
+        val damaged = event.entity
+        val isProjectile = damager is Projectile
 
-        if (damagedEntity is ArmorStand || damagedEntity !is LivingEntity)
-            return
+        if (damaged is ArmorStand || damaged !is LivingEntity) return
 
-        val damaged = damagedEntity
-        val damager: Player = if (damageEntity is Projectile) {
-            if (damageEntity.shooter !is Player)
-                return
-            isProjectile = true
-            damageEntity.shooter as Player
-        } else {
-            if (damageEntity !is Player)
-                return
-            damageEntity
+        val weapon =
+            if (isProjectile)
+                if (damager is Trident) damager.item
+                else projectileSourceItems[damager.uniqueId]
+            else (attacker.mainHand() ?: return)
+
+        weapon ?: return
+
+        weapon.fixedEnchants.forEach { (enchant, _) ->
+            enchant.listeners.trigger(event, EventType.ATTACK, priority, attacker, weapon)
         }
 
-        var weapon = damager.inventory.itemInMainHand
-        if (isProjectile) {
-            if (damageEntity is Arrow) {
-                weapon = projectileSourceItems[damageEntity.uniqueId]!!
-            }
-            if (damageEntity is Trident) {
-                weapon = damageEntity.item
-            }
-        }
-
-//        println("攻击，-----------------------------------------伤害")
-        ItemAPI.getEnchants(weapon).forEach {
-            it.key.listeners.trigger(event, EventType.ATTACK, priority, damager, weapon)
-        }
-
-        //必带
         FurtherOperation.delStamp(event)
-//        println("${System.currentTimeMillis()}攻击已经处理，去除时间戳 $priority")
 
         submit {
             if (damaged.isDead) {
-                ItemAPI.getEnchants(weapon).forEach {
-                    it.key.listeners.trigger(
-                        event,
-                        EventType.KILL,
-                        priority,
-                        damager,
-                        weapon
-                    )
+                weapon.fixedEnchants.forEach { (enchant, _) ->
+                    enchant.listeners.trigger(event, EventType.KILL, priority, attacker, weapon)
                 }
             }
         }

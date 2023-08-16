@@ -26,7 +26,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjU5NmNlNTg3NWMzZGM1ZTliOThlZWYyMmIxMjFlZTEwMDQzNzMyMGFmOGZmZDMyOGYzMWU4MWQyYzk0Mzk2NCJ9fX0="
       - ==: Functional
-        keyword: FilterGroup$back
+        keyword: FilterGroup:back
 
   'P':
     material: PLAYER_HEAD
@@ -55,7 +55,7 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2JkYjUyMWZkODM1ZDkyMTIxM2UzODNmOWQ2MzkwZTQyNTU4NDllY2RiN2ViNTA4YzQzZmFjMDczZmU4YjgyYSJ9fX0="
       - ==: Functional
-        keyword: FilterGroup$reset
+        keyword: FilterGroup:reset
 
   'T':
     material: PLAYER_HEAD
@@ -66,4 +66,4 @@ template:
       - "&8| &7右击 &c✗不看适合此类物品的附魔"
     feature:
       - ==: Functional
-        keyword: FilterGroup$filter
+        keyword: FilterGroup:filter

@@ -18,16 +18,11 @@ import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyLore
 import taboolib.platform.util.nextChat
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
 @MenuComponent("EnchantSearch")
 object EnchantSearchUI {
-
-    init {
-        YamlUpdater.loadAndUpdate("gui/enchant_search.yml")
-    }
 
     @Config("gui/enchant_search.yml")
     private lateinit var source: Configuration

@@ -1,6 +1,6 @@
 package world.icebear03.splendidenchants.enchant.mechanism
 
-import org.bukkit.entity.Player
+import org.bukkit.entity.LivingEntity
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
@@ -44,7 +44,7 @@ data class Listeners(val enchant: SplendidEnchant, val config: ConfigurationSect
         event: Event,
         eventType: EventType,
         eventPriority: EventPriority,
-        player: Player,
+        entity: LivingEntity,
         item: ItemStack,
     ) {
         if (!belonging.limitations.checkAvailable(CheckType.USE, player, item).first)

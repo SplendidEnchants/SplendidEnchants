@@ -17,15 +17,10 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyLore
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
 @MenuComponent("ItemCheck")
 object ItemCheckUI {
-
-    init {
-        YamlUpdater.loadAndUpdate("gui/item_check.yml")
-    }
 
     @Config("gui/item_check.yml")
     private lateinit var source: Configuration

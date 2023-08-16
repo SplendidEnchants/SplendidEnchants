@@ -5,7 +5,10 @@ import org.bukkit.inventory.MerchantRecipe
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
-import world.icebear03.splendidenchants.api.*
+import world.icebear03.splendidenchants.api.addEt
+import world.icebear03.splendidenchants.api.clearEts
+import world.icebear03.splendidenchants.api.drawEt
+import world.icebear03.splendidenchants.api.fixedEnchants
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.data.group
 
@@ -30,8 +33,10 @@ object VillagerListener {
         val origin = event.recipe
         val result = origin.result.clone()
 
-        result.fixedEnchants.isEmpty() so { return }
-        enableEnchantTrade or { event.isCancelled = true;return }
+        if (result.fixedEnchants.isEmpty()) return
+        if (!enableEnchantTrade) {
+            event.isCancelled = true; return
+        }
 
         result.clearEts()
         repeat(amount) { result.addEt((group(tradeGroup)?.enchants ?: listOf()).filter { it.alternativeData.isTradeable }.drawEt() ?: return@repeat) }

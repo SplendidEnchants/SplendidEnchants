@@ -6,98 +6,56 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.platform.util.isOffhand
-import world.icebear03.splendidenchants.api.CallerAPI
+import taboolib.platform.util.isMainhand
 import world.icebear03.splendidenchants.api.internal.TriggerSlots
+import world.icebear03.splendidenchants.api.triggerEts
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 
 object PlayerInteract {
 
     @SubscribeEvent(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    fun eventLowest(event: PlayerInteractEvent) {
-        settle(event, EventPriority.LOWEST)
-    }
+    fun lowest(event: PlayerInteractEvent) = settle(event, EventPriority.LOWEST)
 
     @SubscribeEvent(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun eventHigh(event: PlayerInteractEvent) {
-        settle(event, EventPriority.HIGH)
-    }
+    fun high(event: PlayerInteractEvent) = settle(event, EventPriority.HIGH)
 
     @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    fun eventHighest(event: PlayerInteractEvent) {
-        settle(event, EventPriority.HIGHEST)
-    }
+    fun highest(event: PlayerInteractEvent) = settle(event, EventPriority.HIGHEST)
 
     @SubscribeEvent(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    fun eventLowest(event: PlayerInteractEntityEvent) {
-        settle(event, EventPriority.LOWEST)
-    }
+    fun lowest(event: PlayerInteractEntityEvent) = settle(event, EventPriority.LOWEST)
 
     @SubscribeEvent(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun eventHigh(event: PlayerInteractEntityEvent) {
-        settle(event, EventPriority.HIGH)
-    }
+    fun high(event: PlayerInteractEntityEvent) = settle(event, EventPriority.HIGH)
 
     @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    fun eventHighest(event: PlayerInteractEntityEvent) {
-        settle(event, EventPriority.HIGHEST)
-    }
+    fun highest(event: PlayerInteractEntityEvent) = settle(event, EventPriority.HIGHEST)
 
     private fun settle(event: PlayerInteractEntityEvent, priority: EventPriority) {
-        if (event.isOffhand())
-            return
-
         val player = event.player
+        val hand = if (event.isMainhand()) TriggerSlots.MAIN_HAND else TriggerSlots.OFF_HAND
 
         if (player.inventory.itemInMainHand.type == Material.AIR)
             return
 
-        //仍然算作右击
-        CallerAPI.trigger(
-            event,
-            EventType.RIGHT_CLICK,
-            priority,
-            TriggerSlots.MAIN_HAND,
-            player
-        )
-
-        //右击生物
-        CallerAPI.trigger(
-            event,
-            EventType.INTERACT_ENTITY,
-            priority,
-            TriggerSlots.MAIN_HAND,
-            player
-        )
+        EventType.RIGHT_CLICK.triggerEts(event, priority, hand, player)
+        EventType.INTERACT_ENTITY.triggerEts(event, priority, hand, player)
     }
 
     private fun settle(event: PlayerInteractEvent, priority: EventPriority) {
-        if (event.isOffhand())
-            return
-
-        if (!event.hasItem())
-            return
+        if (!event.hasItem()) return
 
         val player = event.player
+        val hand = if (event.isMainhand()) TriggerSlots.MAIN_HAND else TriggerSlots.OFF_HAND
 
         when (event.action) {
-            RIGHT_CLICK_BLOCK, RIGHT_CLICK_AIR -> CallerAPI.trigger(
-                event,
-                EventType.RIGHT_CLICK,
-                priority,
-                TriggerSlots.MAIN_HAND,
-                player
-            )
+            RIGHT_CLICK_BLOCK, RIGHT_CLICK_AIR ->
+                EventType.RIGHT_CLICK.triggerEts(event, priority, hand, player)
 
-            LEFT_CLICK_BLOCK, LEFT_CLICK_AIR -> CallerAPI.trigger(
-                event,
-                EventType.LEFT_CLICK,
-                priority,
-                TriggerSlots.MAIN_HAND,
-                player
-            )
+            LEFT_CLICK_BLOCK, LEFT_CLICK_AIR ->
+                EventType.LEFT_CLICK.triggerEts(event, priority, hand, player)
 
-            PHYSICAL -> {}//NONE
+            PHYSICAL -> {}
         }
     }
 }

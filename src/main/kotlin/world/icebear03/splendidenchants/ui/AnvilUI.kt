@@ -14,17 +14,12 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
 import taboolib.platform.util.isAir
 import world.icebear03.splendidenchants.api.ItemAPI
-import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.listener.mechanism.AnvilListener
 import java.util.*
 
 @MenuComponent("Anvil")
 object AnvilUI {
-
-    init {
-        YamlUpdater.loadAndUpdate("gui/anvil.yml")
-    }
 
     @Config("gui/anvil.yml")
     private lateinit var source: Configuration
