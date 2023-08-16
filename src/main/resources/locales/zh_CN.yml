@@ -2,9 +2,9 @@ prefix: '&6SplendidEnchants &7>> '
 command:
   helper:
     - ' '
-    - '   &6[SplendidEnchants](h=&7SplendidEnchants 附魔扩展插件) &f[{pluginVersion}](h=&7插件版本: &2{pluginVersion}\n&7游戏版本: &b{minecraftVersion})'
+    - '  [&6SplendidEnchants](h=&7SplendidEnchants 附魔扩展插件) &f[{pluginVersion}](h=&7插件版本: &2{pluginVersion}<br>&7游戏版本: &b{minecraftVersion})'
     - ' '
-    - '  &7命令: [&f/splendidenchants &8\\[...\\]](h=&f/splendidenchants &8\\[...\\];suggest=/splendidenchants )'
+    - '  &7命令: [&f/splendidenchants &8\[...\]](h=&f/splendidenchants &8\[...\];suggest=/splendidenchants )'
     - '  &7参数:'
     - '{subCommands}'
     - ' '

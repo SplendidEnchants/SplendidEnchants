@@ -1,13 +1,13 @@
 package world.icebear03.splendidenchants.command.impl
 
+import com.mcstarrysky.starrysky.command.CommandExecutor
+import com.mcstarrysky.starrysky.i18n.sendLang
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.SimpleCommandBody
 import taboolib.common.platform.command.subCommand
 import taboolib.platform.util.onlinePlayers
-import world.icebear03.splendidenchants.api.i18n.sendLang
-import world.icebear03.splendidenchants.command.CommandExecutor
 import world.icebear03.splendidenchants.command.CommandHandler
 import world.icebear03.splendidenchants.ui.MainMenuUI
 

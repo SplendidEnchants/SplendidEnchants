@@ -10,7 +10,7 @@ taboolib {
         contributors {
             name("大白熊_IceBear")
             name("xiaozhangup")
-            name("Mical")
+            name("Micalhl")
         }
         desc("SplendidEnchants 附魔扩展插件")
         load("STARTUP")
@@ -25,13 +25,12 @@ taboolib {
     install("module-ui")
     install("platform-bukkit")
     classifier = null
-    version = "6.0.12-13"
+    version = "6.0.12-14"
 
     relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
 }
 
 repositories {
-    mavenLocal()
     maven {
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
@@ -53,7 +52,8 @@ dependencies {
     compileOnly("ink.ptms.core:v12001:12001:mapped")
     compileOnly("ink.ptms.core:v12001:12001:universal")
 
-    taboo("org.tabooproject.taboolib:module-parrotx:1.5.4")
+    taboo("org.tabooproject.taboolib:module-parrotx:1.5.4") // Module-ParrotX
+    taboo("com.mcstarrysky.taboolib:module-starrysky:1.0.11-2") // Module-StarrySky
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }

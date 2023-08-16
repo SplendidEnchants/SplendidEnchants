@@ -1,11 +1,11 @@
 package world.icebear03.splendidenchants
 
+import com.mcstarrysky.starrysky.i18n.I18n
 import org.serverct.parrot.parrotx.mechanism.Reloadables
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.module.chat.colored
 import taboolib.platform.util.onlinePlayers
-import world.icebear03.splendidenchants.api.i18n.I18n
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import world.icebear03.splendidenchants.enchant.EnchantFilter

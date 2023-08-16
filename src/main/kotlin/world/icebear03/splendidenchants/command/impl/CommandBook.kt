@@ -1,5 +1,7 @@
 package world.icebear03.splendidenchants.command.impl
 
+import com.mcstarrysky.starrysky.command.CommandExecutor
+import com.mcstarrysky.starrysky.i18n.sendLang
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -9,9 +11,7 @@ import taboolib.platform.util.giveItem
 import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.api.book
 import world.icebear03.splendidenchants.api.display
-import world.icebear03.splendidenchants.api.i18n.sendLang
 import world.icebear03.splendidenchants.api.splendidEt
-import world.icebear03.splendidenchants.command.CommandExecutor
 import world.icebear03.splendidenchants.command.CommandHandler
 
 /**
