@@ -9,7 +9,7 @@ object ObjectLivingEntity {
     fun modifyLivingEntity(
         entity: LivingEntity,
         params: List<String>,
-        holders: Map<String, String>
+        holders: MutableMap<String, String>
     ): Boolean {
         if (ObjectEntity.modifyEntity(entity, params, holders)) return true
 

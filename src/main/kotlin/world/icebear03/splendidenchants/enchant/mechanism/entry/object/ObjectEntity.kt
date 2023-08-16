@@ -10,7 +10,7 @@ object ObjectEntity {
     fun modifyEntity(
         entity: Entity,
         params: List<String>,
-        holders: Map<String, String>
+        holders: MutableMap<String, String>
     ): Boolean {
         when (params[0]) {
             "" -> {}

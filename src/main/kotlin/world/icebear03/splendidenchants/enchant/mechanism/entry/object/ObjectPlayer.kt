@@ -5,7 +5,7 @@ import org.bukkit.entity.Player
 
 object ObjectPlayer {
 
-    fun modifyPlayer(player: Player, params: List<String>, holders: Map<String, String>): Boolean {
+    fun modifyPlayer(player: Player, params: List<String>, holders: MutableMap<String, String>): Boolean {
         if (ObjectLivingEntity.modifyLivingEntity(player, params, holders)) return true
 
         when (params[0]) {

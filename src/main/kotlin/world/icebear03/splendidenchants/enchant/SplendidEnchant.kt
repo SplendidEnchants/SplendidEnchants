@@ -146,10 +146,10 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             index: Int? = null
         ): Map<String, String> {
             val suffix = index?.let { "_$it" } ?: ""
-            val replaceMap = holders(level, player, item)
+            val holders = holders(level, player, item)
             return mapOf(
-                "previous$suffix" to previous.replace("{default_previous}", EnchantDisplayer.defaultPrevious).replace(replaceMap),
-                "subsequent$suffix" to subsequent.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent).replace(replaceMap)
+                "previous$suffix" to previous.replace("{default_previous}", EnchantDisplayer.defaultPrevious).replace(holders),
+                "subsequent$suffix" to subsequent.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent).replace(holders)
             )
         }
 
