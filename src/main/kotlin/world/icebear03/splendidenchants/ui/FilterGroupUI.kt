@@ -1,12 +1,11 @@
 package world.icebear03.splendidenchants.ui
 
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
-import org.serverct.parrot.parrotx.function.variables
+import org.serverct.parrot.parrotx.function.variable
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
@@ -17,9 +16,11 @@ import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.modifyMeta
-import world.icebear03.splendidenchants.api.ItemAPI
+import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Group
+import world.icebear03.splendidenchants.enchant.data.group
+import world.icebear03.splendidenchants.enchant.data.groups
 
 
 @MenuComponent("FilterGroup")
@@ -36,118 +37,64 @@ object FilterGroupUI {
     }
 
     fun open(player: Player) {
-        if (!::config.isInitialized) {
-            config = MenuConfiguration(source)
-        }
         player.openMenu<Linked<Group>>(config.title().colored()) {
-            virtualize()
             val (shape, templates) = config
             rows(shape.rows)
-            val slots = shape["FilterGroup\$filter"].toList()
+            val slots = shape["FilterGroup:filter"].toList()
             slots(slots)
-            elements { Group.groups.values.toList() }
+            elements { groups.values.toList() }
 
-            onBuild { _, inventory ->
-                shape.all(
-                    "Previous", "Next",
-                    "FilterGroup\$filter"
-                ) { slot, index, item, _ ->
-                    inventory.setItem(slot, item(slot, index))
-                }
-            }
+            initialize(shape, templates, "FilterGroup:filter", "Previous", "Next")
+            pages(shape, templates)
 
-            val template_filter = templates.require("FilterGroup\$filter")
-            onGenerate { _, member, index, slot ->
-                template_filter(slot, index, member, player)
-            }
-
-            onClick { event, member ->
-                template_filter.handle(event, member)
-            }
-
-            shape["Previous"].first().let { slot ->
-                setPreviousPage(slot) { it, _ ->
-                    templates("Previous", slot, it)
-                }
-            }
-            shape["Next"].first().let { slot ->
-                setNextPage(slot) { it, _ ->
-                    templates("Next", slot, it)
-                }
-            }
-
-            onClick { event ->
-                event.isCancelled = true
-                if (event.rawSlot in shape && event.rawSlot !in slots) {
-                    templates[event.rawSlot]?.handle(event)
+            val template = templates.require("FilterGroup:filter")
+            onGenerate { _, element, index, slot ->
+                template(slot, index) {
+                    this["group"] = element
+                    this["player"] = player
                 }
             }
         }
     }
 
-    val key = NamespacedKey.minecraft("group")
-
     @MenuComponent
     private val filter = MenuFunctionBuilder {
         onBuild { (_, _, _, _, icon, args) ->
-            val group = args[0] as Group
-            val player = args[1] as Player
-            icon.variables {
-                when (it) {
-                    "name" -> listOf(group.name)
-                    else -> listOf()
-                }
-            }
-            ItemAPI.setSkull(icon, group.skull)
+            val group = args["group"] as Group
+            val player = args["player"] as Player
 
-            val statement = EnchantFilter.getStatement(player, EnchantFilter.FilterType.GROUP, group)
-
-            when (statement) {
-                EnchantFilter.FilterStatement.ON ->
-                    icon.type = Material.LIME_STAINED_GLASS_PANE
-
-                EnchantFilter.FilterStatement.OFF ->
-                    icon.type = Material.RED_STAINED_GLASS_PANE
-
+            when (EnchantFilter.getStatement(player, EnchantFilter.FilterType.GROUP, group)) {
+                EnchantFilter.FilterStatement.ON -> icon.type = Material.LIME_STAINED_GLASS_PANE
+                EnchantFilter.FilterStatement.OFF -> icon.type = Material.RED_STAINED_GLASS_PANE
                 else -> {}
             }
 
-            icon.modifyMeta<ItemMeta> {
-                this.persistentDataContainer.set(
-                    key, PersistentDataType.STRING, group.name
-                )
-            }
-
-            icon
+            icon.modifyMeta<ItemMeta> { this["group", PersistentDataType.STRING] = group.name }
+                .variable("name", listOf(group.name))
+                .skull(group.skull)
         }
 
-        onClick { (_, _, event, _) ->
-            val clickType = event.virtualEvent().clickType
+        onClick { (_, _, _, event, _) ->
+            val clickType = event.clickEvent().click
             val player = event.clicker
-            val item = event.virtualEvent().clickItem
+            val item = event.currentItem ?: return@onClick
+            val group = group(item.itemMeta["group", PersistentDataType.STRING]) ?: return@onClick
 
-            if (item.type == Material.AIR)
-                return@onClick
-            val group =
-                Group.fromName(item.itemMeta.persistentDataContainer.get(key, PersistentDataType.STRING)!!)!!
-
-            if (clickType == ClickType.MIDDLE) {
-                EnchantFilter.clearFilter(player, EnchantFilter.FilterType.GROUP, group)
-                open(player)
-            }
             when (clickType) {
                 ClickType.LEFT, ClickType.RIGHT -> {
                     EnchantFilter.clearFilter(player, EnchantFilter.FilterType.GROUP, group)
                     EnchantFilter.addFilter(
-                        player,
-                        EnchantFilter.FilterType.GROUP,
-                        group,
+                        player, EnchantFilter.FilterType.GROUP, group,
                         when (clickType) {
-                            ClickType.LEFT -> EnchantFilter.FilterStatement.ON
                             ClickType.RIGHT -> EnchantFilter.FilterStatement.OFF
                             else -> EnchantFilter.FilterStatement.ON
                         }
                     )
+                    open(player)
+                }
+
+                ClickType.MIDDLE -> {
+                    EnchantFilter.clearFilter(player, EnchantFilter.FilterType.GROUP, group)
                     open(player)
                 }
 
@@ -158,7 +105,7 @@ object FilterGroupUI {
 
     @MenuComponent
     private val reset = MenuFunctionBuilder {
-        onClick { (_, _, event, _) ->
+        onClick { (_, _, _, event, _) ->
             val player = event.clicker
             EnchantFilter.clearFilter(player, EnchantFilter.FilterType.GROUP)
             open(player)
@@ -166,9 +113,5 @@ object FilterGroupUI {
     }
 
     @MenuComponent
-    private val back = MenuFunctionBuilder {
-        onClick { (_, _, event, _) ->
-            EnchantSearchUI.open(event.clicker)
-        }
-    }
+    private val back = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> EnchantSearchUI.open(event.clicker) } }
 }

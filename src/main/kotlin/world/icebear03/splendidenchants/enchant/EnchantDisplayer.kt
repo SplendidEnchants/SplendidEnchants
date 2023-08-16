@@ -1,5 +1,3 @@
-@file:Suppress("deprecation")
-
 package world.icebear03.splendidenchants.enchant
 
 import org.bukkit.GameMode

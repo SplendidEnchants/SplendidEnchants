@@ -10,7 +10,7 @@ import taboolib.common.platform.function.getDataFolder
 import taboolib.common.util.unsafeLazy
 import world.icebear03.splendidenchants.api.internal.exception.severe
 import java.io.File
-import java.util.Locale
+import java.util.*
 import kotlin.system.measureTimeMillis
 
 /**
@@ -59,7 +59,7 @@ object I18n {
         "en_gb" to "en_US",
         "en_nz" to "en_US"
     )
-    private const val defaultLanguageCode: String = "zh_CN"
+    private const val DEFAULT_LANGUAGE_CODE: String = "zh_CN"
 
     /**
      * 初始化语言系统
@@ -101,7 +101,7 @@ object I18n {
     }
 
     fun getLocale(languageCode: String): I18nConfig {
-        return localesMap[languageCode] ?: localesMap[defaultLanguageCode] ?: severe("Missing language file: $languageCode")
+        return localesMap[languageCode] ?: localesMap[DEFAULT_LANGUAGE_CODE] ?: severe("Missing language file: $languageCode")
     }
 
     fun getLocale(player: Player): String {

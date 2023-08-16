@@ -26,9 +26,6 @@ object MainMenuUI {
     }
 
     fun open(player: Player) {
-        if (!::config.isInitialized) {
-            config = MenuConfiguration(source)
-        }
         player.openMenu<Basic>(config.title().colored()) {
             val (shape, templates) = config
             rows(shape.rows)

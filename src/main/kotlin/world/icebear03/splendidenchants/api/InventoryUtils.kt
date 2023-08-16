@@ -3,12 +3,13 @@ package world.icebear03.splendidenchants.api
 import org.serverct.parrot.parrotx.ui.config.advance.ShapeConfiguration
 import org.serverct.parrot.parrotx.ui.config.advance.TemplateConfiguration
 import taboolib.module.ui.type.Basic
+import taboolib.module.ui.type.Linked
 
 fun Basic.setSlots(
     shape: ShapeConfiguration,
     templates: TemplateConfiguration,
     key: String,
-    elements: List<Any?>,
+    elements: List<Any?> = listOf(),
     vararg args: Pair<String, Any>
 ) {
     var tot = 0
@@ -44,4 +45,12 @@ fun Basic.initialize(
             templates[it.rawSlot]?.handle(this, it)
         }
     }
+}
+
+fun <T> Linked<T>.pages(
+    shape: ShapeConfiguration,
+    templates: TemplateConfiguration
+) {
+    shape["Previous"].forEach { slot -> setPreviousPage(slot) { it, _ -> templates("Previous", slot, it) } }
+    shape["Next"].forEach { slot -> setNextPage(slot) { it, _ -> templates("Next", slot, it) } }
 }

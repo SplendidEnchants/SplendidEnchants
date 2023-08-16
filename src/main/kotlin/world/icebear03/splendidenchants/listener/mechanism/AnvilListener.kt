@@ -77,7 +77,7 @@ object AnvilListener {
         }
     }
 
-    fun anvil(a: ItemStack, b: ItemStack?, player: Player, name: String?): Pair<ItemStack?, Int> {
+    fun anvil(a: ItemStack, b: ItemStack?, player: Player, name: String? = null): Pair<ItemStack?, Int> {
         val typeA = a.type
         val typeB = b?.type ?: Material.AIR
 
