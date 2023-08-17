@@ -3,7 +3,7 @@ package world.icebear03.splendidenchants.api.internal.nms
 import org.bukkit.entity.Player
 import taboolib.module.nms.MinecraftVersion
 import taboolib.module.nms.NMSItem
-import taboolib.platform.util.isAir
+import world.icebear03.splendidenchants.api.isNull
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
 abstract class NMS {
@@ -18,7 +18,7 @@ class NMSImpl : NMS() {
 
         fun adapt(item: Any, player: Player): Any {
             val bkItem = NMSItem.asBukkitCopy(item)
-            if (bkItem.isAir) return item
+            if (bkItem.isNull) return item
             return NMSItem.asNMSCopy(EnchantDisplayer.display(bkItem, player))
         }
 

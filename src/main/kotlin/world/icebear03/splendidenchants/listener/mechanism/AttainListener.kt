@@ -77,8 +77,6 @@ object AttainListener {
 
         val result = enchant(player, item, cost, bonus)
 
-        player.sendMessage(result.first.toString())
-
         event.enchantsToAdd.clear()
         event.enchantsToAdd.putAll(result.first)
 

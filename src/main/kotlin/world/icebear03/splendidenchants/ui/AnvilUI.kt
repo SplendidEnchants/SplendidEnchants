@@ -12,9 +12,9 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
-import taboolib.platform.util.isAir
 import world.icebear03.splendidenchants.api.fixedEnchants
 import world.icebear03.splendidenchants.api.internal.colorify
+import world.icebear03.splendidenchants.api.isNull
 import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.setSlots
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
@@ -43,8 +43,8 @@ object AnvilUI {
 
             val info = mutableMapOf<String, String>()
             var result: ItemStack? = ItemStack(Material.AIR)
-            if (a != null && b != null && !a.isAir && !b.isAir) {
-                val resultPair = AnvilListener.anvil(a, b, player)
+            if (!a.isNull && !b.isNull) {
+                val resultPair = AnvilListener.anvil(a!!, b!!, player)
                 result = resultPair.first
                 val cost = resultPair.second
 
@@ -52,21 +52,20 @@ object AnvilUI {
                 else if (result.isSimilar(a)) false
                 else true
 
-                info.putAll(
-                    if (canCombine) listOf("allowed" to "&a允许", "level" to "$cost", "reasons" to "无")
-                    else {
-                        val bugs = b.fixedEnchants.mapNotNull { (enchant, _) ->
-                            val check = enchant.limitations.checkAvailable(CheckType.ANVIL, a, player)
-                            if (!check.first) check.second
-                            else null
-                        }
-                        listOf(
-                            "allowed" to "&c不允许",
-                            "level" to "N/A",
-                            "reasons" to (bugs + "" + "其他可能:" + "拼合前后物品不变" + "经验值消耗小于等于0级").joinToString("||")
-                        )
+                if (canCombine) {
+                    info["allowed"] = "&a允许"
+                    info["level"] = "$cost"
+                    info["reasons"] = "无"
+                } else {
+                    val bugs = b.fixedEnchants.mapNotNull { (enchant, _) ->
+                        val check = enchant.limitations.checkAvailable(CheckType.ANVIL, a, player)
+                        if (!check.first) check.second
+                        else null
                     }
-                )
+                    info["allowed"] = "&c不允许"
+                    info["level"] = "N/A"
+                    info["reasons"] = "||" + (bugs + "" + "其他可能:" + "拼合前后物品&e不变" + "经验值消耗&e小于等于0级").joinToString("||")
+                }
             }
 
             listOf("a", "b", "result", "information").forEach {
@@ -92,26 +91,26 @@ object AnvilUI {
 
     @MenuComponent
     private val a = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) -> (args["a"] as ItemStack).takeIf { !it.isAir } ?: icon }
-        onClick { (_, _, _, event, args) -> open(event.clicker, null, args["b"] as ItemStack) }
+        onBuild { (_, _, _, _, icon, args) -> (args["a"] as ItemStack).takeIf { !it.isNull } ?: icon }
+        onClick { (_, _, _, event, args) -> open(event.clicker, null, args["b"] as? ItemStack) }
     }
 
     @MenuComponent
     private val b = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) -> (args["b"] as ItemStack).takeIf { !it.isAir } ?: icon }
-        onClick { (_, _, _, event, args) -> open(event.clicker, args["a"] as ItemStack, null) }
+        onBuild { (_, _, _, _, icon, args) -> (args["b"] as ItemStack).takeIf { !it.isNull } ?: icon }
+        onClick { (_, _, _, event, args) -> open(event.clicker, args["a"] as? ItemStack, null) }
     }
 
     @MenuComponent
     private val result = MenuFunctionBuilder {
-        onBuild { (_, _, _, _, icon, args) -> (args["result"] as ItemStack).takeIf { it.isAir } ?: icon }
+        onBuild { (_, _, _, _, icon, args) -> (args["result"] as ItemStack).takeIf { !it.isNull } ?: icon }
     }
 
     @MenuComponent
     private val information = MenuFunctionBuilder {
         onBuild { (_, _, _, _, icon, args) ->
             val tmp = args["info"] as Map<*, *>
-            val info = tmp.mapKeys { it.toString() }.mapValues { it.toString() }
+            val info = tmp.mapKeys { it.key.toString() }.mapValues { it.value.toString() }
             if (info.isEmpty()) icon.variables { listOf("-") }
             else icon.variables {
                 when (it) {

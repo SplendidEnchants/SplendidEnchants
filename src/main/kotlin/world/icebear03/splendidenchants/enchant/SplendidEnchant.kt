@@ -214,7 +214,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
         private fun modifiable(variable: String, item: ItemStack?): String {
             val pair = modifiable[variable]!!
-            return item?.let { it.itemMeta[pair.first, PersistentDataType.STRING] ?: pair.second } ?: variable
+            return item?.let { it.itemMeta["splendidenchant_" + pair.first, PersistentDataType.STRING] ?: pair.second } ?: variable
         }
 
         fun variables(

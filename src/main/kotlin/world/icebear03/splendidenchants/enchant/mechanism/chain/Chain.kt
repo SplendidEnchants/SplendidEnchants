@@ -61,6 +61,7 @@ class Chain(val listeners: Listeners, line: String) {
             ASSIGNMENT -> {
                 val variable = parts[0]
                 val expression = parts[1]
+                toPlayer?.sendMessage(expression)
                 val value = expression.calculate()
                 listeners.enchant.variable.modifyVariable(item, variable, value)
             }

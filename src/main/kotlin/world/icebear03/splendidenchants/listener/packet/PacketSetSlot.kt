@@ -5,7 +5,7 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.nms.MinecraftVersion
 import taboolib.module.nms.NMSItem
 import taboolib.module.nms.PacketSendEvent
-import taboolib.platform.util.isAir
+import world.icebear03.splendidenchants.api.isNull
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
 object PacketSetSlot {
@@ -20,7 +20,7 @@ object PacketSetSlot {
             }
             val origin = e.packet.read<Any>(field, false)!!
             val bkItem = NMSItem.asBukkitCopy(origin)
-            if (bkItem.isAir) return
+            if (bkItem.isNull) return
             val adapted = NMSItem.asNMSCopy(EnchantDisplayer.display(bkItem, e.player))
             e.packet.write(field, adapted)
         }

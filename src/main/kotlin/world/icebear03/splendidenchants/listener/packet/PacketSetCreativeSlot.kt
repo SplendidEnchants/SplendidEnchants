@@ -4,7 +4,7 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.nms.NMSItem
 import taboolib.module.nms.PacketReceiveEvent
-import taboolib.platform.util.isAir
+import world.icebear03.splendidenchants.api.isNull
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
 object PacketSetCreativeSlot {
@@ -14,7 +14,7 @@ object PacketSetCreativeSlot {
         if (e.packet.name == "PacketPlayInSetCreativeSlot") {
             val origin = e.packet.read<Any>("b", false)!!
             val bkItem = NMSItem.asBukkitCopy(origin)
-            if (bkItem.isAir) return
+            if (bkItem.isNull) return
             val adapted = NMSItem.asNMSCopy(EnchantDisplayer.undisplay(bkItem, e.player))
             e.packet.write("b", adapted)
         }

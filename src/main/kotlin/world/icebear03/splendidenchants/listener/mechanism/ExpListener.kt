@@ -32,28 +32,26 @@ object ExpListener {
         console().sendMessage("    Successfully load exp module")
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @SubscribeEvent(priority = EventPriority.MONITOR)
     fun onExp(event: PlayerExpChangeEvent) {
         if (!enable)
             return
 
         val player = event.player
-        val level = player.level //currentLevel
+        val level = player.level
         val attained = finalAttain(event.amount, player)
 
         val percent = player.exp
 
         val expNeedToUpgrade = modified(level)
         val exp = percent * expNeedToUpgrade
-        val newExp = exp + attained
+        var newExp = exp + attained
 
         event.amount = 0
 
         submit {
-            player.exp = if (newExp >= expNeedToUpgrade) {
-                player.level += 1
-                (newExp - expNeedToUpgrade) / modified(level + 1)
-            } else newExp / expNeedToUpgrade
+            while (newExp >= modified(player.level)) newExp -= modified(player.level++)
+            player.exp = newExp / modified(player.level)
         }
     }
 

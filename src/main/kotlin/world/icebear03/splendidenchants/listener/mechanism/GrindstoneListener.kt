@@ -41,7 +41,7 @@ object GrindstoneListener {
             blacklist = getString("blacklist_group", blacklist)!!
 
             privilege.clear()
-            AnvilListener.privilege.putAll(getStringList("privilege").map { it.split(":")[0] to it.split(":")[1] })
+            privilege.putAll(getStringList("privilege").map { it.split(":")[0] to it.split(":")[1] })
         }
 
         console().sendMessage("    Successfully load grindstone module")

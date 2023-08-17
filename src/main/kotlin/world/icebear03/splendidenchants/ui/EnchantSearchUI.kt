@@ -49,7 +49,7 @@ object EnchantSearchUI {
             load(
                 shape, templates, false,
                 "EnchantSearch:enchant", "EnchantSearch:filter_rarity", "EnchantSearch:filter_target",
-                "EnchantSearch:filter_group", "EnchantSearch:filter_string", "Previous", "Next"
+                "EnchantSearch:filter_group", "EnchantSearch:filter_string", "EnchantSearch:back", "Previous", "Next"
             )
             pages(shape, templates)
 
@@ -62,6 +62,7 @@ object EnchantSearchUI {
                     "filters" to EnchantFilter.generateLore(it, player)
                 )
             }
+            setSlots(shape, templates, "EnchantSearch:back")
         }
     }
 

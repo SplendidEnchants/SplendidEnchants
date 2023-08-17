@@ -6,6 +6,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.serverct.parrot.parrotx.function.textured
+import taboolib.platform.util.isAir
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
@@ -72,9 +73,12 @@ fun ItemStack.clearEts() {
 
 fun ItemStack.skull(skull: String?): ItemStack {
     skull ?: return this
+    if (isNull) return this
     if (itemMeta !is SkullMeta) return this
     return if (skull.length <= 20) modifyMeta<SkullMeta> { owner = skull }
     else textured(skull)
 }
+
+val ItemStack?.isNull get() = this?.isAir ?: true
 
 val ItemStack.isEnchantedBook get() = itemMeta is EnchantmentStorageMeta

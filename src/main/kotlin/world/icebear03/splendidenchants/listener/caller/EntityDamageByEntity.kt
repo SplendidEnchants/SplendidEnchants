@@ -1,10 +1,7 @@
 package world.icebear03.splendidenchants.listener.caller
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent
-import org.bukkit.entity.ArmorStand
-import org.bukkit.entity.LivingEntity
-import org.bukkit.entity.Projectile
-import org.bukkit.entity.Trident
+import org.bukkit.entity.*
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.inventory.ItemStack
@@ -59,6 +56,7 @@ object EntityDamageByEntity {
                 if (damager is Trident) damager.item
                 else projectileSourceItems[damager.uniqueId]
             else (attacker.mainHand() ?: return)
+
 
         weapon ?: return
 

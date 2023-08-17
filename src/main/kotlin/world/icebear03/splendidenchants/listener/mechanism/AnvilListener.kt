@@ -54,6 +54,7 @@ object AnvilListener {
     fun anvil(event: PrepareAnvilEvent) {
         val inv = event.inventory
         val player = event.viewers[0] as Player
+        event.result ?: return
 
         val a = inv.firstItem ?: return
         val b = inv.secondItem
@@ -71,6 +72,8 @@ object AnvilListener {
     fun complete(event: InventoryClickEvent) {
         val inv = event.inventory
         val type = event.slotType
+        val clicked = event.currentItem ?: return
+        if (clicked.isNull) return
         if (type == InventoryType.SlotType.RESULT && inv is AnvilInventory) {
             inv.firstItem = null
             inv.secondItem = null
@@ -86,13 +89,13 @@ object AnvilListener {
 
         name?.let {
             if (it.isNotBlank()) {
-                a.name = it
+                result.name = it
                 cost += renameCost
             }
         }
         val fixed = durabilityFixed(typeA, typeB)
         if (a.itemMeta is Damageable && fixed >= 0) {
-            a.damage = maxOf(0, a.damage - fixed)
+            result.damage = maxOf(0, result.damage - fixed)
             cost += repairCost
         }
 
@@ -109,7 +112,7 @@ object AnvilListener {
                 lv + 1
             } else return@forEach
             result.addEt(enchant, new)
-            cost += enchantCostPerLevel.calcToDouble("max_level" to enchant.maxLevel) * (new - old)
+            cost += enchantCostPerLevel.calcToDouble("max_level" to enchant.maxLevel) * (new - old.coerceAtLeast(0))
         }
 
         if (cost == 0.0 || result == a)

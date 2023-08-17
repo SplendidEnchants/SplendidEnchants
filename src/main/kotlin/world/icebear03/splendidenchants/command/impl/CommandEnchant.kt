@@ -7,12 +7,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.SimpleCommandBody
 import taboolib.common.platform.command.subCommand
-import taboolib.platform.util.isAir
 import taboolib.platform.util.onlinePlayers
-import world.icebear03.splendidenchants.api.addEt
-import world.icebear03.splendidenchants.api.display
-import world.icebear03.splendidenchants.api.removeEt
-import world.icebear03.splendidenchants.api.splendidEt
+import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.command.CommandHandler
 
 /**
@@ -42,14 +38,19 @@ object CommandEnchant : CommandExecutor {
 
                             receiver?.let {
                                 val item = receiver.inventory.itemInMainHand
-                                if (item.isAir) {
+                                if (item.isNull) {
                                     sender.sendLang("command.subCommands.enchant.empty")
                                     return@execute
                                 }
                                 val state = if (level == 0) "移除" else "添加"
                                 if (level == 0) item.removeEt(enchant)
                                 else item.addEt(enchant, level)
-                                sender.sendLang("command.subCommands.enchant.sender", "name" to receiver.name, "state" to state, "enchantment" to enchant.display(level))
+                                sender.sendLang(
+                                    "command.subCommands.enchant.sender",
+                                    "name" to receiver.name,
+                                    "state" to state,
+                                    "enchantment" to enchant.display(level)
+                                )
                                 receiver.sendLang("command.subCommands.enchant.receiver", "state" to state, "enchantment" to enchant.display(level))
                             } ?: sender.sendLang("command.subCommands.enchant.fail")
                         }

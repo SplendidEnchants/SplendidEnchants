@@ -35,7 +35,7 @@ class Limitations(
                     else true
 
                 PERMISSION -> (creature?.hasPermission(value) ?: true)
-                DISABLE_WORLD -> belonging.basicData.disableWorlds.contains(creature?.world?.name)
+                DISABLE_WORLD -> !belonging.basicData.disableWorlds.contains(creature?.world?.name)
                 TARGET, MAX_CAPABILITY, SLOT,
                 CONFLICT_ENCHANT, CONFLICT_GROUP,
                 DEPENDENCE_ENCHANT, DEPENDENCE_GROUP -> checkItem(type, item, value, slot)

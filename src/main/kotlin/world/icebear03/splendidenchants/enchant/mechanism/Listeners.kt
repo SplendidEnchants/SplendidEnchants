@@ -38,11 +38,12 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
         item: ItemStack,
     ) {
         if (!enchant.limitations.checkAvailable(CheckType.USE, item, entity).first) return
-        byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach { id ->
+        byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach listeners@{ id ->
             val holders = mutableMapOf<String, String>()
-            byId[id]!!.second.forEach { chain ->
+            byId[id]!!.second.forEach chains@{ chain ->
                 holders += enchant.variable.variables(item.etLevel(enchant), entity, item)
-                if (!chain.trigger(event, eventType, entity, item, holders)) return
+                entity.sendMessage(holders.toString())
+                if (!chain.trigger(event, eventType, entity, item, holders)) return@listeners
             }
         }
     }

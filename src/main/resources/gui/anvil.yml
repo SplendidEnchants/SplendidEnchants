@@ -30,7 +30,7 @@ template:
       - "&8| &7是否可以拼合: {allowed}"
       - "&8| &7经验等级消耗: &e{level}级"
       - "&8| &7不能拼合原因: "
-      - "   &7- {reasons}"
+      - "   &7{reasons}"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTFjNDEzYThkMjZkNDY1NDFmYmVhZTRkM2U4MzBiYzRmYjE3YWIwNDAzODZkMTJjYzQzMDE0ZGE4N2VkOGFhZiJ9fX0="

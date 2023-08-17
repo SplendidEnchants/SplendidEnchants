@@ -5,6 +5,6 @@ exp_per_level:
   15: 5*{level}-38
   30: 9*{level}-158
 
-privileges:
-  - "splendidenchants.privilege.exp_vip:{exp}+3"
-  - "splendidenchants.privilege.exp_svip:{exp}+6"
+privilege:
+  - "splendidenchants.privilege.exp_vip:{exp}+1"
+  - "splendidenchants.privilege.exp_svip:{exp}+2"

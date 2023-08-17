@@ -13,7 +13,16 @@ fun String.replace(holders: Map<String, Any>): String = replace(holders.toList()
 
 fun String.replace(vararg holders: Pair<String, Any>): String = replace(holders.toList())
 
-fun String.calculate(holders: List<Pair<String, Any>>): String = replace(holders).compileToJexl().eval().toString()
+fun String.calculate(holders: List<Pair<String, Any>>): String {
+    return replace(holders).run {
+        try {
+            compileToJexl().eval().toString()
+        } catch (ignored: Exception) {
+            this
+        }
+    }
+}
+
 fun String.calculate(holders: Map<String, Any>): String = calculate(holders.toList())
 fun String.calculate(vararg holders: Pair<String, Any>): String = calculate(holders.toList())
 fun String.calcToDouble(vararg holders: Pair<String, Any>): Double = calculate(*holders).toDouble()
