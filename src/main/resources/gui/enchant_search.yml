@@ -113,7 +113,7 @@ template:
         keyword: EnchantSearch:filter_string
   'E':
     material: PLAYER_HEAD
-    name: "{enchant_display}"
+    name: "{enchant_display_lore}"
     lore:
       - "&8| &7附魔: {enchant_display}"
       - "&8| &7等级: &e{level} / &c{max_level}"

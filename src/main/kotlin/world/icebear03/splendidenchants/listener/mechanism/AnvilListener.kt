@@ -2,10 +2,7 @@ package world.icebear03.splendidenchants.listener.mechanism
 
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
-import org.bukkit.inventory.AnvilInventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import taboolib.common.platform.event.EventPriority
@@ -54,7 +51,6 @@ object AnvilListener {
     fun anvil(event: PrepareAnvilEvent) {
         val inv = event.inventory
         val player = event.viewers[0] as Player
-        event.result ?: return
 
         val a = inv.firstItem ?: return
         val b = inv.secondItem
@@ -66,18 +62,7 @@ object AnvilListener {
         result.first ?: return
         event.result = result.first
         inv.repairCost = result.second
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    fun complete(event: InventoryClickEvent) {
-        val inv = event.inventory
-        val type = event.slotType
-        val clicked = event.currentItem ?: return
-        if (clicked.isNull) return
-        if (type == InventoryType.SlotType.RESULT && inv is AnvilInventory) {
-            inv.firstItem = null
-            inv.secondItem = null
-        }
+        inv.maximumRepairCost = 100
     }
 
     fun anvil(a: ItemStack, b: ItemStack?, player: Player, name: String? = null): Pair<ItemStack?, Int> {

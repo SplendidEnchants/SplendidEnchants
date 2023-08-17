@@ -42,7 +42,6 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
             val holders = mutableMapOf<String, String>()
             byId[id]!!.second.forEach chains@{ chain ->
                 holders += enchant.variable.variables(item.etLevel(enchant), entity, item)
-                entity.sendMessage(holders.toString())
                 if (!chain.trigger(event, eventType, entity, item, holders)) return@listeners
             }
         }

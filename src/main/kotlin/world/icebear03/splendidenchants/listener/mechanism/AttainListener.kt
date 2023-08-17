@@ -65,7 +65,7 @@ object AttainListener {
         shelfAmount[event.enchantBlock.location.serialized] = event.enchantmentBonus.coerceAtMost(16)
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @SubscribeEvent(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun enchant(event: EnchantItemEvent) {
         if (vanillaTable)
             return
@@ -76,6 +76,11 @@ object AttainListener {
         val bonus = shelfAmount[event.enchantBlock.location.serialized] ?: 1
 
         val result = enchant(player, item, cost, bonus)
+
+        result.first.ifEmpty {
+            event.isCancelled = true
+            return
+        }
 
         event.enchantsToAdd.clear()
         event.enchantsToAdd.putAll(result.first)
@@ -97,6 +102,7 @@ object AttainListener {
     ): Pair<Map<SplendidEnchant, Int>, ItemStack> {
         val enchantsToAdd = mutableMapOf<SplendidEnchant, Int>()
         val result = item.clone()
+        if (item.type == Material.BOOK) result.type = Material.ENCHANTED_BOOK
 
         val amount = enchantAmount(player, cost)
         val pool = result.etsAvailable(checkType, player)

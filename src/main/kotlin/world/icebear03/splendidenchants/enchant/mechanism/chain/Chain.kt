@@ -4,6 +4,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.function.submit
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 import world.icebear03.splendidenchants.enchant.mechanism.EventType.*
@@ -69,7 +70,7 @@ class Chain(val listeners: Listeners, line: String) {
             }
 
             OPERATION -> when (parts[0]) {
-                "plant" -> Plant.plant(toPlayer ?: return true, parts[1].toInt(), parts[2])
+                "plant" -> submit submit@{ Plant.plant(toPlayer ?: return@submit, parts[1].toInt(), parts[2]) }
                 "println" -> Println.println(entity, parts.joinToString(":"))
                 else -> {}
             }

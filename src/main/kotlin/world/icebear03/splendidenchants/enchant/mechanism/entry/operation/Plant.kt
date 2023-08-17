@@ -6,6 +6,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.platform.util.takeItem
 import world.icebear03.splendidenchants.api.blockLookingAt
+import world.icebear03.splendidenchants.api.internal.PermissionChecker
 
 object Plant {
 
@@ -41,9 +42,11 @@ object Plant {
 
         for (x in down until up + 1) {
             for (z in down until up + 1) {
-                val current = loc.clone().add(x.toDouble(), 0.0, z.toDouble()).toHighestLocation()
+                val current = loc.clone().add(x.toDouble(), 0.0, z.toDouble())
                 if (current.block.type != Material.FARMLAND) continue
                 val planted = current.clone().add(0.0, 1.0, 0.0).block
+                if (!PermissionChecker.hasBlockPermission(player, planted))
+                    continue
                 if (planted.type != Material.AIR) continue
                 planted.type = seedsMap[type]!!
                 val data = planted.blockData as Ageable

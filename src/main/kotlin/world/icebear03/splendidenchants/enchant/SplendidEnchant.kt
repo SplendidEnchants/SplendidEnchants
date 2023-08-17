@@ -18,10 +18,10 @@ import taboolib.module.configuration.util.asMap
 import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.*
+import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.internal.exception.missingConfig
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
-import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import world.icebear03.splendidenchants.enchant.data.rarity
 import world.icebear03.splendidenchants.enchant.data.target
@@ -80,9 +80,9 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     override fun isCursed(): Boolean = alternativeData.isCursed
 
-    override fun conflictsWith(enchant: Enchantment): Boolean = false
+    override fun conflictsWith(enchant: Enchantment) = false
 
-    override fun canEnchantItem(item: ItemStack): Boolean = limitations.checkAvailable(CheckType.ANVIL, item).first
+    override fun canEnchantItem(item: ItemStack) = true
 
     override fun displayName(level: Int): Component = Component.text(basicData.name)
 
@@ -112,6 +112,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         }
 
         fun load(): String? {
+            config = Configuration.loadFromFile(file)
             basicData = BasicData(config.getConfigurationSection("basic") ?: return "basic")
             rarity = rarity(config.getString("rarity")) ?: return "rarity"
             targets = config.getStringList("targets").mapNotNull { target(it) }
@@ -132,10 +133,13 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         val specificDescription = displayerConfig.getString("description.specific", generalDescription)!!
 
         //生成本附魔在当前状态下的显示，在非合并模式下
-        fun display(level: Int?, player: Player?, item: ItemStack?): String {
+        fun display(level: Int?, player: Player?, item: ItemStack?) = display(holders(level, player, item))
+
+        //生成本附魔在当前状态下的显示，在非合并模式下
+        fun display(holders: Map<String, String>): String {
             return (previous.replace("{default_previous}", EnchantDisplayer.defaultPrevious)
                     + subsequent.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent)
-                    ).replace(holders(level, player, item))
+                    ).replace(holders).colorify()
         }
 
         //生成本附魔在当前状态下的显示，在合并模式下
@@ -148,8 +152,8 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             val suffix = index?.let { "_$it" } ?: ""
             val holders = holders(level, player, item)
             return mapOf(
-                "previous$suffix" to previous.replace("{default_previous}", EnchantDisplayer.defaultPrevious).replace(holders),
-                "subsequent$suffix" to subsequent.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent).replace(holders)
+                "previous$suffix" to previous.replace("{default_previous}", EnchantDisplayer.defaultPrevious).replace(holders).colorify(),
+                "subsequent$suffix" to subsequent.replace("{default_subsequent}", EnchantDisplayer.defaultSubsequent).replace(holders).colorify()
             )
         }
 
@@ -168,10 +172,11 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             tmp["roman_level_with_a_blank"] = lv.roman(maxLevel == 1, true)
             tmp["max_level"] = "${basicData.maxLevel}"
             tmp["rarity"] = rarity.name
-            tmp["description"] = specificDescription.replace(tmp)
             tmp["rarity_display"] = rarity.display()
             tmp["enchant_display"] = display()
             tmp["enchant_display_roman"] = display(level)
+            tmp["enchant_display_lore"] = displayer.display(tmp)
+            tmp["description"] = specificDescription.replace(tmp).colorify()
             return tmp
         }
     }
@@ -208,13 +213,13 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             }
         }
 
-        private fun leveled(variable: String, level: Int?): String = level?.let { leveled[variable]!!.calculate("level" to "$level") } ?: variable
+        private fun leveled(variable: String, level: Int?): String = level?.let { leveled[variable]!!.calculate("level" to "$level") } ?: "?"
 
-        private fun playerRelated(variable: String, player: Player?): String = player?.let { variable.replacePlaceholder(player) } ?: variable
+        private fun playerRelated(variable: String, player: Player?): String = player?.let { playerRelated[variable]!!.replacePlaceholder(player) } ?: "?"
 
         private fun modifiable(variable: String, item: ItemStack?): String {
             val pair = modifiable[variable]!!
-            return item?.let { it.itemMeta["splendidenchant_" + pair.first, PersistentDataType.STRING] ?: pair.second } ?: variable
+            return item?.let { it.itemMeta["splendidenchant_" + pair.first, PersistentDataType.STRING] ?: pair.second } ?: "?"
         }
 
         fun variables(

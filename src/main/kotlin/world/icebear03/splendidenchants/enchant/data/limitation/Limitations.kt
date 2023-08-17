@@ -1,5 +1,6 @@
 package world.icebear03.splendidenchants.enchant.data.limitation
 
+import org.bukkit.Material
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
@@ -50,12 +51,12 @@ class Limitations(
         val enchants = item.fixedEnchants
         return when (type) {
             SLOT -> itemType.belongedTargets.any { it.activeSlots.contains(slot) }
-            TARGET -> belonging.targets.any { itemType.isIn(it) }
+            TARGET -> belonging.targets.any { itemType.isIn(it) } || itemType == Material.BOOK || itemType == Material.ENCHANTED_BOOK
             MAX_CAPABILITY -> itemType.capability > enchants.size
             DEPENDENCE_ENCHANT -> return enchants.containsKey(splendidEt(value))
             CONFLICT_ENCHANT -> return !enchants.containsKey(splendidEt(value))
-            DEPENDENCE_GROUP -> enchants.any { (enchant, _) -> enchant.isIn(value) }
-            CONFLICT_GROUP -> enchants.count { (enchant, _) -> enchant.isIn(value) } < (group(value)?.maxCoexist ?: 10000)
+            DEPENDENCE_GROUP -> enchants.any { (enchant, _) -> enchant.isIn(value) && enchant.key != belonging.key }
+            CONFLICT_GROUP -> enchants.count { (enchant, _) -> enchant.isIn(value) && enchant.key != belonging.key } < (group(value)?.maxCoexist ?: 10000)
             else -> true
         }
     }
