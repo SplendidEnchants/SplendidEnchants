@@ -26,4 +26,5 @@ fun String.calculate(holders: List<Pair<String, Any>>): String {
 fun String.calculate(holders: Map<String, Any>): String = calculate(holders.toList())
 fun String.calculate(vararg holders: Pair<String, Any>): String = calculate(holders.toList())
 fun String.calcToDouble(vararg holders: Pair<String, Any>): Double = calculate(*holders).toDouble()
+fun String.calcToBoolean(vararg holders: Pair<String, Any>): Boolean = calculate(*holders).toBoolean()
 fun String.calcToInt(vararg holders: Pair<String, Any>): Int = calcToDouble(*holders).roundToInt()

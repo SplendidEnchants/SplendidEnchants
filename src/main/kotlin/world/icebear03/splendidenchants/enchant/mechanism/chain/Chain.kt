@@ -4,11 +4,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
-import taboolib.module.kether.compileToJexl
-import world.icebear03.splendidenchants.api.addCd
-import world.icebear03.splendidenchants.api.calculate
-import world.icebear03.splendidenchants.api.checkCd
-import world.icebear03.splendidenchants.api.replace
+import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 import world.icebear03.splendidenchants.enchant.mechanism.EventType.*
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
@@ -53,15 +49,11 @@ class Chain(val listeners: Listeners, line: String) {
                 entity.addCd(key)
             }
 
-            CONDITION -> {
-                //TODO FIXME
-                return variabled.compileToJexl().eval() as Boolean
-            }
+            CONDITION -> return variabled.calcToBoolean()
 
             ASSIGNMENT -> {
                 val variable = parts[0]
                 val expression = parts[1]
-                toPlayer?.sendMessage(expression)
                 val value = expression.calculate()
                 listeners.enchant.variable.modifyVariable(item, variable, value)
             }

@@ -7,6 +7,7 @@ import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getDataFolder
 import taboolib.library.reflex.Reflex.Companion.getProperty
 import taboolib.library.reflex.Reflex.Companion.setProperty
+import world.icebear03.splendidenchants.Config
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.api.internal.exception.missingConfig
 import world.icebear03.splendidenchants.command.CommandHandler
@@ -42,7 +43,8 @@ object EnchantLoader {
         Enchantment::class.java.setProperty("acceptingNew", value = true, isStatic = true)
 
         //输出所有附魔的文件
-        releaseEnchantFiles()
+        if (Config.config.getBoolean("auto_release", true))
+            releaseEnchantFiles()
         val directory = File(getDataFolder(), "enchants/")
 
         //记录重载时加载过的附魔

@@ -54,6 +54,9 @@ object CommandHandler : CommandHandler {
     @CommandBody(permission = "splendidenchants.menu")
     val menu = CommandMenu.command
 
+    @CommandBody(permission = "splendidenchants.calculate")
+    val calculate = CommandCalculate.command
+
     @CommandBody(permission = "splendidenchants.reload")
     val reload = CommandReload.command
 }

@@ -5,3 +5,6 @@ use_mini_message: false
 
 #默认的品质
 default_rarity: common
+
+#自动输出所有内置的附魔
+auto_release: true
