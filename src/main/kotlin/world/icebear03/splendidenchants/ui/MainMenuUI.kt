@@ -11,6 +11,8 @@ import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.load
+import world.icebear03.splendidenchants.ui.internal.UIType
+import world.icebear03.splendidenchants.ui.internal.record
 
 @MenuComponent("Menu")
 object MainMenuUI {
@@ -26,12 +28,13 @@ object MainMenuUI {
     }
 
     fun open(player: Player) {
+        player.record(UIType.MAIN_MENU)
         player.openMenu<Basic>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             map(*shape.array)
 
-            load(shape, templates, true)
+            load(shape, templates, true, player)
         }
     }
 

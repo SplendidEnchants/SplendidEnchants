@@ -2,6 +2,7 @@ package world.icebear03.splendidenchants
 
 import com.mcstarrysky.starrysky.i18n.I18n
 import org.serverct.parrot.parrotx.mechanism.Reloadables
+import org.serverct.parrot.parrotx.ui.registry.MenuFunctions
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.platform.util.onlinePlayers
@@ -15,6 +16,7 @@ import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.listener.mechanism.*
+import world.icebear03.splendidenchants.ui.internal.back
 import kotlin.system.measureTimeMillis
 
 object SplendidEnchants : Plugin() {
@@ -61,6 +63,8 @@ object SplendidEnchants : Plugin() {
                 CooldownData.load()
 
                 console().sendMessage("|- Loading GUIs...")
+                MenuFunctions.unregister("Back")
+                MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
             }.onFailure {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
@@ -104,6 +108,8 @@ object SplendidEnchants : Plugin() {
                 CooldownData.load()
 
                 console().sendMessage("|- Reloading GUIs...")
+                MenuFunctions.unregister("Back")
+                MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
             }
 

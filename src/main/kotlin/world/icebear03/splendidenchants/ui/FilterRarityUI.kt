@@ -21,6 +21,8 @@ import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.rarities
 import world.icebear03.splendidenchants.enchant.data.rarity
+import world.icebear03.splendidenchants.ui.internal.UIType
+import world.icebear03.splendidenchants.ui.internal.record
 
 
 @MenuComponent("FilterRarity")
@@ -37,6 +39,7 @@ object FilterRarityUI {
     }
 
     fun open(player: Player) {
+        player.record(UIType.FILTER_RARITY)
         player.openMenu<Linked<Rarity>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
@@ -44,7 +47,7 @@ object FilterRarityUI {
             slots(slots)
             elements { rarities.values.toList() }
 
-            load(shape, templates, true, "FilterRarity:filter", "Previous", "Next")
+            load(shape, templates, true, player, "FilterRarity:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterRarity:filter")
@@ -111,7 +114,4 @@ object FilterRarityUI {
             open(player)
         }
     }
-
-    @MenuComponent
-    private val back = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> EnchantSearchUI.open(event.clicker) } }
 }

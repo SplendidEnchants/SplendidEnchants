@@ -1,0 +1,110 @@
+package world.icebear03.splendidenchants.ui.internal
+
+import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.inventory.ItemStack
+import org.serverct.parrot.parrotx.function.variable
+import org.serverct.parrot.parrotx.ui.MenuComponent
+import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
+import taboolib.common.platform.event.SubscribeEvent
+import world.icebear03.splendidenchants.Config
+import world.icebear03.splendidenchants.api.display
+import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.ui.*
+import java.util.*
+
+val recorders = mutableMapOf<UUID, MutableList<Pair<UIType, Map<String, Any?>>>>()
+
+fun Player.record(type: UIType, vararg params: Pair<String, Any?>) {
+    val recorder = recorders.getOrPut(uniqueId) { mutableListOf() }
+    if (recorder.lastOrNull()?.first == type && type != UIType.ENCHANT_INFO) recorder[recorder.size - 1] = type to params.toMap()
+    else recorder += type to params.toMap()
+}
+
+fun Player.last(): String {
+    val recorder = recorders[uniqueId]!!
+    val size = recorder.size
+    if (size == 0) return "N/A"
+    if (size == 1) return forceLast(recorder[0].first)
+    val last = recorder[size - 2]
+    val type = last.first
+    val params = last.second
+    return "${type.display} " + when (type) {
+        UIType.ENCHANT_INFO -> (params["enchant"] as SplendidEnchant).display(params["level"] as Int)
+        else -> ""
+    }
+}
+
+fun Player.forceLast(type: UIType): String {
+    return when (type) {
+        UIType.ANVIL -> UIType.MAIN_MENU
+        UIType.ENCHANT_INFO -> UIType.ENCHANT_SEARCH
+        UIType.ENCHANT_SEARCH -> UIType.MAIN_MENU
+        UIType.FILTER_GROUP -> UIType.ENCHANT_SEARCH
+        UIType.FILTER_RARITY -> UIType.ENCHANT_SEARCH
+        UIType.FILTER_TARGET -> UIType.ENCHANT_SEARCH
+        UIType.ITEM_CHECK -> null
+        UIType.MAIN_MENU -> UIType.MAIN_MENU
+        UIType.FAVORITE -> UIType.MAIN_MENU
+    }?.display ?: "N/A"
+}
+
+fun Player.forceBack(type: UIType) {
+    when (type) {
+        UIType.ANVIL -> MainMenuUI.open(this)
+        UIType.ENCHANT_INFO -> EnchantSearchUI.open(this)
+        UIType.ENCHANT_SEARCH -> MainMenuUI.open(this)
+        UIType.FILTER_GROUP -> EnchantSearchUI.open(this)
+        UIType.FILTER_RARITY -> EnchantSearchUI.open(this)
+        UIType.FILTER_TARGET -> EnchantSearchUI.open(this)
+        UIType.ITEM_CHECK -> MainMenuUI.open(this)
+        UIType.MAIN_MENU -> closeInventory()
+        UIType.FAVORITE -> MainMenuUI.open(this)
+    }
+}
+
+fun Player.back() {
+    val recorder = recorders[uniqueId]!!
+    val size = recorder.size
+    if (size == 1) {
+        forceBack(recorder[0].first)
+        return
+    }
+    println(recorder)
+    val last = recorder[size - 2]
+    recorder.removeAt(size - 1)
+    val params = last.second
+    when (last.first) {
+        UIType.ANVIL -> AnvilUI.open(this, params["a"] as? ItemStack, params["b"] as? ItemStack)
+        UIType.ENCHANT_INFO -> EnchantInfoUI.open(
+            this,
+            params["enchant"] as SplendidEnchant,
+            params["level"] as Int,
+            params["checked"] as ItemStack,
+            params["category"].toString()
+        )
+
+        UIType.ENCHANT_SEARCH -> EnchantSearchUI.open(this)
+        UIType.FILTER_GROUP -> FilterGroupUI.open(this)
+        UIType.FILTER_RARITY -> FilterRarityUI.open(this)
+        UIType.FILTER_TARGET -> FilterTargetUI.open(this)
+        UIType.ITEM_CHECK -> ItemCheckUI.open(this, params["item"] as? ItemStack)
+        UIType.MAIN_MENU -> performCommand(Config.config.getString("main_menu_back", "sl")!!).also { recorders.remove(uniqueId) }
+        UIType.FAVORITE -> {}
+    }
+}
+
+@MenuComponent
+val back = MenuFunctionBuilder {
+    onBuild { (_, _, _, _, icon, args) -> icon.variable("last", listOf((args["player"] as Player).last())) }
+    onClick { (_, _, _, event, _) -> event.clicker.back() }
+}
+
+object Recorder {
+
+    @SubscribeEvent
+    fun close(event: InventoryCloseEvent) {
+        if (event.reason != InventoryCloseEvent.Reason.OPEN_NEW)
+            recorders.remove(event.player.uniqueId)
+    }
+}

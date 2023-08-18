@@ -21,6 +21,8 @@ import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.target
 import world.icebear03.splendidenchants.enchant.data.targets
+import world.icebear03.splendidenchants.ui.internal.UIType
+import world.icebear03.splendidenchants.ui.internal.record
 
 
 @MenuComponent("FilterTarget")
@@ -37,6 +39,7 @@ object FilterTargetUI {
     }
 
     fun open(player: Player) {
+        player.record(UIType.FILTER_TARGET)
         player.openMenu<Linked<Target>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
@@ -44,7 +47,7 @@ object FilterTargetUI {
             slots(slots)
             elements { targets.values.filter { it.id != "unknown" }.toList() }
 
-            load(shape, templates, true, "FilterTarget:filter", "Previous", "Next")
+            load(shape, templates, true, player, "FilterTarget:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterTarget:filter")
@@ -111,7 +114,4 @@ object FilterTargetUI {
             open(player)
         }
     }
-
-    @MenuComponent
-    private val back = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> EnchantSearchUI.open(event.clicker) } }
 }

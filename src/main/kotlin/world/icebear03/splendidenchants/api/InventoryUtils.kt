@@ -1,5 +1,6 @@
 package world.icebear03.splendidenchants.api
 
+import org.bukkit.entity.Player
 import org.serverct.parrot.parrotx.ui.config.advance.ShapeConfiguration
 import org.serverct.parrot.parrotx.ui.config.advance.TemplateConfiguration
 import taboolib.module.ui.type.Basic
@@ -10,7 +11,8 @@ fun Basic.setSlots(
     templates: TemplateConfiguration,
     key: String,
     elements: List<Any?> = listOf(),
-    vararg args: Pair<String, Any>
+    vararg args: Pair<String, Any>,
+    click: Boolean = true
 ) {
     var tot = 0
     shape[key].forEach { slot ->
@@ -23,7 +25,7 @@ fun Basic.setSlots(
             }
         }
         set(slot, templates(key, slot, 0, false, "Fallback") { this += map })
-        onClick(slot) { templates[it.rawSlot]?.handle(this, it) { this += map } }
+        if (click) onClick(slot) { templates[it.rawSlot]?.handle(this, it) { this += map } }
         tot++
     }
 }
@@ -32,21 +34,26 @@ fun Basic.load(
     shape: ShapeConfiguration,
     templates: TemplateConfiguration,
     click: Boolean,
+    player: Player,
     vararg ignored: String
 ) {
     onBuild { _, inventory ->
-        shape.all(*ignored) { slot, index, item, _ ->
+        shape.all(*ignored, "Back") { slot, index, item, _ ->
             inventory.setItem(slot, item(slot, index))
         }
     }
 
-    if (click)
+    if (shape["Back", true].isNotEmpty())
+        setSlots(shape, templates, "Back", listOf(), "player" to player, click = !click)
+
+    if (click) {
         onClick {
             it.isCancelled = true
             if (it.rawSlot in shape) {
-                templates[it.rawSlot]?.handle(this, it)
+                templates[it.rawSlot]?.handle(this, it, "player" to player)
             }
         }
+    }
 }
 
 fun <T> Linked<T>.pages(

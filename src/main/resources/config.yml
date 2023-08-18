@@ -8,3 +8,6 @@ default_rarity: common
 
 #自动输出所有内置的附魔
 auto_release: true
+
+#若您为附魔主菜单设置了back按钮，这是玩家点击按钮时执行的指令
+main_menu_back: sl

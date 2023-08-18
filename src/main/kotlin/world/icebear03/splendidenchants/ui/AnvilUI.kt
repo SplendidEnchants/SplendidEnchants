@@ -19,6 +19,8 @@ import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.setSlots
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.listener.mechanism.AnvilListener
+import world.icebear03.splendidenchants.ui.internal.UIType
+import world.icebear03.splendidenchants.ui.internal.record
 
 @MenuComponent("Anvil")
 object AnvilUI {
@@ -34,12 +36,13 @@ object AnvilUI {
     }
 
     fun open(player: Player, a: ItemStack? = null, b: ItemStack? = null) {
+        player.record(UIType.ANVIL, "a" to a, "b" to b)
         player.openMenu<Basic>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             map(*shape.array)
 
-            load(shape, templates, false, "Anvil:a", "Anvil:b", "Anvil:result", "Anvil:information")
+            load(shape, templates, false, player, "Anvil:a", "Anvil:b", "Anvil:result", "Anvil:information")
 
             val info = mutableMapOf<String, String>()
             var result: ItemStack? = ItemStack(Material.AIR)

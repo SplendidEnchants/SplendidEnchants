@@ -17,6 +17,8 @@ import taboolib.module.ui.type.Linked
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.ui.internal.UIType
+import world.icebear03.splendidenchants.ui.internal.record
 
 @MenuComponent("ItemCheck")
 object ItemCheckUI {
@@ -32,6 +34,7 @@ object ItemCheckUI {
     }
 
     fun open(player: Player, item: ItemStack? = null) {
+        player.record(UIType.ITEM_CHECK, "item" to item)
         player.openMenu<Linked<Pair<SplendidEnchant, Int>>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
@@ -39,7 +42,7 @@ object ItemCheckUI {
             slots(slots)
             elements { item.fixedEnchants.toList() }
 
-            load(shape, templates, false, "ItemCheck:enchant", "ItemCheck:item", "Previous", "Next")
+            load(shape, templates, false, player, "ItemCheck:enchant", "ItemCheck:item", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("ItemCheck:enchant")
@@ -80,7 +83,4 @@ object ItemCheckUI {
         onBuild { (_, _, _, _, icon, args) -> args["item"] as? ItemStack ?: icon }
         onClick { (_, _, _, event, _) -> open(event.clicker, null) }
     }
-
-    @MenuComponent
-    private val back = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> MainMenuUI.open(event.clicker) } }
 }

@@ -4,6 +4,8 @@ package world.icebear03.splendidenchants.ui
 
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.persistence.PersistentDataType
 import org.serverct.parrot.parrotx.function.variable
 import org.serverct.parrot.parrotx.function.variables
 import org.serverct.parrot.parrotx.mechanism.Reloadable
@@ -15,14 +17,14 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
+import taboolib.platform.util.modifyMeta
 import taboolib.platform.util.nextChat
+import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.colorify
-import world.icebear03.splendidenchants.api.load
-import world.icebear03.splendidenchants.api.pages
-import world.icebear03.splendidenchants.api.setSlots
-import world.icebear03.splendidenchants.api.skull
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.ui.internal.UIType
+import world.icebear03.splendidenchants.ui.internal.record
 import kotlin.collections.set
 
 @MenuComponent("EnchantSearch")
@@ -39,6 +41,7 @@ object EnchantSearchUI {
     }
 
     fun open(player: Player) {
+        player.record(UIType.ENCHANT_SEARCH)
         player.openMenu<Linked<SplendidEnchant>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
@@ -47,9 +50,9 @@ object EnchantSearchUI {
             elements { EnchantFilter.filter(player) }
 
             load(
-                shape, templates, false,
+                shape, templates, true, player,
                 "EnchantSearch:enchant", "EnchantSearch:filter_rarity", "EnchantSearch:filter_target",
-                "EnchantSearch:filter_group", "EnchantSearch:filter_string", "EnchantSearch:back", "Previous", "Next"
+                "EnchantSearch:filter_group", "EnchantSearch:filter_string", "Previous", "Next"
             )
             pages(shape, templates)
 
@@ -59,10 +62,9 @@ object EnchantSearchUI {
             EnchantFilter.FilterType.entries.forEach {
                 setSlots(
                     shape, templates, "EnchantSearch:filter_${it.toString().lowercase()}", listOf(),
-                    "filters" to EnchantFilter.generateLore(it, player)
+                    "filters" to EnchantFilter.generateLore(it, player), click = false
                 )
             }
-            setSlots(shape, templates, "EnchantSearch:back")
         }
     }
 
@@ -71,8 +73,13 @@ object EnchantSearchUI {
         onBuild { (_, _, _, _, icon, args) ->
             val enchant = args["enchant"] as SplendidEnchant
             val holders = enchant.displayer.holders(enchant.maxLevel)
-            icon.variables { variable -> listOf(holders[variable] ?: "") }
+            icon.modifyMeta<ItemMeta> { this["enchant", PersistentDataType.STRING] = enchant.basicData.id }
+                .variables { variable -> listOf(holders[variable] ?: "") }
                 .skull(enchant.rarity.skull)
+        }
+        onClick { (_, _, _, event, _) ->
+            val id = event.currentItem?.itemMeta?.get("enchant", PersistentDataType.STRING) ?: return@onClick
+            EnchantInfoUI.open(event.clicker, splendidEt(id)!!)
         }
     }
 
@@ -147,7 +154,4 @@ object EnchantSearchUI {
             }
         }
     }
-
-    @MenuComponent
-    private val back = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> MainMenuUI.open(event.clicker) } }
 }
