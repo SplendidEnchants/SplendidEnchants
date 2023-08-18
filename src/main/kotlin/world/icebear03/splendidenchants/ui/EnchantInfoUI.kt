@@ -188,7 +188,7 @@ object EnchantInfoUI {
 
         onClick { (_, _, _, event, args) ->
             val player = event.clicker
-            val element = args["element"].toString() ?: return@onClick
+            val element = args["element"].toString()
             val parts = element.split(":")
             when (parts[0]) {
                 "group" -> {

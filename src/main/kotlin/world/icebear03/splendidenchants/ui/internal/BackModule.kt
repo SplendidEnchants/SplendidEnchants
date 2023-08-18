@@ -44,7 +44,7 @@ fun Player.last(): String {
     }
 }
 
-fun Player.forceLast(type: UIType): String {
+fun forceLast(type: UIType): String {
     return when (type) {
         UIType.ANVIL -> UIType.MAIN_MENU
         UIType.ENCHANT_INFO -> UIType.ENCHANT_SEARCH
