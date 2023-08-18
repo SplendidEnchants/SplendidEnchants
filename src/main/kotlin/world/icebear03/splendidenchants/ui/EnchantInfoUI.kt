@@ -5,9 +5,9 @@ package world.icebear03.splendidenchants.ui
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType.*
+import org.bukkit.inventory.EquipmentSlot.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
-import org.serverct.parrot.parrotx.function.variable
 import org.serverct.parrot.parrotx.function.variables
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
@@ -25,6 +25,7 @@ import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.data.group
 import world.icebear03.splendidenchants.enchant.data.groups
 import world.icebear03.splendidenchants.enchant.data.isIn
+import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.data.limitation.LimitType
 import world.icebear03.splendidenchants.ui.internal.UIType
 import world.icebear03.splendidenchants.ui.internal.record
@@ -60,7 +61,11 @@ object EnchantInfoUI {
         category: String = "conflicts"
     ) {
         player.record(UIType.ENCHANT_INFO, "enchant" to enchant, "level" to level, "checked" to checked, "category" to category)
-        player.openMenu<Linked<String>>(config.title().colorify()) {
+        player.openMenu<Linked<String>>(
+            config.title()
+                .replace("[enchant_display_roman]", enchant.display(level))
+                .colorify()
+        ) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["EnchantInfo:element"].toList()
@@ -111,6 +116,20 @@ object EnchantInfoUI {
             listOf("conflicts", "dependencies", "related").forEach {
                 setSlots(shape, templates, "EnchantInfo:$it", listOf(), *params.clone().also { p -> p[4] = "category" to it })
             }
+            setSlots(shape, templates, "EnchantInfo:available", listOf(), *params)
+            setSlots(shape, templates, "EnchantInfo:basic", listOf(), *params)
+            setSlots(shape, templates, "EnchantInfo:limitations", listOf(), *params)
+            setSlots(shape, templates, "EnchantInfo:other", listOf(), *params)
+            setSlots(shape, templates, "EnchantInfo:favorite", listOf(), *params)
+            setSlots(shape, templates, "EnchantInfo:level", listOf(), *params)
+
+            onClick { event ->
+                event.isCancelled = true
+                if (event.rawSlot !in shape) {
+                    val item = event.currentItem ?: return@onClick
+                    open(player, enchant, level, item, category)
+                }
+            }
         }
     }
 
@@ -128,9 +147,16 @@ object EnchantInfoUI {
         onBuild { (_, _, _, _, icon, args) ->
             val level = args["level"] as Int
             val enchant = args["enchant"] as SplendidEnchant
-            icon.variable("params", enchant.variable.leveled.map { (variable, expression) ->
-                "&b$variable &7> " + expression.calculate("level" to level)
-            })
+            icon.variables {
+                when (it) {
+                    "params" -> enchant.variable.leveled.map { (variable, expression) ->
+                        "&b$variable &7> " + expression.calculate("level" to level)
+                    }
+
+                    "roman" -> listOf(level.roman())
+                    else -> listOf()
+                }
+            }
         }
         onClick { (_, _, _, event, args) ->
             var level = args["level"] as Int
@@ -142,6 +168,118 @@ object EnchantInfoUI {
                 else -> level
             }
             open(event.clicker, args.toMutableMap().also { it["level"] = level })
+        }
+    }
+
+    @MenuComponent
+    private val basic = MenuFunctionBuilder {
+        onBuild { (_, _, _, _, icon, args) ->
+            val enchant = args["enchant"] as SplendidEnchant
+            val holders = enchant.displayer.holders(enchant.maxLevel)
+            icon.variables { variable -> listOf(holders[variable] ?: "") }
+                .skull(enchant.rarity.skull)
+        }
+    }
+
+    @MenuComponent
+    private val limitations = MenuFunctionBuilder {
+        onBuild { (_, _, _, _, icon, args) ->
+            val enchant = args["enchant"] as SplendidEnchant
+            val player = args["player"] as Player
+            val limits = enchant.limitations.limitations
+            val conflicts = limits.filter { it.first.toString().contains("CONFLICT") }.ifEmpty { listOf("" to "无") }.joinToString("; ") { it.second }
+            val dependencies = limits.filter { it.first.toString().contains("DEPENDENCE") }.ifEmpty { listOf("" to "无") }.joinToString("; ") { it.second }
+            val perms = limits.filter { it.first == LimitType.PERMISSION }.map { it.second }
+            val permission = if (perms.none { !player.hasPermission(it) }) "&a✓" else "&c✗"
+            val disableWorlds = enchant.basicData.disableWorlds.ifEmpty { listOf("无") }
+            val activeSlots = enchant.targets.map { it.activeSlots }.flatten().toSet().joinToString("; ") {
+                when (it) {
+                    HAND -> "主手"
+                    OFF_HAND -> "副手"
+                    FEET -> "靴子"
+                    LEGS -> "护腿"
+                    CHEST -> "盔甲"
+                    HEAD -> "头盔"
+                }
+            }
+            icon.variables {
+                listOf(
+                    when (it) {
+                        "targets" -> enchant.targets.joinToString("; ") { target -> target.name }
+                        "conflicts" -> conflicts
+                        "dependencies" -> dependencies
+                        "permission" -> permission
+                        "disable_worlds" -> disableWorlds.joinToString("; ")
+                        "active_slots" -> activeSlots
+                        else -> ""
+                    }
+                )
+            }
+        }
+    }
+
+    @MenuComponent
+    private val other = MenuFunctionBuilder {
+        onBuild { (_, _, _, _, icon, args) ->
+            val enchant = args["enchant"] as SplendidEnchant
+            var attainWays = ""
+            if (enchant.alternativeData.isDiscoverable &&
+                enchant.alternativeData.weight > 0 &&
+                enchant.rarity.weight > 0
+            ) attainWays += "&d附魔台 &e战利品箱"
+            if (enchant.alternativeData.isTradeable &&
+                enchant.isIn("可交易附魔")
+            ) {
+                if (attainWays.isNotBlank()) attainWays += " "
+                attainWays += "&6村民"
+            }
+            icon.variables {
+                listOf(
+                    when (it) {
+                        "attain_ways" -> attainWays
+                        "grindstoneable" -> if (enchant.alternativeData.grindstoneable) "&a✓" else "&c✗"
+                        "treasure" -> if (enchant.isTreasure) "&a✓" else "&c✗"
+                        "curse" -> if (enchant.isCursed) "&a✓" else "&c✗"
+                        else -> ""
+                    }
+                )
+            }
+        }
+    }
+
+    @MenuComponent
+    private val available = MenuFunctionBuilder {
+        onBuild { (_, _, _, _, icon, args) ->
+            val enchant = args["enchant"] as SplendidEnchant
+            val checked = args["checked"] as ItemStack
+            if (checked.isNull) {
+                return@onBuild icon.variables {
+                    listOf(
+                        when (it) {
+                            "state" -> "N/A"
+                            "reasons" -> "无"
+                            else -> ""
+                        }
+                    )
+                }
+            }
+            val level = checked.etLevel(enchant)
+            val player = args["player"] as Player
+            val result = enchant.limitations.checkAvailable(CheckType.ANVIL, checked, player)
+            val state = if (level > 0) "&a已安装 " + if (level < enchant.maxLevel) "可升级" else "最高级"
+            else if (result.first) "&e可安装"
+            else "&c不可安装"
+            val reasons = result.second.ifEmpty { "无" }
+
+            icon.variables {
+                listOf(
+                    when (it) {
+                        "state" -> state
+                        "reasons" -> reasons
+                        else -> ""
+                    }
+                )
+            }
         }
     }
 
@@ -163,7 +301,7 @@ object EnchantInfoUI {
                             listOf(
                                 when (it) {
                                     "group" -> group.name
-                                    "max_coexist" -> "${group.maxCoexist - 1}"
+                                    "max_coexist" -> "${group.maxCoexist - if (args["category"] == "conflicts") 1 else 0}"
                                     else -> ""
                                 }
                             )

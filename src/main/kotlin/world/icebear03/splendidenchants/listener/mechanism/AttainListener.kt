@@ -105,7 +105,7 @@ object AttainListener {
         if (item.type == Material.BOOK) result.type = Material.ENCHANTED_BOOK
 
         val amount = enchantAmount(player, cost)
-        val pool = result.etsAvailable(checkType, player)
+        val pool = result.etsAvailable(checkType, player).filter { it.isDiscoverable }
 
         repeat(amount) {
             val enchant = pool.drawEt() ?: return@repeat

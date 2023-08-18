@@ -40,7 +40,7 @@ class Limitations(
                 TARGET, MAX_CAPABILITY, SLOT,
                 CONFLICT_ENCHANT, CONFLICT_GROUP,
                 DEPENDENCE_ENCHANT, DEPENDENCE_GROUP -> checkItem(type, item, value, slot)
-            }.run { if (!this) return false to "${type.typeName}:$value" }
+            }.run { if (!this) return false to "${type.typeName}错误" }
         }
 
         return true to ""

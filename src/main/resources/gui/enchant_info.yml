@@ -1,4 +1,4 @@
-title: "附魔详情 {enchant_display_roman}"
+title: "附魔详情 [enchant_display_roman]"
 shape:
   - 'FFFFFFFFF'
   - 'FIJKFMFZF'
@@ -149,7 +149,7 @@ template:
       - "&8| &7对象: {targets}"
       - "&8| &7冲突: {conflicts}"
       - "&8| &7依赖: {dependencies}"
-      - "&8| &7权限: {permission} {state}"
+      - "&8| &7权限: {permission}"
       - "&8| &7禁用世界: {disable_worlds}"
       - "&8| &7可用格子: {active_slots}"
     feature:
@@ -179,7 +179,7 @@ template:
       - "&8| &7点击背包内的一个物品"
       - "&8| &7检测本附魔是否可安装"
       - "&7"
-      - "&8| &7可安装: {state}"
+      - "&8| &7状态: {state}"
       - "&8| &7原因: {reasons}"
     feature:
       - ==: Head
