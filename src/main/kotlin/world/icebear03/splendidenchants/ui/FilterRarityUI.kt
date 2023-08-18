@@ -3,8 +3,6 @@ package world.icebear03.splendidenchants.ui
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.persistence.PersistentDataType
 import org.serverct.parrot.parrotx.function.variable
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
@@ -14,15 +12,18 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
-import taboolib.platform.util.modifyMeta
-import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.colorify
+import world.icebear03.splendidenchants.api.load
+import world.icebear03.splendidenchants.api.pages
+import world.icebear03.splendidenchants.api.skull
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.rarities
-import world.icebear03.splendidenchants.enchant.data.rarity
 import world.icebear03.splendidenchants.ui.internal.UIType
 import world.icebear03.splendidenchants.ui.internal.record
+import kotlin.collections.listOf
+import kotlin.collections.set
+import kotlin.collections.toList
 
 
 @MenuComponent("FilterRarity")
@@ -47,7 +48,7 @@ object FilterRarityUI {
             slots(slots)
             elements { rarities.values.toList() }
 
-            load(shape, templates, true, player, "FilterRarity:filter", "Previous", "Next")
+            load(shape, templates, player, "FilterRarity:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterRarity:filter")
@@ -57,6 +58,7 @@ object FilterRarityUI {
                     this["player"] = player
                 }
             }
+            onClick { event, element -> templates[event.rawSlot]?.handle(this, event, "rarity" to element) }
         }
     }
 
@@ -72,16 +74,14 @@ object FilterRarityUI {
                 else -> {}
             }
 
-            icon.modifyMeta<ItemMeta> { this["rarity", PersistentDataType.STRING] = rarity.id }
-                .variable("rarity_display", listOf(rarity.display()))
+            icon.variable("rarity_display", listOf(rarity.display()))
                 .skull(rarity.skull)
         }
 
-        onClick { (_, _, _, event, _) ->
+        onClick { (_, _, _, event, args) ->
             val clickType = event.clickEvent().click
             val player = event.clicker
-            val item = event.currentItem ?: return@onClick
-            val rarity = rarity(item.itemMeta["rarity", PersistentDataType.STRING]) ?: return@onClick
+            val rarity = args["rarity"] as Rarity
 
             when (clickType) {
                 ClickType.LEFT, ClickType.RIGHT -> {

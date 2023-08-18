@@ -50,7 +50,7 @@ object EnchantSearchUI {
             elements { EnchantFilter.filter(player) }
 
             load(
-                shape, templates, true, player,
+                shape, templates, player,
                 "EnchantSearch:enchant", "EnchantSearch:filter_rarity", "EnchantSearch:filter_target",
                 "EnchantSearch:filter_group", "EnchantSearch:filter_string", "Previous", "Next"
             )
@@ -58,11 +58,12 @@ object EnchantSearchUI {
 
             val template = templates.require("EnchantSearch:enchant")
             onGenerate { _, element, index, slot -> template(slot, index) { this["enchant"] = element } }
+            onClick { event, element -> templates[event.rawSlot]?.handle(this, event, "element" to element) }
 
             EnchantFilter.FilterType.entries.forEach {
                 setSlots(
                     shape, templates, "EnchantSearch:filter_${it.toString().lowercase()}", listOf(),
-                    "filters" to EnchantFilter.generateLore(it, player), click = false
+                    "filters" to EnchantFilter.generateLore(it, player)
                 )
             }
         }
@@ -77,9 +78,8 @@ object EnchantSearchUI {
                 .variables { variable -> listOf(holders[variable] ?: "") }
                 .skull(enchant.rarity.skull)
         }
-        onClick { (_, _, _, event, _) ->
-            val id = event.currentItem?.itemMeta?.get("enchant", PersistentDataType.STRING) ?: return@onClick
-            EnchantInfoUI.open(event.clicker, splendidEt(id)!!)
+        onClick { (_, _, _, event, args) ->
+            EnchantInfoUI.open(event.clicker, args["element"] as SplendidEnchant)
         }
     }
 

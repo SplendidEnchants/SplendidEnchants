@@ -14,7 +14,7 @@ val groups = mutableMapOf<String, Group>()
 data class Group(
     val name: String,
     val enchants: List<SplendidEnchant>,
-    val skull: String?,
+    val skull: String,
     val maxCoexist: Int
 ) {
 
@@ -31,7 +31,10 @@ data class Group(
                     groups[name] = Group(
                         name,
                         enchants,
-                        getString("$name.skull"),
+                        getString(
+                            "$name.skull",
+                            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRiODlhZDA2ZDMxOGYwYWUxZWVhZjY2MGZlYTc4YzM0ZWI1NWQwNWYwMWUxY2Y5OTlmMzMxZmIzMmQzODk0MiJ9fX0="
+                        )!!,
                         getInt("$name.max_coexist", 1),
                     )
                 }

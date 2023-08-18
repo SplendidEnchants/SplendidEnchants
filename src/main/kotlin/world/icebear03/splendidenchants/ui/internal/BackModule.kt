@@ -15,10 +15,19 @@ import java.util.*
 
 val recorders = mutableMapOf<UUID, MutableList<Pair<UIType, Map<String, Any?>>>>()
 
-fun Player.record(type: UIType, vararg params: Pair<String, Any?>) {
+fun Player.record(type: UIType, vararg pairs: Pair<String, Any?>) {
     val recorder = recorders.getOrPut(uniqueId) { mutableListOf() }
-    if (recorder.lastOrNull()?.first == type && type != UIType.ENCHANT_INFO) recorder[recorder.size - 1] = type to params.toMap()
-    else recorder += type to params.toMap()
+    val last = recorder.size - 1
+    val holders = pairs.toMap()
+    if (type == UIType.ENCHANT_INFO) {
+        val current = holders["enchant"] as SplendidEnchant
+        val lastEt = recorder[last].second["enchant"] as? SplendidEnchant
+        if (current.basicData.id != lastEt?.basicData?.id) {
+            recorder += type to holders
+        }
+    } else if (recorder.lastOrNull()?.first == type) recorder[last] = type to holders
+    else recorder += type to holders
+
 }
 
 fun Player.last(): String {
@@ -58,7 +67,7 @@ fun Player.forceBack(type: UIType) {
         UIType.FILTER_RARITY -> EnchantSearchUI.open(this)
         UIType.FILTER_TARGET -> EnchantSearchUI.open(this)
         UIType.ITEM_CHECK -> MainMenuUI.open(this)
-        UIType.MAIN_MENU -> closeInventory()
+        UIType.MAIN_MENU -> performCommand(Config.config.getString("main_menu_back", "sl")!!).also { recorders.remove(uniqueId) }
         UIType.FAVORITE -> MainMenuUI.open(this)
     }
 }
@@ -70,26 +79,18 @@ fun Player.back() {
         forceBack(recorder[0].first)
         return
     }
-    println(recorder)
     val last = recorder[size - 2]
     recorder.removeAt(size - 1)
     val params = last.second
     when (last.first) {
         UIType.ANVIL -> AnvilUI.open(this, params["a"] as? ItemStack, params["b"] as? ItemStack)
-        UIType.ENCHANT_INFO -> EnchantInfoUI.open(
-            this,
-            params["enchant"] as SplendidEnchant,
-            params["level"] as Int,
-            params["checked"] as ItemStack,
-            params["category"].toString()
-        )
-
+        UIType.ENCHANT_INFO -> EnchantInfoUI.open(this, params)
         UIType.ENCHANT_SEARCH -> EnchantSearchUI.open(this)
         UIType.FILTER_GROUP -> FilterGroupUI.open(this)
         UIType.FILTER_RARITY -> FilterRarityUI.open(this)
         UIType.FILTER_TARGET -> FilterTargetUI.open(this)
         UIType.ITEM_CHECK -> ItemCheckUI.open(this, params["item"] as? ItemStack)
-        UIType.MAIN_MENU -> performCommand(Config.config.getString("main_menu_back", "sl")!!).also { recorders.remove(uniqueId) }
+        UIType.MAIN_MENU -> MainMenuUI.open(this)
         UIType.FAVORITE -> {}
     }
 }

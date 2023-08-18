@@ -11,8 +11,7 @@ fun Basic.setSlots(
     templates: TemplateConfiguration,
     key: String,
     elements: List<Any?> = listOf(),
-    vararg args: Pair<String, Any>,
-    click: Boolean = true
+    vararg args: Pair<String, Any>
 ) {
     var tot = 0
     shape[key].forEach { slot ->
@@ -25,7 +24,7 @@ fun Basic.setSlots(
             }
         }
         set(slot, templates(key, slot, 0, false, "Fallback") { this += map })
-        if (click) onClick(slot) { templates[it.rawSlot]?.handle(this, it) { this += map } }
+        onClick(slot) { templates[it.rawSlot]?.handle(this, it) { this += map } }
         tot++
     }
 }
@@ -33,25 +32,23 @@ fun Basic.setSlots(
 fun Basic.load(
     shape: ShapeConfiguration,
     templates: TemplateConfiguration,
-    click: Boolean,
     player: Player,
     vararg ignored: String
 ) {
+    val notAuto = ignored.toMutableList() + "Back"
     onBuild { _, inventory ->
-        shape.all(*ignored, "Back") { slot, index, item, _ ->
+        shape.all(*notAuto.toTypedArray()) { slot, index, item, _ ->
             inventory.setItem(slot, item(slot, index))
         }
     }
 
     if (shape["Back", true].isNotEmpty())
-        setSlots(shape, templates, "Back", listOf(), "player" to player, click = !click)
+        setSlots(shape, templates, "Back", listOf(), "player" to player)
 
-    if (click) {
-        onClick {
-            it.isCancelled = true
-            if (it.rawSlot in shape) {
-                templates[it.rawSlot]?.handle(this, it, "player" to player)
-            }
+    onClick { event ->
+        event.isCancelled = true
+        if (event.rawSlot in shape && notAuto.none { shape[it, true].contains(event.rawSlot) }) {
+            templates[event.rawSlot]?.handle(this, event, "player" to player)
         }
     }
 }

@@ -42,7 +42,7 @@ object ItemCheckUI {
             slots(slots)
             elements { item.fixedEnchants.toList() }
 
-            load(shape, templates, false, player, "ItemCheck:enchant", "ItemCheck:item", "Previous", "Next")
+            load(shape, templates, player, "ItemCheck:enchant", "ItemCheck:item", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("ItemCheck:enchant")
@@ -53,13 +53,12 @@ object ItemCheckUI {
                     this["item"] = item
                 }
             }
+            onClick { event, element -> templates[event.rawSlot]?.handle(this, event, "enchant" to element.first, "level" to element.second) }
 
             item?.let { setSlots(shape, templates, "ItemCheck:item", listOf(), "item" to it) }
 
             onClick { event ->
                 event.isCancelled = true
-                if (event.rawSlot in shape)
-                    templates[event.rawSlot]?.handle(this, event)
                 if (event.rawSlot !in shape && event.currentItem?.type != Material.AIR)
                     open(player, event.currentItem)
             }
@@ -75,6 +74,9 @@ object ItemCheckUI {
             val holders = enchant.displayer.holders(level, args["player"] as Player, args["item"] as ItemStack)
             icon.variables { variable -> listOf(holders[variable] ?: "") }
                 .skull(enchant.rarity.skull)
+        }
+        onClick { (_, _, _, event, args) ->
+            EnchantInfoUI.open(event.clicker, args["enchant"] as SplendidEnchant, args["level"] as Int)
         }
     }
 

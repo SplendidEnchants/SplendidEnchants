@@ -3,8 +3,6 @@ package world.icebear03.splendidenchants.ui
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.persistence.PersistentDataType
 import org.serverct.parrot.parrotx.function.variable
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
@@ -14,15 +12,16 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
-import taboolib.platform.util.modifyMeta
-import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.colorify
+import world.icebear03.splendidenchants.api.load
+import world.icebear03.splendidenchants.api.pages
+import world.icebear03.splendidenchants.api.skull
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Target
-import world.icebear03.splendidenchants.enchant.data.target
 import world.icebear03.splendidenchants.enchant.data.targets
 import world.icebear03.splendidenchants.ui.internal.UIType
 import world.icebear03.splendidenchants.ui.internal.record
+import kotlin.collections.set
 
 
 @MenuComponent("FilterTarget")
@@ -47,7 +46,7 @@ object FilterTargetUI {
             slots(slots)
             elements { targets.values.filter { it.id != "unknown" }.toList() }
 
-            load(shape, templates, true, player, "FilterTarget:filter", "Previous", "Next")
+            load(shape, templates, player, "FilterTarget:filter", "Previous", "Next")
             pages(shape, templates)
 
             val template = templates.require("FilterTarget:filter")
@@ -57,6 +56,7 @@ object FilterTargetUI {
                     this["player"] = player
                 }
             }
+            onClick { event, element -> templates[event.rawSlot]?.handle(this, event, "target" to element) }
         }
     }
 
@@ -72,16 +72,14 @@ object FilterTargetUI {
                 else -> {}
             }
 
-            icon.modifyMeta<ItemMeta> { this["target", PersistentDataType.STRING] = target.id }
-                .variable("name", listOf(target.name))
+            icon.variable("name", listOf(target.name))
                 .skull(target.skull)
         }
 
-        onClick { (_, _, _, event, _) ->
+        onClick { (_, _, _, event, args) ->
             val clickType = event.clickEvent().click
             val player = event.clicker
-            val item = event.currentItem ?: return@onClick
-            val target = target(item.itemMeta["target", PersistentDataType.STRING]) ?: return@onClick
+            val target = args["target"] as Target
 
             when (clickType) {
                 ClickType.LEFT, ClickType.RIGHT -> {

@@ -42,7 +42,7 @@ object AnvilUI {
             rows(shape.rows)
             map(*shape.array)
 
-            load(shape, templates, false, player, "Anvil:a", "Anvil:b", "Anvil:result", "Anvil:information")
+            load(shape, templates, player, "Anvil:a", "Anvil:b", "Anvil:result", "Anvil:information")
 
             val info = mutableMapOf<String, String>()
             var result: ItemStack? = ItemStack(Material.AIR)
@@ -81,8 +81,6 @@ object AnvilUI {
 
             onClick { event ->
                 event.isCancelled = true
-                if (event.rawSlot in shape)
-                    templates[event.rawSlot]?.handle(this, event)
                 if (event.rawSlot !in shape) {
                     val item = event.currentItem ?: return@onClick
                     if (a == null) open(player, item, b)
