@@ -1,5 +1,6 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 
+import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.potion.PotionEffectType
 import world.icebear03.splendidenchants.api.*
@@ -30,6 +31,10 @@ object ObjectLivingEntity {
             "召唤雷电" -> {
                 entity.world.strikeLightningEffect(entity.location)
                 entity.realDamage((variabled.getOrNull(1) ?: "4.0").calcToDouble())
+            }
+
+            "伤害" -> {
+                entity.damage(variabled[1].calcToDouble(), holders[variabled.getOrElse(2) { "null" }] as? Entity)
             }
 
             else -> return false

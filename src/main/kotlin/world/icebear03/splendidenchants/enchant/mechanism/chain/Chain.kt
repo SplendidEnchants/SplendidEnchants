@@ -8,6 +8,7 @@ import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submit
 import world.icebear03.splendidenchants.api.*
+import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 import world.icebear03.splendidenchants.enchant.mechanism.EventType.*
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
@@ -69,9 +70,9 @@ class Chain(val listeners: Listeners, line: String) {
 
             ASSIGNMENT -> {
                 val variable = parts[0]
-                val expression = parts[1]
-                val value = expression.calculate()
-                listeners.enchant.variable.modifyVariable(item, variable, value)
+                if (listeners.enchant.variable.variables[variable] == SplendidEnchant.VariableType.FLEXIBLE)
+                    holders[variable] = parts[1].calculate()
+                else listeners.enchant.variable.modifyVariable(item, variable, parts[1].calculate())
             }
 
             EVENT -> {
@@ -85,16 +86,11 @@ class Chain(val listeners: Listeners, line: String) {
 
             OPERATION -> when (parts[0]) {
                 "plant" -> submit submit@{ Plant.plant(toPlayer ?: return@submit, parts[1].toInt(), parts[2]) }
-                "println" -> {
-                    entity.sendMessage(holders.toString())
-                    Println.println(entity, parts.joinToString(":"))
-                }
-
+                "println" -> Println.println(entity, parts.joinToString(":"))
                 else -> {}
             }
 
-
-            null -> {}
+            else -> {}
         }
         return true
     }

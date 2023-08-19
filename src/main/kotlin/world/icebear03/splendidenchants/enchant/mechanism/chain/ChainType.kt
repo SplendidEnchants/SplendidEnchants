@@ -5,7 +5,9 @@ enum class ChainType(val display: String) {
     CONDITION("条件"),
     ASSIGNMENT("赋值"),
     EVENT("事件"),
-    OPERATION("操作");
+    OPERATION("操作"),
+    DELAY("延时"),
+    GOTO("跳转");
 
     companion object {
         fun getType(identifier: String?): ChainType? = ChainType.entries.find { it.display == identifier || it.name == identifier }

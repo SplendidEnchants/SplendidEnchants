@@ -12,9 +12,12 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
+import taboolib.common5.cdouble
+import taboolib.common5.cint
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
+import taboolib.module.kether.isInt
 import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.*
@@ -195,6 +198,9 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         //变量名 - 初始值
         val modifiable = mutableMapOf<String, Pair<String, String>>()
 
+        //变量名 - 初始值
+        val flexible = mutableMapOf<String, String>()
+
         init {
             variableConfig?.run {
                 getConfigurationSection("leveled").asMap().forEach { (variable, expression) ->
@@ -210,6 +216,10 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                     modifiable[variable] = parts[0] to parts[1]
                     variables[variable] = VariableType.MODIFIABLE
                 }
+                getConfigurationSection("flexible").asMap().forEach { (variable, expression) ->
+                    flexible[variable] = expression.toString()
+                    variables[variable] = VariableType.FLEXIBLE
+                }
             }
         }
 
@@ -222,18 +232,25 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             return item?.let { it.itemMeta["splendidenchant_" + pair.first, PersistentDataType.STRING] ?: pair.second } ?: "?"
         }
 
+        private fun flexible(variable: String): Number {
+            val init = flexible[variable]!!
+            return if (init.isInt()) init.cint
+            else init.cdouble
+        }
+
         fun variables(
             level: Int?,
             entity: LivingEntity? = null,
             item: ItemStack? = null
         ): Map<String, String> {
-            return variables.mapValues { (variable, type) ->
-                when (type) {
+            return variables.mapNotNull { (variable, type) ->
+                variable to when (type) {
                     VariableType.LEVELED -> leveled(variable, level)
                     VariableType.PLAYER_RELATED -> playerRelated(variable, entity as? Player)
                     VariableType.MODIFIABLE -> modifiable(variable, item)
+                    else -> return@mapNotNull null
                 }
-            }
+            }.toMap()
         }
 
         fun modifyVariable(item: ItemStack, variable: String, value: String): ItemStack = item.modifyMeta<ItemMeta> {
@@ -244,7 +261,8 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
     enum class VariableType {
         LEVELED,
         PLAYER_RELATED,
-        MODIFIABLE
+        MODIFIABLE,
+        FLEXIBLE
     }
 
     inner class AlternativeData(alternativeDataConfig: ConfigurationSection?) {

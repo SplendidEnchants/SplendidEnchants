@@ -4,11 +4,17 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
+import taboolib.common.platform.function.submit
+import taboolib.common5.cdouble
+import taboolib.common5.cint
 import taboolib.library.configuration.ConfigurationSection
+import world.icebear03.splendidenchants.api.calculate
 import world.icebear03.splendidenchants.api.etLevel
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.mechanism.chain.Chain
+import world.icebear03.splendidenchants.enchant.mechanism.chain.ChainType
+import kotlin.math.roundToLong
 
 class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
 
@@ -38,13 +44,27 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
         item: ItemStack,
     ) {
         if (!enchant.limitations.checkAvailable(CheckType.USE, item, entity).first) return
+
         byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach listeners@{ id ->
             val holders = mutableMapOf<String, Any>()
-            byId[id]!!.second.forEach chains@{ chain ->
+            holders += enchant.variable.flexible
+            val chains = byId[id]!!.second
+            fun next(tot: Int = 0) {
+                if (tot >= chains.size)
+                    return
                 holders["随机数"] = Math.random() * 100
                 holders += enchant.variable.variables(item.etLevel(enchant), entity, item)
-                if (!chain.trigger(event, eventType, entity, item, holders)) return@listeners
+                val chain = chains[tot]
+                if (chain.type == ChainType.DELAY) {
+                    val ticks = chain.content.calculate(holders).cdouble
+                    submit(delay = (ticks * 20).roundToLong()) { next(tot + 1) }
+                } else if (chain.type == ChainType.GOTO) {
+                    val index = chain.content.calculate(holders).cint
+                    next(index - 1)
+                } else if (chain.trigger(event, eventType, entity, item, holders))
+                    next(tot + 1)
             }
+            next()
         }
     }
 }
