@@ -1,5 +1,7 @@
 package world.icebear03.splendidenchants.enchant.mechanism.chain
 
+import org.bukkit.block.Block
+import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -11,7 +13,9 @@ import world.icebear03.splendidenchants.enchant.mechanism.EventType.*
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
 import world.icebear03.splendidenchants.enchant.mechanism.chain.ChainType.*
 import world.icebear03.splendidenchants.enchant.mechanism.entry.event.Attack
+import world.icebear03.splendidenchants.enchant.mechanism.entry.event.Interact
 import world.icebear03.splendidenchants.enchant.mechanism.entry.event.Kill
+import world.icebear03.splendidenchants.enchant.mechanism.entry.`object`.*
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Plant
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Println
 
@@ -26,7 +30,7 @@ class Chain(val listeners: Listeners, line: String) {
         eventType: EventType,
         entity: LivingEntity,
         item: ItemStack,
-        holders: MutableMap<String, String>
+        holders: MutableMap<String, Any>
     ): Boolean {
         val variabled = content.replace(holders)
         val parts = variabled.split(":")
@@ -50,7 +54,18 @@ class Chain(val listeners: Listeners, line: String) {
                 entity.addCd(key)
             }
 
-            CONDITION -> return variabled.calcToBoolean()
+            CONDITION -> {
+                return if (parts.size > 1)
+                    when (val tmp = holders[parts[0]]!!) {
+                        is Player -> ObjectPlayer.modify(tmp, parts.subList(1), holders)
+                        is LivingEntity -> ObjectLivingEntity.modify(tmp, parts.subList(1), holders)
+                        is Entity -> ObjectEntity.modify(tmp, parts.subList(1), holders)
+                        is Block -> ObjectBlock.modify(tmp, parts.subList(1), holders)
+                        is ItemStack -> ObjectItem.modify(tmp, parts.subList(1), holders)
+                        else -> false
+                    }
+                else variabled.calcToBoolean()
+            }
 
             ASSIGNMENT -> {
                 val variable = parts[0]
@@ -61,17 +76,20 @@ class Chain(val listeners: Listeners, line: String) {
 
             EVENT -> {
                 when (eventType) {
-                    KILL -> Kill.modifyEvent(event, entity, parts, holders)
-                    ATTACK -> Attack.modifyEvent(event, entity, parts, holders)
-                    RIGHT_CLICK -> {}
-                    LEFT_CLICK -> {}
+                    KILL -> Kill.modify(event, entity, parts, holders)
+                    ATTACK -> Attack.modify(event, entity, parts, holders)
+                    RIGHT_CLICK, LEFT_CLICK, PHYSICAL_INTERACT -> Interact.modify(event, entity, parts, holders)
                     INTERACT_ENTITY -> {}
                 }
             }
 
             OPERATION -> when (parts[0]) {
                 "plant" -> submit submit@{ Plant.plant(toPlayer ?: return@submit, parts[1].toInt(), parts[2]) }
-                "println" -> Println.println(entity, parts.joinToString(":"))
+                "println" -> {
+                    entity.sendMessage(holders.toString())
+                    Println.println(entity, parts.joinToString(":"))
+                }
+
                 else -> {}
             }
 

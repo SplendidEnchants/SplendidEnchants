@@ -43,19 +43,13 @@ object PlayerInteract {
     }
 
     private fun settle(event: PlayerInteractEvent, priority: EventPriority) {
-        if (!event.hasItem()) return
-
         val player = event.player
         val hand = if (event.isMainhand()) TriggerSlots.MAIN_HAND else TriggerSlots.OFF_HAND
 
         when (event.action) {
-            RIGHT_CLICK_BLOCK, RIGHT_CLICK_AIR ->
-                EventType.RIGHT_CLICK.triggerEts(event, priority, hand, player)
-
-            LEFT_CLICK_BLOCK, LEFT_CLICK_AIR ->
-                EventType.LEFT_CLICK.triggerEts(event, priority, hand, player)
-
-            PHYSICAL -> {}
+            RIGHT_CLICK_BLOCK, RIGHT_CLICK_AIR -> EventType.RIGHT_CLICK.triggerEts(event, priority, hand, player)
+            LEFT_CLICK_BLOCK, LEFT_CLICK_AIR -> EventType.LEFT_CLICK.triggerEts(event, priority, hand, player)
+            PHYSICAL -> EventType.PHYSICAL_INTERACT.triggerEts(event, priority, TriggerSlots.ALL, player)
         }
     }
 }

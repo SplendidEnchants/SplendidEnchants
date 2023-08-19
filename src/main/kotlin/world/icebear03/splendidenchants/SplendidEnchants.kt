@@ -121,4 +121,8 @@ object SplendidEnchants : Plugin() {
             console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
         }
     }
+
+    override fun onDisable() {
+        EnchantLoader.unregisterAll()
+    }
 }

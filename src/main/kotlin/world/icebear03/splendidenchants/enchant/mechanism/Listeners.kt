@@ -39,8 +39,9 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
     ) {
         if (!enchant.limitations.checkAvailable(CheckType.USE, item, entity).first) return
         byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach listeners@{ id ->
-            val holders = mutableMapOf<String, String>()
+            val holders = mutableMapOf<String, Any>()
             byId[id]!!.second.forEach chains@{ chain ->
+                holders["随机数"] = Math.random() * 100
                 holders += enchant.variable.variables(item.etLevel(enchant), entity, item)
                 if (!chain.trigger(event, eventType, entity, item, holders)) return@listeners
             }

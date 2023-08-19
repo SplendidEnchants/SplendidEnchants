@@ -37,8 +37,6 @@ mechanisms:
         - "赋值::是否充能完毕:充能完毕"
     attack:
       type: ATTACK
-      #若无pirority，默认为HIGHEST
-      priority: HIGHEST
       chains:
         - "条件::{当前累计}>={击杀累计}"
         - "赋值::当前累计:0"

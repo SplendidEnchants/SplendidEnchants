@@ -5,7 +5,8 @@ enum class EventType(val display: String) {
     KILL("击杀"),
     RIGHT_CLICK("右击"),
     LEFT_CLICK("左击"),
-    INTERACT_ENTITY("交互");
+    INTERACT_ENTITY("交互生物"),
+    PHYSICAL_INTERACT("交互方块");
 
     companion object {
         fun getType(identifier: String?): EventType? = entries.find { it.display == identifier || it.name == identifier }

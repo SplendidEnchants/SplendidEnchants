@@ -53,7 +53,7 @@ dependencies {
     compileOnly("ink.ptms.core:v12001:12001:universal")
 
     taboo("org.tabooproject.taboolib:module-parrotx:1.5.4") // Module-ParrotX
-    taboo("com.mcstarrysky.taboolib:module-starrysky:1.0.11-6") // Module-StarrySky
+    taboo("com.mcstarrysky.taboolib:module-starrysky:1.0.11-9") // Module-StarrySky
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }

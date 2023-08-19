@@ -1,6 +1,7 @@
 package world.icebear03.splendidenchants.api.internal
 
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
@@ -65,7 +66,15 @@ object FurtherOperation {
     //比如较大面积的一次性破坏方块，triggereffects应该为false，否则会导致玩家卡顿
     fun furtherBreak(player: Player, block: Block, triggerEffects: Boolean = true, dropExperience: Boolean = true) {
         if (PermissionChecker.hasBlockPermission(player, block)) {
-            block.breakNaturally(player.inventory.itemInMainHand, triggerEffects, dropExperience)
+            player.breakBlock(block)
+        }
+    }
+
+    fun furtherPlace(player: Player, block: Block, type: Material) {
+        if (block.type != Material.AIR) return
+        if (PermissionChecker.hasBlockPermission(player, block)) {
+            block.type = type
+            //TODO 应当呼应事件给其他插件处理
         }
     }
 }

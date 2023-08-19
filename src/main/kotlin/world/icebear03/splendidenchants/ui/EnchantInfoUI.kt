@@ -102,7 +102,7 @@ object EnchantInfoUI {
             pages(shape, templates)
 
             val template = templates.require("EnchantInfo:element")
-            onGenerate { _, element, index, slot -> template(slot, index) { this["element"] = element } }
+            onGenerate { _, element, index, slot -> template(slot, index) { this["element"] = element;this["category"] = category } }
             onClick { event, element -> templates[event.rawSlot]?.handle(this, event, "element" to element) }
 
             val params = arrayOf(
@@ -148,6 +148,7 @@ object EnchantInfoUI {
         onBuild { (_, _, _, _, icon, args) ->
             val level = args["level"] as Int
             val enchant = args["enchant"] as SplendidEnchant
+            icon.amount = level
             icon.variables {
                 when (it) {
                     "params" -> enchant.variable.leveled.map { (variable, expression) ->

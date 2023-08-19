@@ -13,12 +13,37 @@ fun String.replace(holders: Map<String, Any>): String = replace(holders.toList()
 
 fun String.replace(vararg holders: Pair<String, Any>): String = replace(holders.toList())
 
+val stringCalcSymbols = listOf("==", "~>", "~<", "~~", "``")
+
 fun String.calculate(holders: List<Pair<String, Any>>): String {
     return replace(holders).run {
         try {
             compileToJexl().eval().toString()
         } catch (ignored: Exception) {
-            this
+            var secondHand = this
+            var flag = false
+            split("&&").map { it.split("||") }.flatten().forEach { origin ->
+                stringCalcSymbols.forEach { symbol ->
+                    if (origin.contains(symbol)) {
+                        flag = true
+                        val a = this.split(symbol)[0]
+                        val b = this.split(symbol)[1]
+                        val result = when (symbol) {
+                            "==" -> a == b
+                            "~>" -> a.contains(b)
+                            "~<" -> b.contains(a)
+                            "+>" -> a.startsWith(b)
+                            "->" -> a.endsWith(b)
+                            "+<" -> b.startsWith(a)
+                            "-<" -> b.endsWith(a)
+                            else -> false
+                        }
+                        secondHand = secondHand.replace(origin, result.toString())
+                    }
+                }
+            }
+            if (flag) secondHand.calculate()
+            else this
         }
     }
 }

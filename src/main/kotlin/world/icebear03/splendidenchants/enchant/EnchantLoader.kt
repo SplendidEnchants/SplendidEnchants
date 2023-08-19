@@ -100,7 +100,7 @@ object EnchantLoader {
         }
     }
 
-    private fun unregister(id: String) {
+    fun unregister(id: String) {
         val enchant = BY_ID[id] ?: return
         if (!enchant.isIn("原版附魔")) {
             keyMap.remove(enchant.key)
@@ -108,9 +108,13 @@ object EnchantLoader {
         }
         BY_ID.remove(enchant.basicData.id)
         BY_NAME.remove(enchant.basicData.name)
-        BY_RARITY[enchant.rarity]!!.remove(enchant)
+        BY_RARITY[enchant.rarity]?.remove(enchant)
         enchant.targets.forEach { target ->
-            BY_TARGET[target]!!.remove(enchant)
+            BY_TARGET[target]?.remove(enchant)
         }
+    }
+
+    fun unregisterAll() {
+        BY_ID.filter { !it.value.isIn("原版附魔") }.forEach { unregister(it.key) }
     }
 }
