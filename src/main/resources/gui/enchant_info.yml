@@ -1,11 +1,11 @@
 title: "附魔详情 [enchant_display_roman]"
 shape:
-  - 'FFFFFFFFF'
-  - 'FIJKFMFZF'
-  - 'FFFFFFFFF'
-  - 'FFSFDFGFF'
-  - 'FEEEEEEEF'
-  - 'FBCFLFPNF'
+  - 'FFFFFSEEF'
+  - 'FIJKFDEEF'
+  - 'FFMFFGEEF'
+  - 'FXZYFOEEF'
+  - 'FFFFFFEEF'
+  - 'FBLCFFPNF'
 
 template:
   'F':
@@ -19,6 +19,13 @@ template:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjc1NDgzNjJhMjRjMGZhODQ1M2U0ZDkzZTY4YzU5NjlkZGJkZTU3YmY2NjY2YzAzMTljMWVkMWU4NGQ4OTA2NSJ9fX0="
       - ==: Close
+
+  'O':
+    material: PLAYER_HEAD
+    name: "&7"
+    feature:
+      - ==: Head
+        texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjgyYWQxYjljYjRkZDIxMjU5YzBkNzVhYTMxNWZmMzg5YzNjZWY3NTJiZTM5NDkzMzgxNjRiYWM4NGE5NmUifX19"
 
   'B':
     material: PLAYER_HEAD
@@ -121,14 +128,30 @@ template:
     lore:
       - "&8| &7{params}"
       - "&7"
-      - "&8| &7&c左击&7按钮为当前等级&a+1级"
-      - "&8| &7&c右击&7按钮为当前等级&c-1级"
-      - "&8| &7&c中间&7按钮还原至最大级"
+      - "&8| &7&c点击&7按钮还原至最大级"
     feature:
       - ==: Head
         texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTdlZDY2ZjVhNzAyMDlkODIxMTY3ZDE1NmZkYmMwY2EzYmYxMWFkNTRlZDVkODZlNzVjMjY1ZjdlNTAyOWVjMSJ9fX0="
       - ==: Functional
         keyword: EnchantInfo:level
+
+  'X':
+    material: RED_STAINED_GLASS_PANE
+    name: "&c-1级"
+    lore:
+      - "&8| &7&c点击&7按钮使查询等级&c-1级"
+    feature:
+      - ==: Functional
+        keyword: EnchantInfo:minus
+
+  'Y':
+    material: GREEN_STAINED_GLASS_PANE
+    name: "&a+1级"
+    lore:
+      - "&8| &7&a点击&7按钮使查询等级&a+1级"
+    feature:
+      - ==: Functional
+        keyword: EnchantInfo:plus
 
   'I':
     material: PLAYER_HEAD

@@ -11,6 +11,7 @@ import world.icebear03.splendidenchants.api.drawEt
 import world.icebear03.splendidenchants.api.fixedEnchants
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.data.group
+import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 
 object VillagerListener {
 
@@ -35,11 +36,19 @@ object VillagerListener {
 
         if (result.fixedEnchants.isEmpty()) return
         if (!enableEnchantTrade) {
-            event.isCancelled = true; return
+            event.isCancelled = true;
+            return
         }
 
         result.clearEts()
-        repeat(amount) { result.addEt((group(tradeGroup)?.enchants ?: listOf()).filter { it.alternativeData.isTradeable }.drawEt() ?: return@repeat) }
+        repeat(amount) {
+            result.addEt((group(tradeGroup)?.enchants ?: listOf()).filter {
+                it.limitations.checkAvailable(
+                    CheckType.ATTAIN,
+                    result
+                ).first && it.alternativeData.isTradeable
+            }.drawEt() ?: return@repeat)
+        }
 
         origin.run origin@{
             event.recipe = MerchantRecipe(

@@ -4,7 +4,6 @@ package world.icebear03.splendidenchants.ui
 
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.ClickType.*
 import org.bukkit.inventory.EquipmentSlot.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
@@ -98,7 +97,7 @@ object EnchantInfoUI {
                 "EnchantInfo:available", "EnchantInfo:other", "EnchantInfo:limitations",
                 "EnchantInfo:basic", "EnchantInfo:level", "EnchantInfo:related",
                 "EnchantInfo:dependencies", "EnchantInfo:conflicts", "EnchantInfo:element",
-                "EnchantInfo:favorite", "Previous", "Next"
+                "EnchantInfo:favorite", "EnchantInfo:minus", "EnchantInfo:plus", "Previous", "Next"
             )
             pages(shape, templates)
 
@@ -122,6 +121,8 @@ object EnchantInfoUI {
             setSlots(shape, templates, "EnchantInfo:other", listOf(), *params)
             setSlots(shape, templates, "EnchantInfo:favorite", listOf(), *params)
             setSlots(shape, templates, "EnchantInfo:level", listOf(), *params)
+            setSlots(shape, templates, "EnchantInfo:minus", listOf(), *params)
+            setSlots(shape, templates, "EnchantInfo:plus", listOf(), *params)
 
             onClick { event ->
                 event.isCancelled = true
@@ -159,17 +160,28 @@ object EnchantInfoUI {
             }
         }
         onClick { (_, _, _, event, args) ->
-            var level = args["level"] as Int
             val enchant = args["enchant"] as SplendidEnchant
-            level = when (event.clickEvent().click) {
-                LEFT -> (level + 1).coerceAtMost(enchant.maxLevel)
-                RIGHT -> (level - 1).coerceAtLeast(1)
-                MIDDLE -> enchant.maxLevel
-                else -> level
-            }
-            open(event.clicker, args.toMutableMap().also { it["level"] = level })
+            open(event.clicker, args.toMutableMap().also { it["level"] = enchant.maxLevel })
         }
     }
+
+    @MenuComponent
+    private val minus = MenuFunctionBuilder {
+        onClick { (_, _, _, event, args) ->
+            val level = args["level"] as Int
+            open(event.clicker, args.toMutableMap().also { it["level"] = (level - 1).coerceAtLeast(1) })
+        }
+    }
+
+    @MenuComponent
+    private val plus = MenuFunctionBuilder {
+        onClick { (_, _, _, event, args) ->
+            val level = args["level"] as Int
+            val enchant = args["enchant"] as SplendidEnchant
+            open(event.clicker, args.toMutableMap().also { it["level"] = (level + 1).coerceAtMost(enchant.maxLevel) })
+        }
+    }
+
 
     @MenuComponent
     private val basic = MenuFunctionBuilder {

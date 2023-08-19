@@ -26,7 +26,7 @@ data class Group(
             Configuration.loadAndUpdate("enchants/group.yml").run {
                 getKeys(false).forEach { name ->
                     val enchants = getStringList("$name.enchants").mapNotNull { splendidEt(it) }.toMutableList()
-                    getStringList("$name.rarities").forEach { enchants += rarity(it)?.let { rarity -> splendidEts(rarity) } ?: listOf() }
+                    enchants += getStringList("$name.rarities").map { rarity(it)?.let { r -> splendidEts(r) } ?: listOf() }.flatten()
 
                     groups[name] = Group(
                         name,
