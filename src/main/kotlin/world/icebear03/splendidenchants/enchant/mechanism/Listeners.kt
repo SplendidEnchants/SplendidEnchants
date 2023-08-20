@@ -2,6 +2,7 @@ package world.icebear03.splendidenchants.enchant.mechanism
 
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.Event
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.function.submit
@@ -42,8 +43,9 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
         priority: EventPriority,
         entity: LivingEntity,
         item: ItemStack,
+        slot: EquipmentSlot
     ) {
-        if (!enchant.limitations.checkAvailable(CheckType.USE, item, entity).first) return
+        if (!enchant.limitations.checkAvailable(CheckType.USE, item, entity, slot).first) return
 
         byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach listeners@{ id ->
             val holders = mutableMapOf<String, Any>()
@@ -61,8 +63,9 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
                 } else if (chain.type == ChainType.GOTO) {
                     val index = chain.content.calculate(holders).cint
                     next(index - 1)
-                } else if (chain.trigger(event, eventType, entity, item, holders))
+                } else if (chain.trigger(event, eventType, entity, item, holders, tot == 0)) {
                     next(tot + 1)
+                }
             }
             next()
         }

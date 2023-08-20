@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.potion.PotionEffectType
+import taboolib.platform.util.groundBlock
 import world.icebear03.splendidenchants.api.*
 
 object ObjectLivingEntity {
@@ -15,26 +16,27 @@ object ObjectLivingEntity {
         if (ObjectEntity.modify(entity, params, holders)) return true
 
         holders["血量"] = entity.health
-        holders["生命值"] = entity.health
         holders["最大血量"] = entity.maxHealth
-        holders["最大生命值"] = entity.maxHealth
+        holders["脚下方块"] = entity.blockBelow ?: entity.groundBlock
 
         val variabled = params.map { it.replace(holders) }
+        val type = variabled[0]
+        val after = variabled.subList(1)
 
-        when (variabled[0]) {
+        when (type) {
             "施加药水效果" -> entity.effect(
-                PotionEffectType.getByName(variabled[1])!!,
-                variabled[2].calcToInt(),
-                variabled[3].calcToInt()
+                PotionEffectType.getByName(after[0])!!,
+                after[1].calcToInt(),
+                after[2].calcToInt()
             )
 
             "召唤雷电" -> {
                 entity.world.strikeLightningEffect(entity.location)
-                entity.realDamage((variabled.getOrNull(1) ?: "4.0").calcToDouble())
+                entity.realDamage((after.getOrElse(0) { "4.0" }).calcToDouble())
             }
 
             "伤害" -> {
-                entity.damage(variabled[1].calcToDouble(), holders[variabled.getOrElse(2) { "null" }] as? Entity)
+                entity.damage(after[0].calcToDouble(), holders[after.getOrElse(1) { "null" }] as? Entity)
             }
 
             else -> return false

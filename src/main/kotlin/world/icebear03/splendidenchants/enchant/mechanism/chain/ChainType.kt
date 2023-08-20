@@ -6,6 +6,7 @@ enum class ChainType(val display: String) {
     ASSIGNMENT("赋值"),
     EVENT("事件"),
     OPERATION("操作"),
+    OBJECT("对象"),
     DELAY("延时"),
     GOTO("跳转");
 

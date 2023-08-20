@@ -2,7 +2,11 @@ package world.icebear03.splendidenchants.api
 
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.World
+import org.bukkit.entity.Player
+import taboolib.common.platform.function.submit
+import kotlin.math.roundToInt
 
 val Location.serialized get() = "${world.name},$blockX,$blockY,$blockZ"
 
@@ -21,4 +25,18 @@ fun loc(worldName: String, x: Number, y: Number, z: Number): Location {
 
 fun loc(world: World, x: Number, y: Number, z: Number): Location {
     return Location(world, x.toDouble(), y.toDouble(), z.toDouble())
+}
+
+fun Player.tmpBlock(loc: Location, type: Material, duration: Double = 1.0) {
+    sendBlockChange(loc, type, 0)
+    //TODO 应该要可以自定义是否显示破坏
+    val total = (duration * 20).roundToInt()
+    var current = 0
+    submit(period = 1L) {
+        if (++current >= total) {
+            cancel()
+            sendBlockChange(loc, loc.block.blockData)
+            sendBlockDamage(loc, 0.0f)
+        } else sendBlockDamage(loc, current.toFloat() / total)
+    }
 }

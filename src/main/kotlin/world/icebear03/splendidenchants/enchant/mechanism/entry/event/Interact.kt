@@ -22,12 +22,14 @@ object Interact {
         }
 
         val variabled = params.map { it.replace(holders) }
+        val type = variabled[0]
+        val after = variabled.subList(1)
 
-        when (variabled[0]) {
+        when (type) {
             "取消交互", "取消" -> event.isCancelled = true
-            "交互方块" -> event.clickedBlock?.let { ObjectBlock.modify(it, variabled.subList(1), holders) }
-            "手持物品" -> event.item?.let { ObjectItem.modify(it, variabled.subList(1), holders) }
-            "玩家" -> ObjectPlayer.modify(event.player, variabled.subList(1), holders)
+            "交互方块" -> event.clickedBlock?.let { ObjectBlock.modify(it, after, holders) }
+            "手持物品" -> event.item?.let { ObjectItem.modify(it, after, holders) }
+            "玩家" -> ObjectPlayer.modify(event.player, after, holders)
             else -> {}
         }
     }

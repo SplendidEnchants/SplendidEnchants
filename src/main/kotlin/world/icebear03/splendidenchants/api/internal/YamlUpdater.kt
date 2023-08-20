@@ -14,7 +14,6 @@ object YamlUpdater {
         val directoryName = getDataFolder().absolutePath + "/" + path.replace(fileName, "")
         //希望不要锁定的是一个同名文件夹
         val file = File(directoryName, fileName)
-//        println(file)
         if (!file.exists()) {
             releaseResourceFile(path, true)
             return Configuration.loadFromFile(file)

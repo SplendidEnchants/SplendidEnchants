@@ -21,8 +21,6 @@ data class Target(
     companion object {
         fun load() {
             targets.clear()
-            targets["unknown"] = Target("unknown", "未定义", 32, listOf(), Material.entries, "")
-
             Configuration.loadAndUpdate("enchants/target.yml").run {
                 getKeys(false).forEach { id ->
                     targets[id] = Target(

@@ -151,8 +151,8 @@ object EnchantInfoUI {
             icon.amount = level
             icon.variables {
                 when (it) {
-                    "params" -> enchant.variable.leveled.map { (variable, expression) ->
-                        "&b$variable &7> " + expression.calculate("level" to level)
+                    "params" -> enchant.variable.leveled.map { (variable) ->
+                        "&b$variable &7> " + enchant.variable.leveled(variable, level)
                     }
 
                     "roman" -> listOf(level.roman())

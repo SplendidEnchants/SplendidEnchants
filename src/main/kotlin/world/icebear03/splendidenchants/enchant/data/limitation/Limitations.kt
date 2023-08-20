@@ -10,7 +10,6 @@ import taboolib.platform.compat.replacePlaceholder
 import world.icebear03.splendidenchants.api.fixedEnchants
 import world.icebear03.splendidenchants.api.splendidEt
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
-import world.icebear03.splendidenchants.enchant.data.belongedTargets
 import world.icebear03.splendidenchants.enchant.data.capability
 import world.icebear03.splendidenchants.enchant.data.group
 import world.icebear03.splendidenchants.enchant.data.isIn
@@ -20,7 +19,7 @@ class Limitations(
     private val belonging: SplendidEnchant,
     lines: List<String>
 ) {
-    val limitations = listOf(MAX_CAPABILITY to "", TARGET to "", DISABLE_WORLD to "") +
+    val limitations = listOf(MAX_CAPABILITY to "", TARGET to "", DISABLE_WORLD to "", SLOT to "") +
             lines.map { LimitType.valueOf(it.split(":")[0]) to it.split(":")[1] }
 
     // 检查操作是否被允许（比如是否可以附魔到某个物品上、使用时是否可以生效、村民生成新交易等）
@@ -50,7 +49,7 @@ class Limitations(
         val itemType = item.type
         val enchants = item.fixedEnchants
         return when (type) {
-            SLOT -> itemType.belongedTargets.any { it.activeSlots.contains(slot) }
+            SLOT -> belonging.targets.any { it.activeSlots.contains(slot) }
             TARGET -> belonging.targets.any { itemType.isIn(it) } || itemType == Material.BOOK || itemType == Material.ENCHANTED_BOOK
             MAX_CAPABILITY -> itemType.capability > enchants.size
             DEPENDENCE_ENCHANT -> return enchants.containsKey(splendidEt(value))

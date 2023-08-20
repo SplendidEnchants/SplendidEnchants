@@ -4,10 +4,8 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.Ageable
 import org.bukkit.entity.Player
-import world.icebear03.splendidenchants.api.add
-import world.icebear03.splendidenchants.api.calcToInt
+import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
-import world.icebear03.splendidenchants.api.replace
 
 object ObjectBlock {
 
@@ -40,12 +38,14 @@ object ObjectBlock {
         if (data is Ageable) holders["年龄"] = data.age
 
         val variabled = params.map { it.replace(holders) }
+        val type = variabled[0]
+        val after = variabled.subList(1)
 
-        when (variabled[0]) {
+        when (type) {
             "破坏" -> FurtherOperation.furtherBreak(holders["玩家"] as Player, block)
             "放置" -> FurtherOperation.furtherPlace(holders["玩家"] as Player, block, holders["方块类型"] as Material)
             "生成半径缓存" -> {
-                val range = variabled[1].toInt()
+                val range = after[0].toInt()
                 for (x in -range..range)
                     for (y in -range..range)
                         for (z in -range..range) {
@@ -54,8 +54,15 @@ object ObjectBlock {
             }
 
             "设置年龄" -> (data as? Ageable)?.let {
-                it.age = variabled[1].calcToInt().coerceAtLeast(0).coerceAtMost(it.maximumAge)
+                it.age = after[0].calcToInt().coerceAtLeast(0).coerceAtMost(it.maximumAge)
                 block.blockData = it
+            }
+
+            "临时方块" -> {
+                val player = holders[after[0]]!! as Player
+                val material = Material.valueOf(after[1])
+                val duration = after.getOrElse(2) { "0.5" }.calcToDouble()
+                player.tmpBlock(block.location, material, duration)
             }
 
             else -> return false

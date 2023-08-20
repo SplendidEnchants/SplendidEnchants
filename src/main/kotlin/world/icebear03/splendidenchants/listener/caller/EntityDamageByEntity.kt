@@ -1,9 +1,13 @@
 package world.icebear03.splendidenchants.listener.caller
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent
-import org.bukkit.entity.*
+import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Projectile
+import org.bukkit.entity.Trident
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityShootBowEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
@@ -12,7 +16,9 @@ import taboolib.platform.util.attacker
 import world.icebear03.splendidenchants.api.fixedEnchants
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.api.internal.PermissionChecker
+import world.icebear03.splendidenchants.api.internal.TriggerSlots
 import world.icebear03.splendidenchants.api.mainHand
+import world.icebear03.splendidenchants.api.triggerEts
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -61,16 +67,20 @@ object EntityDamageByEntity {
         weapon ?: return
 
         weapon.fixedEnchants.forEach { (enchant, _) ->
-            enchant.listeners.trigger(event, EventType.ATTACK, priority, attacker, weapon)
+            enchant.listeners.trigger(event, EventType.ATTACK, priority, attacker, weapon, EquipmentSlot.HAND)
         }
+        EventType.ATTACK.triggerEts(event, priority, TriggerSlots.ARMORS, attacker)
+        EventType.ATTACK.triggerEts(event, priority, TriggerSlots.OFF_HAND, attacker)
 
         FurtherOperation.delStamp(event)
 
         submit {
             if (damaged.isDead) {
                 weapon.fixedEnchants.forEach { (enchant, _) ->
-                    enchant.listeners.trigger(event, EventType.KILL, priority, attacker, weapon)
+                    enchant.listeners.trigger(event, EventType.KILL, priority, attacker, weapon, EquipmentSlot.HAND)
                 }
+                EventType.KILL.triggerEts(event, priority, TriggerSlots.ARMORS, attacker)
+                EventType.KILL.triggerEts(event, priority, TriggerSlots.OFF_HAND, attacker)
             }
         }
     }

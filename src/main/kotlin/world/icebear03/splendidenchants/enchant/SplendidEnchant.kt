@@ -190,7 +190,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         val variables = mutableMapOf<String, VariableType>()
 
         //变量名 - 公式
-        val leveled = mutableMapOf<String, String>()
+        val leveled = mutableMapOf<String, LinkedHashMap<Int, String>>()
 
         //变量名 - PAPI变量
         val playerRelated = mutableMapOf<String, String>()
@@ -203,8 +203,14 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
         init {
             variableConfig?.run {
-                getConfigurationSection("leveled").asMap().forEach { (variable, expression) ->
-                    leveled[variable] = expression.toString()
+                getConfigurationSection("leveled").asMap().forEach { (variable, any) ->
+                    if (any is ConfigurationSection) {
+                        val map = linkedMapOf<Int, String>()
+                        any.asMap().mapKeys { it.key.cint }.mapValues { it.value.toString() }.toSortedMap().forEach {
+                            map[it.key] = it.value
+                        }
+                        leveled[variable] = map
+                    } else leveled[variable] = linkedMapOf(1 to any.toString())
                     variables[variable] = VariableType.LEVELED
                 }
                 getConfigurationSection("player_related").asMap().forEach { (variable, expression) ->
@@ -223,11 +229,18 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             }
         }
 
-        private fun leveled(variable: String, level: Int?): String = level?.let { leveled[variable]!!.calculate("level" to "$level") } ?: "?"
+        fun leveled(variable: String, level: Int?): String {
+            return level?.let {
+                leveled[variable]!!
+                    .filter { it.key <= level }
+                    .minBy { level - it.key }.value
+                    .calculate("level" to level)
+            } ?: "?"
+        }
 
-        private fun playerRelated(variable: String, player: Player?): String = player?.let { playerRelated[variable]!!.replacePlaceholder(player) } ?: "?"
+        fun playerRelated(variable: String, player: Player?): String = player?.let { playerRelated[variable]!!.replacePlaceholder(player) } ?: "?"
 
-        private fun modifiable(variable: String, item: ItemStack?): String {
+        fun modifiable(variable: String, item: ItemStack?): String {
             val pair = modifiable[variable]!!
             return item?.let { it.itemMeta["splendidenchant_" + pair.first, PersistentDataType.STRING] ?: pair.second } ?: "?"
         }

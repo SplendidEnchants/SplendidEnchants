@@ -1,5 +1,8 @@
 package world.icebear03.splendidenchants.api
 
+import com.mcstarrysky.starrysky.i18n.asLangText
+import taboolib.common.platform.ProxyCommandSender
+import taboolib.common.platform.function.console
 import taboolib.module.kether.compileToJexl
 import kotlin.math.roundToInt
 
@@ -53,3 +56,5 @@ fun String.calculate(vararg holders: Pair<String, Any>): String = calculate(hold
 fun String.calcToDouble(vararg holders: Pair<String, Any>): Double = calculate(*holders).toDouble()
 fun String.calcToBoolean(vararg holders: Pair<String, Any>): Boolean = calculate(*holders).toBoolean()
 fun String.calcToInt(vararg holders: Pair<String, Any>): Int = calcToDouble(*holders).roundToInt()
+
+fun String.translate(who: ProxyCommandSender = console(), prefix: Boolean = true) = who.asLangText(this, prefix = prefix).toPlainText()

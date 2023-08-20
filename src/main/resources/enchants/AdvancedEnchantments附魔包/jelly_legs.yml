@@ -1,0 +1,32 @@
+basic:
+  id: jelly_legs
+  name: "弹跳鞋"
+  max_level: 3
+
+rarity: 精良
+targets:
+  - 靴子
+
+limitations: [ ]
+
+display:
+  description:
+    general: "§7下落中几乎接触地面时蹲下可免除伤害并弹起"
+    specific: "§7不超过§a{最大高度}格§7的下落中几乎接触地面时蹲下可免除伤害并弹起"
+
+variables:
+  leveled:
+    最大高度:
+      1: 16
+      2: 48
+      3: 256
+
+mechanisms:
+  listeners:
+    sneak:
+      type: SNEAK
+      chains:
+        - "条件::{下落高度}<={最大高度}"
+        - "条件::{下落高度}>=2.0"
+        - "事件::下蹲者:生成缓存"
+        - "对象::脚下方块:临时方块:受伤者:SLIME_BLOCK:0.5"

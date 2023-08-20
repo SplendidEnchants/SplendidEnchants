@@ -29,8 +29,9 @@ mechanisms:
     attack:
       type: ATTACK
       chains:
-        - "冷却::{冷却}:false"
+        - "条件::{蓄能程度}>=0.8"
         - "条件::{随机数}<={概率}"
-        - "事件::被攻击者:召唤雷电:{真实伤害}"
-        - "事件::被攻击者:发送信息:enchant.strike.damaged:who:{攻击者名称}"
-        - "事件::攻击者:发送信息:enchant.strike.attacker:who:{被攻击者名称}"
+        - "冷却::{冷却}:false"
+        - "事件::受伤者:召唤雷电:{真实伤害}"
+        - "事件::受伤者:发送信息:enchant.strike.damaged:who:{攻击者名称}"
+        - "事件::攻击者:发送信息:enchant.strike.attacker:who:{受伤者名称}"

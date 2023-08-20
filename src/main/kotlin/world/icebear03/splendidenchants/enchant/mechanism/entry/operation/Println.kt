@@ -1,10 +1,14 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.operation
 
+import com.mcstarrysky.starrysky.i18n.sendLang
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
+import world.icebear03.splendidenchants.api.translate
 
 object Println {
     fun println(entity: LivingEntity, text: String) {
-        println("§e来自玩家${entity.name}的附魔消息: §r$text")
-        entity.sendMessage("§e来自玩家${entity.name}的附魔消息: §r$text")
+        println(text.translate())
+        if (entity is Player)
+            entity.sendLang(text)
     }
 }

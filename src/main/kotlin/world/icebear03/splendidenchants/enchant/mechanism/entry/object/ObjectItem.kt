@@ -2,6 +2,7 @@ package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 
 import org.bukkit.inventory.ItemStack
 import world.icebear03.splendidenchants.api.replace
+import world.icebear03.splendidenchants.api.subList
 
 object ObjectItem {
 
@@ -12,8 +13,10 @@ object ObjectItem {
     ): Boolean {
 
         val variabled = params.map { it.replace(holders) }
+        val type = variabled[0]
+        val after = variabled.subList(1)
 
-        when (variabled[0]) {
+        when (type) {
             "" -> {}
             else -> return false
         }

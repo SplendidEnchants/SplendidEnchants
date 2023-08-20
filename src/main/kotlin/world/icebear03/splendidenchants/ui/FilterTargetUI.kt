@@ -44,7 +44,7 @@ object FilterTargetUI {
             rows(shape.rows)
             val slots = shape["FilterTarget:filter"].toList()
             slots(slots)
-            elements { targets.values.filter { it.id != "unknown" }.toList() }
+            elements { targets.values.toList() }
 
             load(shape, templates, player, "FilterTarget:filter", "Previous", "Next")
             pages(shape, templates)

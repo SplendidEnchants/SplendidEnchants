@@ -1,6 +1,6 @@
 package world.icebear03.splendidenchants.api
 
-import org.bukkit.entity.Player
+import org.bukkit.entity.LivingEntity
 import org.bukkit.event.Event
 import taboolib.common.platform.event.EventPriority
 import world.icebear03.splendidenchants.api.internal.TriggerSlots
@@ -10,19 +10,21 @@ fun EventType.triggerEts(
     event: Event,
     priority: EventPriority,
     slots: TriggerSlots,
-    player: Player
+    entity: LivingEntity
 ) {
-    val inventory = player.inventory
+    val inventory = entity.equipment ?: return
     slots.slots.forEach {
         val item = inventory.getItem(it)
+        if (item.isNull) return@forEach
 
         item.fixedEnchants.forEach { enchantPair ->
             enchantPair.key.listeners.trigger(
                 event,
                 this,
                 priority,
-                player,
-                item
+                entity,
+                item,
+                it
             )
         }
     }
