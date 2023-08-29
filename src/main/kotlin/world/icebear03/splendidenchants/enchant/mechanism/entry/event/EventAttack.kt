@@ -22,10 +22,10 @@ object EventAttack : EventEntry<EntityDamageByEntityEvent>() {
         val attacker = event.attacker
         val damaged = event.entity
         return when (objName) {
-            "攻击者" -> objLivingEntity.holderize(event.entity as LivingEntity)
-            "蓄能程度" -> objString.holderize((attacker as? Player)?.attackCooldown ?: 1.0f)
-            "是否为暴击" -> objString.holderize((attacker?.fallDistance ?: -1f) > 0)
-            "是否被格挡" -> objString.holderize((damaged as? Player)?.isBlocking ?: false)
+            "攻击者" -> objLivingEntity.holderize(attacker!!)
+            "蓄能程度" -> objString.h((attacker as? Player)?.attackCooldown ?: 1.0f)
+            "是否为暴击" -> objString.h((attacker?.fallDistance ?: -1f) > 0)
+            "是否被格挡" -> objString.h((damaged as? Player)?.isBlocking ?: false)
             else -> EventDamaged[event, objName]
         }
     }

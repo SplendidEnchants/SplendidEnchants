@@ -17,10 +17,10 @@ object EventInteractEntity : EventEntry<PlayerInteractEntityEvent>() {
 
     override fun get(event: PlayerInteractEntityEvent, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
-            "主副手" -> objString.holderize(event.hand)
+            "主副手" -> objString.h(event.hand)
             "交互生物" -> (event.rightClicked as? LivingEntity)?.let { objLivingEntity.holderize(it) } ?: (objLivingEntity to null)
             "玩家" -> objPlayer.holderize(event.player)
-            else -> objString.holderize(null)
+            else -> objString.h(null)
         }
     }
 }

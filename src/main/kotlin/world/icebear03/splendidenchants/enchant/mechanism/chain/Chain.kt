@@ -32,10 +32,12 @@ class Chain(val listeners: Listeners, line: String) {
 
         val reg = Regex("\\{.{1,64}\\}")
         reg.findAll(variabled).forEach { result ->
-            val path = result.value.replace("{" to "", "}" to "").split(".")
+            val path = result.value.replace("{" to "", "}" to "", tagged = false).split(".")
             var obj = eventType.entry.g(event, path[0])
-            for (i in 1 until path.size)
-                obj = obj.first.g(obj, path[i])
+            for (i in 1 until path.size) {
+                val type = obj.first
+                obj = type.g(type.d(obj.second), path[i])
+            }
 
             variabled = variabled.replace(result.value, obj.second.toString())
         }
@@ -83,8 +85,10 @@ class Chain(val listeners: Listeners, line: String) {
                 val path = parts[0].split(".")
                 var obj = eventType.entry.g(event, path[0])
                 for (i in 1 until path.size)
-                    obj = obj.first.g(obj, path[i])
-                return obj.first.m(obj, parts[1], parts.subList(2))
+                    obj = obj.first.g(obj.second, path[i])
+
+                val type = obj.first
+                return type.m(type.d(obj.second), parts[1], parts.subList(2))
             }
 
             else -> {}

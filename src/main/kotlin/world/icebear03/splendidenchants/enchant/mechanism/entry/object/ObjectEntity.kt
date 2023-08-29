@@ -33,9 +33,9 @@ object ObjectEntity : ObjectEntry<Entity>() {
 
     override fun get(from: Entity, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
-            "下落高度" -> objString.holderize(from.fallDistance)
-            "名称" -> objString.holderize(from.customName ?: from.getI18nName())
-            else -> objString.holderize(null)
+            "下落高度" -> objString.h(from.fallDistance)
+            "名称" -> objString.h(from.customName ?: from.getI18nName())
+            else -> objString.h(null)
         }
     }
 

@@ -18,7 +18,7 @@ object EventKill : EventEntry<EntityDamageByEntityEvent>() {
         return when (objName) {
             "击杀者" -> objLivingEntity.holderize(event.attacker!!)
             "死者" -> objLivingEntity.holderize(event.entity as LivingEntity)
-            else -> objString.holderize(null)
+            else -> objString.h(null)
         }
     }
 }

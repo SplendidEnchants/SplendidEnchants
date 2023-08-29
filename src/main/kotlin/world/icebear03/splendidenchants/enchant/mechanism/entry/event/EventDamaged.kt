@@ -26,9 +26,9 @@ object EventDamaged : EventEntry<EntityDamageEvent>() {
     override fun get(event: EntityDamageEvent, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
             "受伤者" -> objLivingEntity.holderize(event.entity as LivingEntity)
-            "伤害类型" -> objString.holderize(event.cause.toString())
-            "伤害" -> objString.holderize(event.damage)
-            else -> objString.holderize(null)
+            "伤害类型" -> objString.h(event.cause.toString())
+            "伤害" -> objString.h(event.damage)
+            else -> objString.h(null)
         }
     }
 }

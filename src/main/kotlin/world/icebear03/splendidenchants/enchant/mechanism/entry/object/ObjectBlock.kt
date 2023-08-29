@@ -56,15 +56,15 @@ object ObjectBlock : ObjectEntry<Block>() {
             return objBlock.holderize(loc.block)
         }
         return when (objName) {
-            "类型" -> objString.holderize(from.type)
-            "生物群系" -> objString.holderize(from.biome)
-            "充能等级" -> objString.holderize(from.blockPower)
-            "x" -> objString.holderize(from.x)
-            "y" -> objString.holderize(from.y)
-            "z" -> objString.holderize(from.z)
-            "是否为农作物" -> objString.holderize(crops.containsKey(from.type))
-            "年龄" -> objString.holderize((from.blockData as? Ageable)?.age ?: 0)
-            else -> objString.holderize(null)
+            "类型" -> objString.h(from.type)
+            "生物群系" -> objString.h(from.biome)
+            "充能等级" -> objString.h(from.blockPower)
+            "x" -> objString.h(from.x)
+            "y" -> objString.h(from.y)
+            "z" -> objString.h(from.z)
+            "是否为农作物" -> objString.h(crops.containsKey(from.type))
+            "年龄" -> objString.h((from.blockData as? Ageable)?.age ?: 0)
+            else -> objString.h(null)
         }
     }
 

@@ -43,8 +43,8 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
 
     override fun get(from: LivingEntity, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
-            "血量" -> objString.holderize(from.health)
-            "最大血量" -> objString.holderize(from.maxHealth)
+            "血量" -> objString.h(from.health)
+            "最大血量" -> objString.h(from.maxHealth)
             "脚下方块" -> objBlock.holderize(from.blockBelow ?: from.groundBlock)
             else -> objEntity[from, objName]
         }

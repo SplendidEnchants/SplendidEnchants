@@ -52,8 +52,9 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
             sHolders += enchant.variable.flexible
 
             val chains = byId[id]!!.second
-            fun next(tot: Int = 0, chain: Chain = chains[tot]) {
+            fun next(tot: Int = 0) {
                 if (tot >= chains.size) return
+                val chain = chains[tot]
                 sHolders["随机数"] = (Math.random() * 100).roundToInt().toString()
                 sHolders += enchant.variable.variables(item.etLevel(enchant), entity, item)
 

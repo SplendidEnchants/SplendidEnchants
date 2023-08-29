@@ -8,15 +8,15 @@ import taboolib.common5.cdouble
 import taboolib.module.kether.compileToJexl
 import kotlin.math.roundToInt
 
-fun String.replace(holders: List<Pair<String, Any>>): String {
+fun String.replace(holders: List<Pair<String, Any>>, tagged: Boolean = true): String {
     var tmp = this
-    holders.forEach { (holder, value) -> tmp = tmp.replace("{$holder}", "$value") }
+    holders.forEach { (holder, value) -> tmp = tmp.replace(if (tagged) "{$holder}" else holder, "$value") }
     return tmp
 }
 
-fun String.replace(holders: Map<String, Any>): String = replace(holders.toList())
+fun String.replace(holders: Map<String, Any>, tagged: Boolean = true): String = replace(holders.toList(), tagged)
 
-fun String.replace(vararg holders: Pair<String, Any>): String = replace(holders.toList())
+fun String.replace(vararg holders: Pair<String, Any>, tagged: Boolean = true): String = replace(holders.toList(), tagged)
 
 val stringCalcSymbols = listOf("==", "~>", "~<", "~~", "``")
 

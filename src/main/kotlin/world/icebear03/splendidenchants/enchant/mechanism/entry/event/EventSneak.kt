@@ -16,7 +16,7 @@ object EventSneak : EventEntry<PlayerToggleSneakEvent>() {
     override fun get(event: PlayerToggleSneakEvent, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
             "下蹲者" -> objPlayer.holderize(event.player)
-            else -> objString.holderize(null)
+            else -> objString.h(null)
         }
     }
 }

@@ -17,11 +17,11 @@ object EventInteract : EventEntry<PlayerInteractEvent>() {
 
     override fun get(event: PlayerInteractEvent, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
-            "主副手" -> objString.holderize(event.hand)
+            "主副手" -> objString.h(event.hand)
             "交互方块" -> event.clickedBlock?.let { objBlock.holderize(it) } ?: (objBlock to null)
             "手持物品" -> event.item?.let { objItem.holderize(it) } ?: (objItem to null)
             "玩家" -> objPlayer.holderize(event.player)
-            else -> objString.holderize(null)
+            else -> objString.h(null)
         }
     }
 }
