@@ -18,7 +18,6 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
         params: List<String>
     ): Boolean {
         objEntity.modify(obj, cmd, params)
-        println(cmd)
         when (cmd) {
             "施加药水效果" -> obj.effect(PotionEffectType.getByName(params[0])!!, params[1].calcToInt(), params[2].calcToInt())
             "霹雷" -> {
@@ -26,10 +25,7 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
                 obj.realDamage((params[0, "4.0"]).calcToDouble())
             }
 
-            "伤害" -> {
-                println(params[1])
-                obj.damage(params[0].calcToDouble(), objPlayer.disholderize(params[1]))
-            }
+            "伤害" -> obj.damage(params[0].calcToDouble(), objPlayer.disholderize(params[1]))
 
             "弹飞" -> {
                 val height = params[0].calcToDouble()

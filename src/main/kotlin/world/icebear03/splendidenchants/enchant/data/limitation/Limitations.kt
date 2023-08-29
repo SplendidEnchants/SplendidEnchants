@@ -38,19 +38,19 @@ class Limitations(
                 DISABLE_WORLD -> !belonging.basicData.disableWorlds.contains(creature?.world?.name)
                 TARGET, MAX_CAPABILITY, SLOT,
                 CONFLICT_ENCHANT, CONFLICT_GROUP,
-                DEPENDENCE_ENCHANT, DEPENDENCE_GROUP -> checkItem(type, item, value, slot)
+                DEPENDENCE_ENCHANT, DEPENDENCE_GROUP -> checkItem(type, item, value, slot, checkType == CheckType.USE)
             }.run { if (!this) return false to "${type.typeName}错误" }
         }
 
         return true to ""
     }
 
-    private fun checkItem(type: LimitType, item: ItemStack, value: String, slot: EquipmentSlot? = null): Boolean {
+    private fun checkItem(type: LimitType, item: ItemStack, value: String, slot: EquipmentSlot?, use: Boolean): Boolean {
         val itemType = item.type
         val enchants = item.fixedEnchants
         return when (type) {
             SLOT -> belonging.targets.any { it.activeSlots.contains(slot) }
-            TARGET -> belonging.targets.any { itemType.isIn(it) } || itemType == Material.BOOK || itemType == Material.ENCHANTED_BOOK
+            TARGET -> belonging.targets.any { itemType.isIn(it) } || (!use && (itemType == Material.BOOK || itemType == Material.ENCHANTED_BOOK))
             MAX_CAPABILITY -> itemType.capability > enchants.size
             DEPENDENCE_ENCHANT -> return enchants.containsKey(splendidEt(value))
             CONFLICT_ENCHANT -> return !enchants.containsKey(splendidEt(value))

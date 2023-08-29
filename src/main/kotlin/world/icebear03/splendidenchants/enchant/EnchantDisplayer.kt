@@ -10,6 +10,7 @@ import taboolib.common.platform.function.console
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
+import world.icebear03.splendidenchants.enchant.data.capability
 import world.icebear03.splendidenchants.enchant.data.rarities
 import kotlin.math.min
 
@@ -17,6 +18,7 @@ object EnchantDisplayer {
 
     var defaultPrevious = "{enchant_display_roman}"
     var defaultSubsequent = "\n§8| §7{description}"
+    var capabilityLine = "§8| 附魔词条数空余: §e{capability}"
 
     var sortByLevel = true
     var rarityOrder = listOf<String>()
@@ -32,6 +34,8 @@ object EnchantDisplayer {
         YamlUpdater.loadAndUpdate("enchants/display.yml").run {
             defaultPrevious = getString("format.default_previous", defaultPrevious)!!
             defaultSubsequent = getString("format.default_subsequent", defaultSubsequent)!!
+            capabilityLine = getString("capability_line", capabilityLine)!!
+
             sortByLevel = getBoolean("sort.level", true)
             rarityOrder = getStringList("sort.rarity.order") + rarities.keys.filter { !rarityOrder.contains(it) }
 
@@ -108,6 +112,7 @@ object EnchantDisplayer {
             loreFormation[originLore.isNotEmpty()]!!.forEach {
                 when (it) {
                     "{enchant_lore}" -> resultLore += enchantLore
+                    "{capability_line}" -> resultLore += capabilityLine.replace("capability" to item.type.capability - item.fixedEnchants.size)
                     "{item_lore}" -> {
                         first = resultLore.size
                         resultLore += originLore

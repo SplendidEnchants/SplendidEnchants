@@ -14,6 +14,9 @@ taboolib {
         }
         desc("SplendidEnchants 附魔扩展插件")
         load("STARTUP")
+        dependencies {
+            name("TrChat").with("bukkit").optional(true)
+        }
     }
     install("common")
     install("common-5")
@@ -25,7 +28,7 @@ taboolib {
     install("module-ui")
     install("platform-bukkit")
     classifier = null
-    version = "6.0.12-14"
+    version = "6.0.12-15"
 
     relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
 }
@@ -42,6 +45,9 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT")
+
+    implementation(files("/lib/InteractiveChat-4.2.7.2.jar"))
+    implementation(files("/lib/TrChat-2.0.4.jar"))
 
     compileOnly("ink.ptms:nms-all:1.0.0")
     compileOnly("ink.ptms.core:v11605:11605")

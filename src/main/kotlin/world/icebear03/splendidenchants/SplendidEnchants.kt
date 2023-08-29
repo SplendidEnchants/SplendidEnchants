@@ -1,6 +1,8 @@
 package world.icebear03.splendidenchants
 
 import com.mcstarrysky.starrysky.i18n.I18n
+import me.arasple.mc.trchat.module.internal.hook.HookPlugin
+import org.bukkit.Bukkit
 import org.serverct.parrot.parrotx.mechanism.Reloadables
 import org.serverct.parrot.parrotx.ui.registry.MenuFunctions
 import taboolib.common.platform.Plugin
@@ -16,6 +18,8 @@ import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.listener.mechanism.*
+import world.icebear03.splendidenchants.supports.HookInteractiveChat
+import world.icebear03.splendidenchants.supports.HookTrChat
 import world.icebear03.splendidenchants.ui.internal.back
 import kotlin.system.measureTimeMillis
 
@@ -78,6 +82,18 @@ object SplendidEnchants : Plugin() {
         }
     }
 
+    override fun onActive() {
+        console().sendMessage("Loading supports for other plugins...")
+        if (Bukkit.getPluginManager().isPluginEnabled("TrChat")) {
+            console().sendMessage("|- TrChat detected, attempt to hook it...")
+            HookPlugin.addHook(HookTrChat)
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("InteractiveChat")) {
+            console().sendMessage("|- InteractiveChat detected, attempt to hook it...")
+            HookInteractiveChat.load()
+        }
+    }
+
     fun reload() {
         console().sendMessage("Reloading SplendidEnchants...")
 
@@ -123,6 +139,8 @@ object SplendidEnchants : Plugin() {
     }
 
     override fun onDisable() {
+        if (Bukkit.getPluginManager().isPluginEnabled("TrChat"))
+            HookPlugin.registry.removeIf { it.plugin?.name == "SplendidEnchants" }
         EnchantLoader.unregisterAll()
     }
 }
