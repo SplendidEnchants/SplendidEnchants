@@ -59,4 +59,7 @@ object CommandHandler : CommandHandler {
 
     @CommandBody(permission = "splendidenchants.reload")
     val reload = CommandReload.command
+
+    @CommandBody(permission = "splendidenchants.test")
+    val test = CommandTest.command
 }

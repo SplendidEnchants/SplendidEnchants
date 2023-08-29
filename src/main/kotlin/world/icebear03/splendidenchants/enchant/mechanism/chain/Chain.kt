@@ -1,7 +1,5 @@
 package world.icebear03.splendidenchants.enchant.mechanism.chain
 
-import org.bukkit.block.Block
-import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -10,11 +8,8 @@ import taboolib.common.platform.function.submit
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
-import world.icebear03.splendidenchants.enchant.mechanism.EventType.*
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
 import world.icebear03.splendidenchants.enchant.mechanism.chain.ChainType.*
-import world.icebear03.splendidenchants.enchant.mechanism.entry.event.*
-import world.icebear03.splendidenchants.enchant.mechanism.entry.`object`.*
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Broadcast
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Plant
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Println
@@ -30,12 +25,22 @@ class Chain(val listeners: Listeners, line: String) {
         eventType: EventType,
         entity: LivingEntity,
         item: ItemStack,
-        holders: MutableMap<String, Any>,
-        init: Boolean
+        sHolders: MutableMap<String, String>
     ): Boolean {
-        if (init) Chain(listeners, "事件::初始化变量").trigger(event, eventType, entity, item, holders, false)
+        //首先全部替换
+        var variabled = content.replace(sHolders)
 
-        val variabled = content.replace(holders)
+        val reg = Regex("\\{.{1,64}\\}")
+        reg.findAll(variabled).forEach { result ->
+            val path = result.value.replace("{" to "", "}" to "").split(".")
+            var obj = eventType.entry.g(event, path[0])
+            for (i in 1 until path.size)
+                obj = obj.first.g(obj, path[i])
+
+            variabled = variabled.replace(result.value, obj.second.toString())
+        }
+
+        //生成变量
         val parts = variabled.split(":")
 
         val toPlayer = entity as? Player
@@ -57,53 +62,29 @@ class Chain(val listeners: Listeners, line: String) {
                 entity.addCd(key)
             }
 
-            CONDITION -> {
-                return if (parts.size > 1)
-                    when (val tmp = holders[parts[0]]!!) {
-                        is Player -> ObjectPlayer.modify(tmp, parts.subList(1), holders)
-                        is LivingEntity -> ObjectLivingEntity.modify(tmp, parts.subList(1), holders)
-                        is Entity -> ObjectEntity.modify(tmp, parts.subList(1), holders)
-                        is Block -> ObjectBlock.modify(tmp, parts.subList(1), holders)
-                        is ItemStack -> ObjectItem.modify(tmp, parts.subList(1), holders)
-                        else -> false
-                    }
-                else variabled.calcToBoolean()
-            }
+            CONDITION -> return variabled.calcToBoolean()
 
             ASSIGNMENT -> {
-                val variable = parts[0]
-                if (listeners.enchant.variable.variables[variable] == SplendidEnchant.VariableType.FLEXIBLE)
-                    holders[variable] = parts[1].calculate()
-                else listeners.enchant.variable.modifyVariable(item, variable, parts[1].calculate())
+                val tmp = listeners.enchant.variable
+                if (tmp.variables[parts[0]] == SplendidEnchant.VariableType.FLEXIBLE) sHolders[parts[0]] = parts[1].calculate()
+                else tmp.modifyVariable(item, parts[0], parts[1].calculate())
             }
 
-            EVENT -> {
-                when (eventType) {
-                    KILL -> Kill.modify(event, entity, parts, holders)
-                    ATTACK -> Attack.modify(event, entity, parts, holders)
-                    RIGHT_CLICK, LEFT_CLICK, PHYSICAL_INTERACT -> Interact.modify(event, entity, parts, holders)
-                    DAMAGED -> Damaged.modify(event, entity, parts, holders)
-                    SNEAK -> Sneak.modify(event, entity, parts, holders)
-                    INTERACT_ENTITY -> {}
-                }
-            }
+            EVENT -> eventType.entry.m(event, entity, parts[0], parts.subList(1))
 
             OPERATION -> when (parts[0]) {
                 "plant", "播种" -> submit submit@{ Plant.plant(toPlayer ?: return@submit, parts[1].toInt(), parts[2]) }
-                "println", "控制台输出" -> Println.println(entity, parts.subList(1).joinToString(":"))
+                "println", "控制台输出" -> Println.println(entity, parts.subList(1).joinToString(""))
                 "broadcast", "播报" -> Broadcast.broadcast(parts.subList(1).joinToString(""))
                 else -> {}
             }
 
             OBJECT -> {
-                when (val obj = holders[parts[0]]!!) {
-                    is Player -> ObjectPlayer.modify(obj, parts.subList(1), holders)
-                    is LivingEntity -> ObjectLivingEntity.modify(obj, parts.subList(1), holders)
-                    is Entity -> ObjectEntity.modify(obj, parts.subList(1), holders)
-                    is Block -> ObjectBlock.modify(obj, parts.subList(1), holders)
-                    is ItemStack -> ObjectItem.modify(obj, parts.subList(1), holders)
-                    else -> {}
-                }
+                val path = parts[0].split(".")
+                var obj = eventType.entry.g(event, path[0])
+                for (i in 1 until path.size)
+                    obj = obj.first.g(obj, path[i])
+                return obj.first.m(obj, parts[1], parts.subList(2))
             }
 
             else -> {}

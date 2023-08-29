@@ -64,14 +64,14 @@ object FurtherOperation {
 
     //后面两个参数因附魔而异
     //比如较大面积的一次性破坏方块，triggereffects应该为false，否则会导致玩家卡顿
-    fun furtherBreak(player: Player, block: Block, triggerEffects: Boolean = true, dropExperience: Boolean = true) {
-        if (PermissionChecker.hasBlockPermission(player, block)) {
-            player.breakBlock(block)
-        }
+    fun furtherBreak(player: Player?, block: Block) {
+        if (player == null) return
+        else if (PermissionChecker.hasBlockPermission(player, block)) player.breakBlock(block)
     }
 
-    fun furtherPlace(player: Player, block: Block, type: Material) {
+    fun furtherPlace(player: Player?, block: Block, type: Material) {
         if (block.type != Material.AIR) return
+        if (player == null) return
         if (PermissionChecker.hasBlockPermission(player, block)) {
             block.type = type
             //TODO 应当呼应事件给其他插件处理

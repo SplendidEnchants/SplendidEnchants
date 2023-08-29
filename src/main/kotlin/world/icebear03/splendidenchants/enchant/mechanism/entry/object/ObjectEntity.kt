@@ -1,48 +1,45 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 
 import com.mcstarrysky.starrysky.i18n.sendLang
+import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
-import world.icebear03.splendidenchants.api.calcToDouble
-import world.icebear03.splendidenchants.api.loc
-import world.icebear03.splendidenchants.api.replace
-import world.icebear03.splendidenchants.api.subList
+import taboolib.module.nms.getI18nName
+import world.icebear03.splendidenchants.api.toLoc
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objString
+import java.util.*
 
-object ObjectEntity {
+object ObjectEntity : ObjectEntry<Entity>() {
 
-    fun modify(
-        entity: Entity,
-        params: List<String>,
-        holders: MutableMap<String, Any>
+    override fun modify(
+        obj: Entity,
+        cmd: String,
+        params: List<String>
     ): Boolean {
-        
-        holders["下落高度"] = entity.fallDistance
-
-        val variabled = params.map { it.replace(holders) }
-        val type = variabled[0]
-        val after = variabled.subList(1)
-
-        when (type) {
-            "传送" -> entity.teleport(
-                loc(
-                    after[0],
-                    after[1].calcToDouble(),
-                    after[2].calcToDouble(),
-                    after[3].calcToDouble()
-                )
-            )
-
+        when (cmd) {
+            "传送" -> obj.teleport(params[0].toLoc())
             "发送信息" -> {
-                val tmp = if (after.size > 1) {
+                val tmp = if (params.size > 1) {
                     buildList<Pair<String, Any>> {
-                        for (i in 1 until after.size step 2)
-                            this += after[i] to after[i + 1]
+                        for (i in 1 until params.size step 2)
+                            this += params[i] to params[i + 1]
                     }.toTypedArray()
                 } else arrayOf()
-                entity.sendLang(after[0], *tmp)
+                obj.sendLang(params[0], *tmp)
             }
-
-            else -> return false
         }
         return true
     }
+
+    override fun get(from: Entity, objName: String): Pair<ObjectEntry<*>, Any?> {
+        return when (objName) {
+            "下落高度" -> objString.holderize(from.fallDistance)
+            "名称" -> objString.holderize(from.customName ?: from.getI18nName())
+            else -> objString.holderize(null)
+        }
+    }
+
+    override fun holderize(obj: Entity) = this to "实体=${obj.uniqueId}"
+
+    override fun disholderize(holder: String) = Bukkit.getEntity(UUID.fromString(holder.replace("实体=", "")))
 }

@@ -1,32 +1,35 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import world.icebear03.splendidenchants.api.calcToInt
-import world.icebear03.splendidenchants.api.replace
-import world.icebear03.splendidenchants.api.subList
+import world.icebear03.splendidenchants.api.get
 import world.icebear03.splendidenchants.api.takeItem
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objItem
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objLivingEntity
+import java.util.*
 
-object ObjectPlayer {
+object ObjectPlayer : ObjectEntry<Player>() {
 
-    fun modify(
-        player: Player,
-        params: List<String>, holders: MutableMap<String, Any>
+    override fun modify(
+        obj: Player,
+        cmd: String,
+        params: List<String>
     ): Boolean {
-        if (ObjectLivingEntity.modify(player, params, holders)) return true
-
-        val variabled = params.map { it.replace(holders) }
-        val type = variabled[0]
-        val after = variabled.subList(1)
-
-        when (type) {
-            "扣除物品" -> return player.takeItem(after.getOrNull(1)?.calcToInt() ?: 1) {
-                it.type == holders[after[0]]!!
-            }
-
-            "TODO" -> {}
-
-            else -> return false
+        objLivingEntity.modify(obj, cmd, params)
+        when (cmd) {
+            "扣除物品" -> return obj.takeItem(params[1, "1"].calcToInt()) { it.isSimilar(objItem.disholderize(params[0])) }
         }
         return true
     }
+
+    override fun get(from: Player, objName: String): Pair<ObjectEntry<*>, Any?> {
+        return when (objName) {
+            else -> objLivingEntity[from, objName]
+        }
+    }
+
+    override fun holderize(obj: Player) = this to "玩家=${obj.uniqueId}"
+    override fun disholderize(holder: String): Player? = Bukkit.getPlayer(UUID.fromString(holder))
 }

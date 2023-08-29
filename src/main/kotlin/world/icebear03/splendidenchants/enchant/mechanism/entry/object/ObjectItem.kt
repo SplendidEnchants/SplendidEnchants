@@ -1,25 +1,25 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 
+import com.mcstarrysky.starrysky.function.deserializeItemStackFromBase64
+import com.mcstarrysky.starrysky.function.serializeToBase64
 import org.bukkit.inventory.ItemStack
-import world.icebear03.splendidenchants.api.replace
-import world.icebear03.splendidenchants.api.subList
+import world.icebear03.splendidenchants.api.name
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
 
-object ObjectItem {
+object ObjectItem : ObjectEntry<ItemStack>() {
 
-    fun modify(
-        item: ItemStack,
-        params: List<String>,
-        holders: MutableMap<String, Any>
+    override fun modify(
+        obj: ItemStack,
+        cmd: String,
+        params: List<String>
     ): Boolean {
-
-        val variabled = params.map { it.replace(holders) }
-        val type = variabled[0]
-        val after = variabled.subList(1)
-
-        when (type) {
-            "" -> {}
-            else -> return false
+        when (cmd) {
+            "修改名称" -> obj.name = params[0]
         }
         return true
     }
+
+    override fun holderize(obj: ItemStack) = this to "物品=${obj.serializeToBase64()}"
+
+    override fun disholderize(holder: String) = holder.replace("物品=", "").deserializeItemStackFromBase64()
 }

@@ -21,7 +21,7 @@ fun LivingEntity.mainHand() = equipment?.itemInMainHand
 fun LivingEntity.offHand() = equipment?.itemInOffHand
 
 fun LivingEntity.effect(type: PotionEffectType, duration: Int, level: Int = 1) {
-    this.addPotionEffect(type.createEffect(duration * 20, level - 1))
+    addPotionEffect(type.createEffect(duration * 20, level - 1))
 }
 
 fun Player.takeItem(amount: Int = 1, matcher: (itemStack: ItemStack) -> Boolean): Boolean {

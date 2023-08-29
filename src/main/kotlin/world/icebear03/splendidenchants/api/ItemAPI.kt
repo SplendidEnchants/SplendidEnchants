@@ -25,7 +25,7 @@ var ItemStack.damage
 var ItemMeta.fixedEnchants
     get(): Map<SplendidEnchant, Int> {
         return (if (this is EnchantmentStorageMeta) storedEnchants
-        else enchants).mapKeys { (enchant, _) -> enchant.splendidEt() }
+        else enchants).mapNotNull { (enchant, level) -> (enchant.splendidEt() ?: return@mapNotNull null) to level }.toMap()
     }
     set(value) {
         clearEts()

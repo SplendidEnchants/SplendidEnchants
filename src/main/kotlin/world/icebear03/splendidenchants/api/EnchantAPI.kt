@@ -14,7 +14,7 @@ import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 
-fun Enchantment.splendidEt() = splendidEt(key)!!
+fun Enchantment.splendidEt() = splendidEt(key)
 fun splendidEt(identifier: String) = EnchantLoader.BY_NAME[identifier] ?: EnchantLoader.BY_ID[identifier]
 fun splendidEt(key: NamespacedKey) = EnchantLoader.BY_ID[key.key]
 fun splendidEts(rarity: Rarity) = EnchantLoader.BY_RARITY[rarity]?.toList() ?: listOf()

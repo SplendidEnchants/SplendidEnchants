@@ -11,8 +11,8 @@ limitations: [ ]
 
 display:
   description:
-    general: "§7下落中几乎接触地面时蹲下可免除伤害并弹起"
-    specific: "§7不超过§a{最大高度}格§7的下落中几乎接触地面时蹲下可免除伤害并弹起"
+    general: "§7摔伤时可减少伤害并弹起"
+    specific: "§7不超过§a{最大高度}格§7的摔伤时减少§a{减少伤害}点§7伤害并弹起"
 
 variables:
   leveled:
@@ -20,13 +20,14 @@ variables:
       1: 16
       2: 48
       3: 256
+    减少伤害: 3*{level}
 
 mechanisms:
   listeners:
-    sneak:
-      type: SNEAK
+    damaged:
+      type: DAMAGED
       chains:
-        - "条件::{下落高度}<={最大高度}"
-        - "条件::{下落高度}>=2.0"
-        - "事件::下蹲者:生成缓存"
-        - "对象::脚下方块:临时方块:受伤者:SLIME_BLOCK:0.5"
+        - "条件::{伤害类型}==FALL"
+        - "条件::{受伤者.下落高度}<={最大高度}"
+        - "对象::受伤者:弹飞:{下落高度}/2"
+        - "事件::设置伤害:{伤害}-{减少伤害}"

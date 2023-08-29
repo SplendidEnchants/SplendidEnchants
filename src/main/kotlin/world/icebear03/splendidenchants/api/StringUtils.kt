@@ -3,6 +3,8 @@ package world.icebear03.splendidenchants.api
 import com.mcstarrysky.starrysky.i18n.asLangText
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.function.console
+import taboolib.common5.cbool
+import taboolib.common5.cdouble
 import taboolib.module.kether.compileToJexl
 import kotlin.math.roundToInt
 
@@ -52,9 +54,12 @@ fun String.calculate(holders: List<Pair<String, Any>>): String {
 }
 
 fun String.calculate(holders: Map<String, Any>): String = calculate(holders.toList())
+fun String.calcToDouble(holders: Map<String, Any>): Double = calculate(holders).cdouble
+fun String.calcToBoolean(holders: Map<String, Any>): Boolean = calculate(holders).cbool
+fun String.calcToInt(holders: Map<String, Any>): Int = calcToDouble(holders).roundToInt()
 fun String.calculate(vararg holders: Pair<String, Any>): String = calculate(holders.toList())
-fun String.calcToDouble(vararg holders: Pair<String, Any>): Double = calculate(*holders).toDouble()
-fun String.calcToBoolean(vararg holders: Pair<String, Any>): Boolean = calculate(*holders).toBoolean()
+fun String.calcToDouble(vararg holders: Pair<String, Any>): Double = calculate(*holders).cdouble
+fun String.calcToBoolean(vararg holders: Pair<String, Any>): Boolean = calculate(*holders).cbool
 fun String.calcToInt(vararg holders: Pair<String, Any>): Int = calcToDouble(*holders).roundToInt()
 
 fun String.translate(who: ProxyCommandSender = console(), prefix: Boolean = true) = who.asLangText(this, prefix = prefix).toPlainText()

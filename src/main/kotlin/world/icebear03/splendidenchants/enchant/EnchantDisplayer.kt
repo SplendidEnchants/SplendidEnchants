@@ -80,6 +80,7 @@ object EnchantDisplayer {
 
     //展示是给玩家看的，玩家必须存在
     fun display(item: ItemStack, player: Player): ItemStack {
+        if (item.isNull) return item
         return item.clone().modifyMeta<ItemMeta> {
             item.fixedEnchants.ifEmpty { return@modifyMeta }
 
@@ -125,6 +126,7 @@ object EnchantDisplayer {
     }
 
     fun undisplay(item: ItemStack, player: Player): ItemStack {
+        if (item.isNull) return item
         return item.clone().modifyMeta<ItemMeta> {
             this["display_mark", PersistentDataType.BOOLEAN] ?: return@modifyMeta
 

@@ -3,11 +3,14 @@ package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.Ageable
-import org.bukkit.entity.Player
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objBlock
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objPlayer
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objString
 
-object ObjectBlock {
+object ObjectBlock : ObjectEntry<Block>() {
 
     val crops = mapOf(
         Material.WHEAT to Material.WHEAT,
@@ -20,53 +23,52 @@ object ObjectBlock {
         Material.GLOW_BERRIES to Material.GLOW_BERRIES
     )
 
-    fun modify(
-        block: Block,
-        params: List<String>,
-        holders: MutableMap<String, Any>
+    override fun modify(
+        obj: Block,
+        cmd: String,
+        params: List<String>
     ): Boolean {
-
-        holders["方块类型"] = block.type
-        holders["方块生物群系"] = block.biome
-        holders["方块充能等级"] = block.blockPower
-        holders["方块坐标x"] = block.x
-        holders["方块坐标y"] = block.y
-        holders["方块坐标z"] = block.z
-
-        holders["是否为农作物"] = crops[block.type]?.let { holders["农作物物品类型"] = it;true } ?: false
-        val data = block.blockData
-        if (data is Ageable) holders["年龄"] = data.age
-
-        val variabled = params.map { it.replace(holders) }
-        val type = variabled[0]
-        val after = variabled.subList(1)
-
-        when (type) {
-            "破坏" -> FurtherOperation.furtherBreak(holders["玩家"] as Player, block)
-            "放置" -> FurtherOperation.furtherPlace(holders["玩家"] as Player, block, holders["方块类型"] as Material)
-            "生成半径缓存" -> {
-                val range = after[0].toInt()
-                for (x in -range..range)
-                    for (y in -range..range)
-                        for (z in -range..range) {
-                            holders["($x,$y,$z)方块"] = block.location.let { it.add(x, y, z); it.block }
-                        }
-            }
-
-            "设置年龄" -> (data as? Ageable)?.let {
-                it.age = after[0].calcToInt().coerceAtLeast(0).coerceAtMost(it.maximumAge)
-                block.blockData = it
+        when (cmd) {
+            "破坏" -> FurtherOperation.furtherBreak(objPlayer.disholderize(params[0]), obj)
+            "放置" -> FurtherOperation.furtherPlace(objPlayer.disholderize(params[0]), obj, Material.valueOf(params[1]))
+            "设置年龄" -> (obj.blockData as? Ageable)?.let {
+                it.age = params[1].calcToInt().coerceAtLeast(0).coerceAtMost(it.maximumAge)
+                obj.blockData = it
             }
 
             "临时方块" -> {
-                val player = holders[after[0]]!! as Player
-                val material = Material.valueOf(after[1])
-                val duration = after.getOrElse(2) { "0.5" }.calcToDouble()
-                player.tmpBlock(block.location, material, duration)
+                val player = objPlayer.disholderize(params[0])
+                val material = Material.valueOf(params[1])
+                val duration = params[2, "0.5"].calcToDouble()
+                player.tmpBlock(obj.location, material, duration)
             }
-
-            else -> return false
         }
         return true
     }
+
+    override fun get(from: Block, objName: String): Pair<ObjectEntry<*>, Any?> {
+        if (objName.startsWith("临近方块")) { //格式 临近方块(x,y,z)
+            val numbers = objName.numbers
+            val x = numbers[0]
+            val y = numbers[1]
+            val z = numbers[2]
+            val loc = from.location.clone().also { it.add(x, y, z) }
+            return objBlock.holderize(loc.block)
+        }
+        return when (objName) {
+            "类型" -> objString.holderize(from.type)
+            "生物群系" -> objString.holderize(from.biome)
+            "充能等级" -> objString.holderize(from.blockPower)
+            "x" -> objString.holderize(from.x)
+            "y" -> objString.holderize(from.y)
+            "z" -> objString.holderize(from.z)
+            "是否为农作物" -> objString.holderize(crops.containsKey(from.type))
+            "年龄" -> objString.holderize((from.blockData as? Ageable)?.age ?: 0)
+            else -> objString.holderize(null)
+        }
+    }
+
+    override fun holderize(obj: Block) = this to "方块=${obj.location.serialize()}"
+
+    override fun disholderize(holder: String) = holder.replace("方块=", "").toLoc().block
 }
