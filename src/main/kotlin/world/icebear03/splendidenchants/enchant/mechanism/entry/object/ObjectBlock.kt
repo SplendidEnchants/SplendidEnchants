@@ -32,7 +32,7 @@ object ObjectBlock : ObjectEntry<Block>() {
             "破坏" -> FurtherOperation.furtherBreak(objPlayer.disholderize(params[0]), obj)
             "放置" -> FurtherOperation.furtherPlace(objPlayer.disholderize(params[0]), obj, Material.valueOf(params[1]))
             "设置年龄" -> (obj.blockData as? Ageable)?.let {
-                it.age = params[1].calcToInt().coerceAtLeast(0).coerceAtMost(it.maximumAge)
+                it.age = params[0].calcToInt().coerceAtLeast(0).coerceAtMost(it.maximumAge)
                 obj.blockData = it
             }
 
@@ -68,7 +68,7 @@ object ObjectBlock : ObjectEntry<Block>() {
         }
     }
 
-    override fun holderize(obj: Block) = this to "方块=${obj.location.serialize()}"
+    override fun holderize(obj: Block) = this to "方块=${obj.location.serialized}"
 
     override fun disholderize(holder: String) = holder.replace("方块=", "").toLoc().block
 }

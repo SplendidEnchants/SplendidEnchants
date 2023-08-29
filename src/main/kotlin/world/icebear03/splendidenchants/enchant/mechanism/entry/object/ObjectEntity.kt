@@ -39,7 +39,7 @@ object ObjectEntity : ObjectEntry<Entity>() {
         }
     }
 
-    override fun holderize(obj: Entity) = this to "实体=${obj.uniqueId}"
+    override fun holderize(obj: Entity) = this to "${obj.uniqueId}"
 
-    override fun disholderize(holder: String) = Bukkit.getEntity(UUID.fromString(holder.replace("实体=", "")))
+    override fun disholderize(holder: String) = Bukkit.getEntity(UUID.fromString(holder))
 }

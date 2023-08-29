@@ -9,6 +9,6 @@ fun <T> List<T>.subList(index: Int) = if (size > index) subList(index, size) els
 
 operator fun <T> List<T>.get(index: Int, default: T) = getOrElse(index) { default }
 
-val number = "-?[1-9]\\d*".toRegex()
+val number = "-?[0-9]\\d*".toRegex()
 
 val String.numbers get() = number.findAll(this).toList().map { it.value.cint }

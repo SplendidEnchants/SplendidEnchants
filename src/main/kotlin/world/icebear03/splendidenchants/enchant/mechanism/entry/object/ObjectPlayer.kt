@@ -30,6 +30,6 @@ object ObjectPlayer : ObjectEntry<Player>() {
         }
     }
 
-    override fun holderize(obj: Player) = this to "玩家=${obj.uniqueId}"
-    override fun disholderize(holder: String): Player? = Bukkit.getPlayer(UUID.fromString(holder))
+    override fun holderize(obj: Player) = this to "${obj.uniqueId}"
+    override fun disholderize(holder: String) = Bukkit.getPlayer(UUID.fromString(holder))
 }

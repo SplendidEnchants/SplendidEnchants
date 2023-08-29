@@ -6,10 +6,7 @@ import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.submit
 import taboolib.platform.util.groundBlock
 import world.icebear03.splendidenchants.api.*
-import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
-import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objBlock
-import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objEntity
-import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objString
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.*
 import java.util.*
 import kotlin.math.pow
 
@@ -21,6 +18,7 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
         params: List<String>
     ): Boolean {
         objEntity.modify(obj, cmd, params)
+        println(cmd)
         when (cmd) {
             "施加药水效果" -> obj.effect(PotionEffectType.getByName(params[0])!!, params[1].calcToInt(), params[2].calcToInt())
             "霹雷" -> {
@@ -28,7 +26,11 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
                 obj.realDamage((params[0, "4.0"]).calcToDouble())
             }
 
-            "伤害" -> obj.damage(params[0].calcToDouble(), objEntity.disholderize(params[1]))
+            "伤害" -> {
+                println(params[1])
+                obj.damage(params[0].calcToDouble(), objPlayer.disholderize(params[1]))
+            }
+
             "弹飞" -> {
                 val height = params[0].calcToDouble()
                 val y = 0.1804 * height - 0.0044 * height.pow(2) + 0.00004 * height.pow(3)
@@ -50,7 +52,7 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
         }
     }
 
-    override fun holderize(obj: LivingEntity) = this to "生物=${obj.uniqueId}"
+    override fun holderize(obj: LivingEntity) = this to "${obj.uniqueId}"
 
-    override fun disholderize(holder: String) = Bukkit.getEntity(UUID.fromString(holder.replace("生物=", ""))) as? LivingEntity
+    override fun disholderize(holder: String) = Bukkit.getEntity(UUID.fromString(holder)) as? LivingEntity
 }

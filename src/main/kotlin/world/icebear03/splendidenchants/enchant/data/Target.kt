@@ -47,4 +47,13 @@ fun Material.isIn(target: Target?): Boolean = target?.types?.contains(this) ?: f
 
 val Material.belongedTargets get() = targets.values.filter(::isIn)
 
-val Material.capability get() = belongedTargets.minOf { it.capability }
+val Material.capability
+    get() = belongedTargets.minOf {
+        try {
+            it.capability
+        } catch (e: Exception) {
+            println(it)
+            println(it)
+            32
+        }
+    }

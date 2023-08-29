@@ -18,7 +18,7 @@ display:
 
 variables:
   leveled:
-    概率: "80*{level}"
+    概率: "8*{level}"
     冷却: "10-1*{level}"
     间隔: "1-0.1*{level}"
     每次伤害: "0.5*{level}"
@@ -32,12 +32,13 @@ mechanisms:
       type: ATTACK
       chains:
         - "条件::{蓄能程度}>=0.8"
+        - "条件::{伤害类型}==ENTITY_ATTACK"
         - "条件::{随机数}<={概率}"
         - "冷却::{冷却}:false"
-        - "事件::受伤者:发送信息:enchant.twinge.damaged:who:{攻击者名称}"
-        - "事件::攻击者:发送信息:enchant.twinge.attacker:who:{受伤者名称}"
+        - "对象::受伤者:发送信息:enchant.twinge.damaged:who:{攻击者.名称}"
+        - "对象::攻击者:发送信息:enchant.twinge.attacker:who:{受伤者.名称}"
         - "延时::{间隔}"
-        - "事件::受伤者:伤害:{每次伤害}:攻击者"
+        - "对象::受伤者:伤害:{每次伤害}:{攻击者}"
         - "赋值::计数器:{计数器}+1"
         - "条件::{计数器}<={持续时间}/{间隔}"
         - "跳转::6"

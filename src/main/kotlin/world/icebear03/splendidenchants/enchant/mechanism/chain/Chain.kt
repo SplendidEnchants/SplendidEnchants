@@ -84,8 +84,10 @@ class Chain(val listeners: Listeners, line: String) {
             OBJECT -> {
                 val path = parts[0].split(".")
                 var obj = eventType.entry.g(event, path[0])
-                for (i in 1 until path.size)
-                    obj = obj.first.g(obj.second, path[i])
+                for (i in 1 until path.size) {
+                    val type = obj.first
+                    obj = type.g(type.d(obj.second), path[i])
+                }
 
                 val type = obj.first
                 return type.m(type.d(obj.second), parts[1], parts.subList(2))
