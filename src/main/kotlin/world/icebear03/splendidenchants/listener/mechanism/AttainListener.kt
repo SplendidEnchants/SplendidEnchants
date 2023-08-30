@@ -10,11 +10,13 @@ import org.serverct.parrot.parrotx.function.round
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
-import taboolib.common.platform.function.submit
+import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
+import world.icebear03.splendidenchants.enchant.data.rarity
 import kotlin.math.roundToInt
 
 
@@ -25,7 +27,7 @@ object AttainListener {
     var vanillaTable = false
     var moreEnchantChance = listOf("0.2*{cost}", "0.15*{cost}", "0.1*{cost}")
     var levelFormula = "{cost}/3*{max_level}+{cost}*({random}-{random})"
-    var celebrateNotice = mutableMapOf<String, List<String>>()
+    var celebrateNotice = mutableMapOf<Rarity?, List<String>>()
     var moreEnchantPrivilege = mutableMapOf<String, String>()
     var fullLevelPrivilege = "splendidenchants.privilege.table.full"
 
@@ -37,7 +39,7 @@ object AttainListener {
 
             val section = getConfigurationSection("celebrate_notice")!!
             celebrateNotice.clear()
-            celebrateNotice.putAll(section.getKeys(false).map { it to section.getStringList(it) })
+            celebrateNotice.putAll(section.getKeys(false).map { rarity(it) to section.getStringList(it) })
 
             moreEnchantPrivilege.clear()
             moreEnchantPrivilege.putAll(getStringList("privilege.chance").map { it.split(":")[0] to it.split(":")[1] })
@@ -87,8 +89,24 @@ object AttainListener {
 
         //对书的附魔，必须手动进行，因为原版处理会掉特殊附魔
         if (item.type == Material.BOOK) {
-            submit {
-                event.inventory.setItem(0, result.second)
+            event.isCancelled = true
+            event.inventory.setItem(0, result.second)
+        }
+
+        result.first.forEach { enchant, level ->
+            val rarity = enchant.rarity
+            celebrateNotice[rarity]?.let { lines ->
+                lines.forEach { line ->
+                    val type = line.split(":")[0]
+                    val text = line.split(":")[1].replace("player" to player.name, "enchant" to enchant.display(level))
+                    onlinePlayers.forEach {
+                        when (type) {
+                            "actionbar" -> it.sendActionBar(text)
+                            "message" -> it.sendMessage(text)
+                            "title" -> it.sendTitle(text.split(";")[0], text.split(";")[1])
+                        }
+                    }
+                }
             }
         }
     }

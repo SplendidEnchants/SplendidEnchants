@@ -12,7 +12,7 @@ taboolib {
             name("xiaozhangup")
             name("Micalhl")
         }
-        desc("SplendidEnchants 附魔扩展插件")
+        desc("SplendidEnchants 附魔插件")
         load("STARTUP")
         dependencies {
             name("TrChat").with("bukkit").optional(true)
@@ -24,6 +24,7 @@ taboolib {
     install("module-nms")
     install("module-nms-util")
     install("module-kether")
+    install("module-database")
     install("module-configuration")
     install("module-ui")
     install("platform-bukkit")

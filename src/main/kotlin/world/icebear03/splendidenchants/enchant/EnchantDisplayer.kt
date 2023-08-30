@@ -18,7 +18,7 @@ object EnchantDisplayer {
 
     var defaultPrevious = "{enchant_display_roman}"
     var defaultSubsequent = "\n§8| §7{description}"
-    var capabilityLine = "§8| 附魔词条数空余: §e{capability}"
+    var capabilityLine = "§8| §7附魔词条数空余: §e{capability}"
 
     var sortByLevel = true
     var rarityOrder = listOf<String>()

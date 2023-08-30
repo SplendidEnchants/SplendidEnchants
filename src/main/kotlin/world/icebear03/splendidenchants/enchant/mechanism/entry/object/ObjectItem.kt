@@ -4,9 +4,9 @@ import com.mcstarrysky.starrysky.function.deserializeItemStackFromBase64
 import com.mcstarrysky.starrysky.function.serializeToBase64
 import org.bukkit.inventory.ItemStack
 import world.icebear03.splendidenchants.api.calcToInt
-import world.icebear03.splendidenchants.api.damage
 import world.icebear03.splendidenchants.api.name
 import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objLivingEntity
 
 object ObjectItem : ObjectEntry<ItemStack>() {
 
@@ -17,7 +17,7 @@ object ObjectItem : ObjectEntry<ItemStack>() {
     ): Boolean {
         when (cmd) {
             "修改名称" -> obj.name = params[0]
-            "损耗耐久" -> obj.damage += params[0].calcToInt()
+            "损耗耐久" -> obj.damage(params[0].calcToInt(), objLivingEntity.d(params[1])!!)
         }
         return true
     }

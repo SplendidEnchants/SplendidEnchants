@@ -4,14 +4,15 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.Damageable
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
+import taboolib.common5.cdouble
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
 import world.icebear03.splendidenchants.enchant.data.belongedTargets
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 object AnvilListener {
@@ -62,15 +63,19 @@ object AnvilListener {
         result.first ?: return
         event.result = result.first
         inv.repairCost = result.second
+        inv.repairCostAmount = result.third
         inv.maximumRepairCost = 100
     }
 
-    fun anvil(a: ItemStack, b: ItemStack?, player: Player, name: String? = null): Pair<ItemStack?, Int> {
+    //第三个数据是消耗的修复物品数量
+    fun anvil(a: ItemStack, b: ItemStack?, player: Player, name: String? = null): Triple<ItemStack?, Int, Int> {
         val typeA = a.type
         val typeB = b?.type ?: Material.AIR
 
         val result = a.clone()
         var cost = 0.0
+
+        var amount = 1
 
         name?.let {
             if (it.isNotBlank()) {
@@ -78,11 +83,13 @@ object AnvilListener {
                 cost += renameCost
             }
         }
-        val fixed = durabilityFixed(typeA, typeB)
-        if (a.itemMeta is Damageable && fixed >= 0) {
-            result.damage = maxOf(0, result.damage - fixed)
-            cost += repairCost
-        }
+        if (b != null)
+            if (b.canRepair(a) || typeB == typeA) {
+                val pair = durabilityFixed(typeA, typeB, b.amount, a.damage, b.damage)
+                result.damage = maxOf(0, result.damage - pair.first)
+                cost += repairCost
+                amount = pair.second
+            }
 
         if (typeA == typeB || typeB == Material.ENCHANTED_BOOK ||
             (allowDifferentMaterial && typeB.belongedTargets.any { !typeA.belongedTargets.contains(it) })
@@ -101,12 +108,12 @@ object AnvilListener {
         }
 
         if (cost == 0.0 || result == a)
-            return null to 0
+            return Triple(null, 0, 0)
 
-        return result to finalCost(cost, player)
+        return Triple(result, finalCost(cost, player), amount)
     }
 
-    fun durabilityFixed(type: Material, fixer: Material, amount: Int = 1): Int {
+    fun durabilityFixed(type: Material, fixer: Material, amount: Int, dmgA: Int, dmgB: Int): Pair<Int, Int> {
         val typeS = type.toString()
         val fixerS = fixer.toString()
         val isArmor = typeS.contains("HELMET") ||
@@ -133,7 +140,11 @@ object AnvilListener {
             fixed = 108
         if (type == Material.TURTLE_HELMET && fixer == Material.SCUTE)
             fixed = 68
-        return (fixed * amount).coerceAtMost(type.maxDurability.toInt())
+        if (type == fixer)
+            fixed = fixer.maxDurability - dmgB
+
+        val minAmount = minOf(ceil(dmgA.cdouble / fixed).roundToInt(), amount)
+        return (fixed * minAmount).coerceAtMost(type.maxDurability.toInt()) to minAmount
     }
 
     fun finalCost(origin: Double, player: Player) = privilege.minOf { (perm, expression) ->

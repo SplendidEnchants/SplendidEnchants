@@ -42,7 +42,7 @@ command:
       fail: '控制台无法给予自己附魔书'
     enchant:
       description: '为玩家手持物品增加/清除附魔'
-      usage: '<附魔> \[等级(0为清除)\] \[玩家\]'
+      usage: '<附魔> \[等级\(0为清除\)\] \[玩家\]'
       empty: '手持物品为空'
       sender: '为 &e{name} &7手上的物品 {state}了附魔 {enchantment}'
       receiver: '手上的物品被 {state}了附魔 {enchantment}'
