@@ -49,6 +49,8 @@ object VillagerListener {
                 ).first && it.alternativeData.isTradeable
             }.drawEt() ?: return@repeat)
         }
+        if (result.fixedEnchants.isEmpty())
+            event.isCancelled = true
 
         origin.run origin@{
             event.recipe = MerchantRecipe(

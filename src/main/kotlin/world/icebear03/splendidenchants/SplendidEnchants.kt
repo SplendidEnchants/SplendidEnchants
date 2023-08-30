@@ -17,6 +17,7 @@ import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
+import world.icebear03.splendidenchants.enchant.mechanism.Tickers
 import world.icebear03.splendidenchants.listener.mechanism.*
 import world.icebear03.splendidenchants.supports.HookInteractiveChat
 import world.icebear03.splendidenchants.supports.HookTrChat
@@ -53,6 +54,7 @@ object SplendidEnchants : Plugin() {
                 Target.load()
                 EnchantDisplayer.load()
                 EnchantFilter.load()
+                Tickers.load()
                 EnchantLoader.load()
                 Group.load()
 
@@ -110,6 +112,7 @@ object SplendidEnchants : Plugin() {
                 Target.load()
                 EnchantDisplayer.load()
                 EnchantFilter.load()
+                Tickers.load()
                 EnchantLoader.load(true)
                 Group.load()
                 onlinePlayers.forEach { EnchantFilter.clearFilters(it) }

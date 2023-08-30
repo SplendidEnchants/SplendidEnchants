@@ -8,22 +8,24 @@ import taboolib.common.platform.function.submit
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
-import world.icebear03.splendidenchants.enchant.mechanism.Listeners
 import world.icebear03.splendidenchants.enchant.mechanism.chain.ChainType.*
 import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objItem
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objString
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Broadcast
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Plant
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Println
 
-class Chain(val listeners: Listeners, line: String) {
+class Chain(val enchant: SplendidEnchant, line: String) {
 
     val type = ChainType.getType(line.split("::")[0])
     val content = line.split("::")[1]
 
     //注意：这里的item一定要是原物品，不能是副本
+    //前两个参数在ticker trigger时为空
     fun trigger(
-        event: Event,
-        eventType: EventType,
+        event: Event?,
+        eventType: EventType?,
         entity: LivingEntity,
         item: ItemStack,
         sHolders: MutableMap<String, String>,
@@ -33,7 +35,9 @@ class Chain(val listeners: Listeners, line: String) {
         var variabled = content.replace(sHolders).replace(fHolders.mapValues { it.value.second })
 
         fun getObj(path: List<String>): Pair<ObjectEntry<*>, Any?> {
-            var obj = eventType.entry.g(event, path[0])
+            var obj =
+                if (path[0] == "物品") objItem.h(item)
+                else fHolders[path[0]] ?: event?.let { eventType?.entry?.g(it, path[0]) } ?: objString.h(null)
             for (i in 1 until path.size) {
                 val type = obj.first
                 obj = type.g(type.d(obj.second), path[i])
@@ -58,7 +62,7 @@ class Chain(val listeners: Listeners, line: String) {
             //冷却::冷却时间(s):是否播报给玩家
             COOLDOWN -> {
                 val cdInSec = parts[0].toDouble()
-                val key = listeners.enchant.basicData.id
+                val key = enchant.basicData.id
                 val info = parts[1].toBoolean()
 
                 val result = entity.checkCd(key, cdInSec)
@@ -72,7 +76,7 @@ class Chain(val listeners: Listeners, line: String) {
             CONDITION -> return variabled.calcToBoolean()
 
             ASSIGNMENT -> {
-                val tmp = listeners.enchant.variable
+                val tmp = enchant.variable
                 if (tmp.variables[parts[0]] == SplendidEnchant.VariableType.FLEXIBLE) {
                     val pair = fHolders[parts[0]]!!
                     fHolders[parts[0]] = pair.first to parts[1]
@@ -88,7 +92,7 @@ class Chain(val listeners: Listeners, line: String) {
                 fHolders[parts[0]] = newPair
             }
 
-            EVENT -> eventType.entry.m(event, entity, parts[0], parts.subList(1))
+            EVENT -> event?.let { eventType?.entry?.m(it, entity, parts[0], parts.subList(1)) }
 
             OPERATION -> when (parts[0]) {
                 "plant", "播种" -> submit submit@{ Plant.plant(toPlayer ?: return@submit, parts[1].toInt(), parts[2]) }
@@ -103,6 +107,8 @@ class Chain(val listeners: Listeners, line: String) {
                 val type = obj.first
                 return type.m(type.d(obj.second), parts[1], parts.subList(2))
             }
+
+            ITEM -> objItem.modify(item, parts[0], parts.subList(1))
 
             else -> {}
         }

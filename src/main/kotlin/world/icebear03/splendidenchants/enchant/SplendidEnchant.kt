@@ -30,6 +30,7 @@ import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import world.icebear03.splendidenchants.enchant.data.rarity
 import world.icebear03.splendidenchants.enchant.data.target
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
+import world.icebear03.splendidenchants.enchant.mechanism.Tickers
 import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.*
 import java.io.File
 
@@ -60,6 +61,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     //自定义脚本
     lateinit var listeners: Listeners
+    lateinit var tickers: Tickers
 
     init {
         config = Config(file)
@@ -127,6 +129,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             alternativeData = AlternativeData(config.getConfigurationSection("alternative"))
             variable = Variable(config.getConfigurationSection("variables"))
             listeners = Listeners(this@SplendidEnchant, config.getConfigurationSection("mechanisms.listeners"))
+            tickers = Tickers(this@SplendidEnchant, config.getConfigurationSection("mechanisms.tickers"))
             return null
         }
     }
