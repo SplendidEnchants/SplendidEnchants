@@ -323,7 +323,7 @@ object EnchantInfoUI {
 
                 "enchant" -> {
                     val enchant = splendidEt(parts[1])!!
-                    val holders = enchant.displayer.holders()
+                    val holders = enchant.displayer.holders(enchant.maxLevel)
                     icon.name = icon.name!!.split("||")[1]
                     icon.skull(enchant.rarity.skull)
                         .modifyMeta<ItemMeta> {

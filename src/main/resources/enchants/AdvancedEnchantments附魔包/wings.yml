@@ -13,6 +13,7 @@ limitations:
 display:
   description:
     general: "§7在空中下蹲可触发二段跳"
+    specific: "§7在空中下蹲可触发二段跳 (冷却:§a{冷却}秒§7)"
 
 variables:
   flexible:
