@@ -20,6 +20,10 @@ fun Location.add(x: Number, y: Number, z: Number) {
     add(x.toDouble(), y.toDouble(), z.toDouble())
 }
 
+fun Vector.add(x: Number, y: Number, z: Number) {
+    add(vector(x, y, z))
+}
+
 fun vector(x: Number, y: Number, z: Number) = Vector(x.toDouble(), y.toDouble(), z.toDouble())
 
 fun loc(worldName: String, x: Number, y: Number, z: Number): Location {

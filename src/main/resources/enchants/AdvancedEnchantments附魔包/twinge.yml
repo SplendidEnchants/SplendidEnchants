@@ -19,12 +19,12 @@ display:
 variables:
   leveled:
     概率: "8*{level}"
-    冷却: "10-1*{level}"
+    冷却: "30-2.5*{level}"
     间隔: "1-0.1*{level}"
     每次伤害: "0.5*{level}"
     持续时间: "5-0.5*{level}"
   flexible:
-    计数器: 0
+    计数器: "int::0"
 
 mechanisms:
   listeners:

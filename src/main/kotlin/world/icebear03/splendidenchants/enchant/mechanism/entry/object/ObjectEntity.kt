@@ -35,6 +35,7 @@ object ObjectEntity : ObjectEntry<Entity>() {
         return when (objName) {
             "下落高度" -> objString.h(from.fallDistance)
             "名称" -> objString.h(from.customName ?: from.getI18nName())
+            "在空中" -> objString.h(!from.isOnGround)
             else -> objString.h(null)
         }
     }

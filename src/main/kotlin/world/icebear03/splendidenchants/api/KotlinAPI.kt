@@ -1,6 +1,6 @@
 package world.icebear03.splendidenchants.api
 
-import taboolib.common5.cint
+import taboolib.common5.cdouble
 
 @Suppress("UNUSED_PARAMETER")
 operator fun <T> List<T>.get(index: Int, fuckKotlin: Int) = getOrNull(index)
@@ -9,6 +9,6 @@ fun <T> List<T>.subList(index: Int) = if (size > index) subList(index, size) els
 
 operator fun <T> List<T>.get(index: Int, default: T) = getOrElse(index) { default }
 
-val number = "-?[0-9]\\d*".toRegex()
+val number = "(-?\\d+)(\\.\\d+)?".toRegex()
 
-val String.numbers get() = number.findAll(this).toList().map { it.value.cint }
+val String.numbers get() = number.findAll(this).toList().map { it.value.cdouble }

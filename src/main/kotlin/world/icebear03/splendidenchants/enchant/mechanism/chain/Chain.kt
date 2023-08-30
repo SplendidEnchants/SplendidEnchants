@@ -10,6 +10,7 @@ import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.mechanism.EventType
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
 import world.icebear03.splendidenchants.enchant.mechanism.chain.ChainType.*
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Broadcast
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Plant
 import world.icebear03.splendidenchants.enchant.mechanism.entry.operation.Println
@@ -25,21 +26,25 @@ class Chain(val listeners: Listeners, line: String) {
         eventType: EventType,
         entity: LivingEntity,
         item: ItemStack,
-        sHolders: MutableMap<String, String>
+        sHolders: MutableMap<String, String>,
+        fHolders: MutableMap<String, Pair<ObjectEntry<*>, String>>
     ): Boolean {
         //首先全部替换
-        var variabled = content.replace(sHolders)
+        var variabled = content.replace(sHolders).replace(fHolders.mapValues { it.value.second })
 
-        val reg = Regex("\\{.{1,64}\\}")
-        reg.findAll(variabled).forEach { result ->
-            val path = result.value.replace("{" to "", "}" to "", tagged = false).split(".")
+        fun getObj(path: List<String>): Pair<ObjectEntry<*>, Any?> {
             var obj = eventType.entry.g(event, path[0])
             for (i in 1 until path.size) {
                 val type = obj.first
                 obj = type.g(type.d(obj.second), path[i])
             }
+            return obj
+        }
 
-            variabled = variabled.replace(result.value, obj.second.toString())
+        val reg = Regex("\\{.{1,64}\\}")
+        reg.findAll(variabled).forEach { result ->
+            val path = result.value.replace("{" to "", "}" to "", tagged = false).split(".")
+            variabled = variabled.replace(result.value, getObj(path).second.toString())
         }
 
         //生成变量
@@ -68,8 +73,19 @@ class Chain(val listeners: Listeners, line: String) {
 
             ASSIGNMENT -> {
                 val tmp = listeners.enchant.variable
-                if (tmp.variables[parts[0]] == SplendidEnchant.VariableType.FLEXIBLE) sHolders[parts[0]] = parts[1].calculate()
-                else tmp.modifyVariable(item, parts[0], parts[1].calculate())
+                if (tmp.variables[parts[0]] == SplendidEnchant.VariableType.FLEXIBLE) {
+                    val pair = fHolders[parts[0]]!!
+                    fHolders[parts[0]] = pair.first to parts[1]
+                } else tmp.modifyVariable(item, parts[0], parts[1].calculate())
+            }
+
+            MODIFY -> {
+                val pair = fHolders[parts[0]]!!
+                val type = pair.first
+                val obj = type.disholderize(pair.second)
+                type.m(obj, parts[1], parts.subList(2))
+                val newPair = type.h(obj)
+                fHolders[parts[0]] = newPair
             }
 
             EVENT -> eventType.entry.m(event, entity, parts[0], parts.subList(1))
@@ -83,12 +99,7 @@ class Chain(val listeners: Listeners, line: String) {
 
             OBJECT -> {
                 val path = parts[0].split(".")
-                var obj = eventType.entry.g(event, path[0])
-                for (i in 1 until path.size) {
-                    val type = obj.first
-                    obj = type.g(type.d(obj.second), path[i])
-                }
-
+                val obj = getObj(path)
                 val type = obj.first
                 return type.m(type.d(obj.second), parts[1], parts.subList(2))
             }

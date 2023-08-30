@@ -35,6 +35,10 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
                     obj.velocity = vector
                 }
             }
+
+            "施加速度" -> {
+                obj.velocity = objVector.disholderize(params[0])
+            }
         }
         return true
     }
@@ -44,6 +48,7 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
             "血量" -> objString.h(from.health)
             "最大血量" -> objString.h(from.maxHealth)
             "脚下方块" -> objBlock.holderize(from.blockBelow ?: from.groundBlock)
+            "朝向向量" -> objVector.holderize(from.eyeLocation.direction.normalize())
             else -> objEntity[from, objName]
         }
     }

@@ -2,7 +2,13 @@ package world.icebear03.splendidenchants.enchant.mechanism.entry.internal
 
 import world.icebear03.splendidenchants.enchant.mechanism.entry.`object`.*
 
+@Suppress("UNCHECKED_CAST")
 abstract class ObjectEntry<E> : Entry() {
+
+    fun h(obj: Any?): Pair<ObjectEntry<*>, String> {
+        if (this == objString) return objString to obj.toString()
+        return holderize((obj as? E) ?: return objString to obj.toString())
+    }
 
     abstract fun holderize(obj: E): Pair<ObjectEntry<E>, String>
 
@@ -10,7 +16,6 @@ abstract class ObjectEntry<E> : Entry() {
 
     abstract fun disholderize(holder: String): E?
 
-    @Suppress("UNCHECKED_CAST")
     open fun m(
         obj: Any?,
         cmd: String,
@@ -25,15 +30,11 @@ abstract class ObjectEntry<E> : Entry() {
         params: List<String>
     ) = false
 
-    @Suppress("UNCHECKED_CAST")
     fun g(from: Any?, objName: String): Pair<ObjectEntry<*>, Any?> {
         return get(from as? E ?: return objString to null, objName)
     }
 
     open operator fun get(from: E, objName: String): Pair<ObjectEntry<*>, Any?> = objString to null
-
-    @Suppress("UNCHECKED_CAST")
-    fun cast(obj: Any?): E? = obj as? E
 }
 
 val objString = ObjectString
@@ -43,3 +44,4 @@ val objEntity = ObjectEntity
 val objLivingEntity = ObjectLivingEntity
 val objPlayer = ObjectPlayer
 val objItem = ObjectItem
+val objVector = ObjectVector

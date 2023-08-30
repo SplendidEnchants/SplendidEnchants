@@ -6,6 +6,9 @@ enchant:
   twinge:
     attacker: "&7你的武器使得 &e{who} &7流血"
     damaged: "&7你被 &e{who} &7施加了流血效果"
+  impact:
+    attacker: "&7本次远程攻击命中 &e{who} &7触发了&b会心一击"
+    damaged: "&7你被 &e{who} &7的弹射物会心一击"
 command:
   helper:
     - ' '

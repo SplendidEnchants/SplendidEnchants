@@ -7,7 +7,8 @@ rarity: 精良
 targets:
   - 靴子
 
-limitations: [ ]
+limitations:
+  - "CONFLICT_ENCHANT:轻功"
 
 display:
   description:

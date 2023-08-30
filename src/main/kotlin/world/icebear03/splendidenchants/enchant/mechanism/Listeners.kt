@@ -14,6 +14,7 @@ import world.icebear03.splendidenchants.enchant.SplendidEnchant
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.mechanism.chain.Chain
 import world.icebear03.splendidenchants.enchant.mechanism.chain.ChainType
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -49,7 +50,8 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
 
         byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach listeners@{ id ->
             val sHolders = mutableMapOf<String, String>()
-            sHolders += enchant.variable.flexible
+            val fHolders = mutableMapOf<String, Pair<ObjectEntry<*>, String>>()
+            fHolders += enchant.variable.flexible
 
             val chains = byId[id]!!.second
             fun next(tot: Int = 0) {
@@ -60,7 +62,7 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
 
                 if (chain.type == ChainType.DELAY) submit(delay = (chain.content.calcToDouble(sHolders) * 20).roundToLong()) { next(tot + 1) }
                 else if (chain.type == ChainType.GOTO) next(chain.content.calcToInt(sHolders) - 1)
-                else if (chain.trigger(event, eventType, entity, item, sHolders)) next(tot + 1)
+                else if (chain.trigger(event, eventType, entity, item, sHolders, fHolders)) next(tot + 1)
             }
             next()
         }

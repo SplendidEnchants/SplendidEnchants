@@ -30,6 +30,7 @@ import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import world.icebear03.splendidenchants.enchant.data.rarity
 import world.icebear03.splendidenchants.enchant.data.target
 import world.icebear03.splendidenchants.enchant.mechanism.Listeners
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.*
 import java.io.File
 
 class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
@@ -200,8 +201,8 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         //变量名 - 初始值
         val modifiable = mutableMapOf<String, Pair<String, String>>()
 
-        //变量名 - 初始值
-        val flexible = mutableMapOf<String, String>()
+        //变量名 - 类型 to 初始值
+        val flexible = mutableMapOf<String, Pair<ObjectEntry<*>, String>>()
 
         init {
             variableConfig?.run {
@@ -225,7 +226,17 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                     variables[variable] = VariableType.MODIFIABLE
                 }
                 getConfigurationSection("flexible").asMap().forEach { (variable, expression) ->
-                    flexible[variable] = expression.toString()
+                    val type = when (expression.toString().split("::")[0]) {
+                        "block" -> objBlock
+                        "entity" -> objEntity
+                        "living_entity" -> objLivingEntity
+                        "player" -> objPlayer
+                        "item" -> objItem
+                        "vector" -> objVector
+                        else -> objString
+                    }
+                    val init = expression.toString().split("::")[1]
+                    flexible[variable] = type to init
                     variables[variable] = VariableType.FLEXIBLE
                 }
             }

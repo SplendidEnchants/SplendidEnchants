@@ -1,6 +1,7 @@
 package world.icebear03.splendidenchants.listener.caller
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent
+import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Projectile
@@ -63,8 +64,8 @@ object EntityDamageByEntity {
                 else projectileSourceItems[damager.uniqueId]
             else (attacker.mainHand() ?: return)
 
-
         weapon ?: return
+        if ((weapon.type == Material.BOW || weapon.type == Material.CROSSBOW) && !isProjectile) return
 
         weapon.fixedEnchants.forEach { (enchant, _) ->
             enchant.listeners.trigger(event, EventType.ATTACK, priority, attacker, weapon, EquipmentSlot.HAND)
