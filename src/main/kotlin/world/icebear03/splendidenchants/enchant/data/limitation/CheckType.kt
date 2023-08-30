@@ -2,8 +2,6 @@ package world.icebear03.splendidenchants.enchant.data.limitation
 
 enum class CheckType(vararg types: LimitType) {
     ATTAIN(
-        LimitType.PAPI_EXPRESSION,
-        LimitType.PERMISSION,
         LimitType.CONFLICT_GROUP,
         LimitType.CONFLICT_ENCHANT,
         LimitType.DEPENDENCE_GROUP,
@@ -29,6 +27,7 @@ enum class CheckType(vararg types: LimitType) {
     ), // 进行铁砧拼合物品附魔时
     USE(
         LimitType.PAPI_EXPRESSION,
+        LimitType.PERMISSION,
         LimitType.DISABLE_WORLD,
         LimitType.TARGET,
         LimitType.SLOT
