@@ -46,10 +46,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT")
-
-    implementation(files("/lib/InteractiveChat-4.2.7.2.jar"))
-    implementation(files("/lib/TrChat-2.0.4.jar"))
-
+    
     compileOnly("ink.ptms:nms-all:1.0.0")
     compileOnly("ink.ptms.core:v11605:11605")
     compileOnly("ink.ptms.core:v11904:11904:mapped")
