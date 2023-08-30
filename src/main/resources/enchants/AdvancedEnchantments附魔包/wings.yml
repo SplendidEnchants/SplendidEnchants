@@ -13,7 +13,7 @@ limitations:
 display:
   description:
     general: "§7在空中下蹲可触发二段跳"
-    specific: "§7在空中下蹲可触发二段跳 (冷却:§a{冷却}秒§7)"
+    specific: "§7在空中下蹲可触发二段跳 (冷却:§a6秒§7)"
 
 variables:
   flexible:
@@ -25,7 +25,7 @@ mechanisms:
       type: SNEAK
       chains:
         - "条件::{下蹲者.在空中}"
-        - "冷却::10:true"
+        - "冷却::6:true"
         - "赋值::方向:{下蹲者.朝向向量}"
         - "修改::方向:y:0.5"
         - "对象::下蹲者:施加速度:{方向}"
