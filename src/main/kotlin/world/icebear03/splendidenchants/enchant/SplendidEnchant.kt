@@ -25,6 +25,7 @@ import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.internal.exception.missingConfig
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
+import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import world.icebear03.splendidenchants.enchant.data.rarity
 import world.icebear03.splendidenchants.enchant.data.target
@@ -85,7 +86,8 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
 
     override fun conflictsWith(enchant: Enchantment) = false
 
-    override fun canEnchantItem(item: ItemStack) = true
+    //支持了粘液的附魔机
+    override fun canEnchantItem(item: ItemStack) = limitations.checkAvailable(CheckType.ANVIL, item).first
 
     override fun displayName(level: Int): Component = Component.text(basicData.name)
 

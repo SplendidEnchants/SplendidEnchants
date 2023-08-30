@@ -47,4 +47,4 @@ fun Material.isIn(target: Target?): Boolean = target?.types?.contains(this) ?: f
 
 val Material.belongedTargets get() = targets.values.filter(::isIn)
 
-val Material.capability get() = if (this == Material.ENCHANTED_BOOK) 32 else belongedTargets.minOf { it.capability }
+val Material.capability get() = belongedTargets.minOfOrNull { it.capability } ?: 32

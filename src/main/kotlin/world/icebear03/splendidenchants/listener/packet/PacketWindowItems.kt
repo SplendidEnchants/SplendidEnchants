@@ -26,6 +26,14 @@ object PacketWindowItems {
                 slots[i] = nmsItem
             }
             e.packet.write(field, slots)
+
+            if (MinecraftVersion.major in 9..12) {
+                val cursor = e.packet.read<Any>("d", false)!!
+                val bkItem = NMSItem.asBukkitCopy(cursor)
+                if (bkItem.isNull) return
+                val nmsItem = NMSItem.asNMSCopy(EnchantDisplayer.display(bkItem, e.player))
+                e.packet.write("d", nmsItem)
+            }
         }
     }
 }

@@ -8,13 +8,6 @@ import taboolib.common.platform.command.subCommand
 import world.icebear03.splendidenchants.SplendidEnchants
 import world.icebear03.splendidenchants.command.CommandHandler
 
-/**
- * SplendidEnchants
- * world.icebear03.splendidenchants.command.impl.CommandReload
- *
- * @author mical
- * @since 2023/8/16 3:02 PM
- */
 object CommandReload : CommandExecutor {
 
     override val command: SimpleCommandBody

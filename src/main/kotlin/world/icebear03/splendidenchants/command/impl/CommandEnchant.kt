@@ -7,57 +7,52 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.SimpleCommandBody
 import taboolib.common.platform.command.subCommand
-import taboolib.platform.util.onlinePlayers
+import taboolib.common.platform.command.suggestPlayers
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.command.CommandHandler
+import world.icebear03.splendidenchants.enchant.SplendidEnchant
 
-/**
- * SplendidEnchants
- * world.icebear03.splendidenchants.command.impl.CommandEnchant
- *
- * @author mical
- * @since 2023/8/16 2:17 PM
- */
 object CommandEnchant : CommandExecutor {
 
     override val command: SimpleCommandBody
         get() = subCommand {
             dynamic("enchant") {
                 suggestion<CommandSender> { _, _ -> CommandHandler.enchantNamesAndIds }
+                execute<CommandSender> { sender, args, _ -> handle(sender, null, splendidEt(args["enchant"])!!) }
                 dynamic("level", true) {
                     suggestion<Player> level@{ _, cmd ->
-                        val maxLevel = (splendidEt(cmd["enchant"])?.maxLevel ?: return@level listOf("附魔不存在"))
+                        val maxLevel = (splendidEt(cmd["enchant"])?.maxLevel ?: return@level listOf())
                         buildList { repeat(maxLevel + 1) { add("$it") } }
                     }
+                    execute<CommandSender> { sender, args, _ -> handle(sender, null, splendidEt(args["enchant"])!!, args["level"].toInt()) }
                     dynamic("player", true) {
-                        suggestion<CommandSender> { _, _ -> onlinePlayers.map { it.name } }
-                        execute<CommandSender> { sender, args, _ ->
-                            val enchant = splendidEt(args["enchant"])!!
-                            val level = args.getOrNull("level")?.toInt() ?: enchant.maxLevel
-                            val receiver = args.getOrNull("player")?.let { Bukkit.getPlayer(it) } ?: (sender as? Player)
-
-                            receiver?.let {
-                                val item = receiver.inventory.itemInMainHand
-                                if (item.isNull) {
-                                    sender.sendLang("command.subCommands.enchant.empty")
-                                    return@execute
-                                }
-                                val state = if (level == 0) "移除" else "添加"
-                                if (level == 0) item.removeEt(enchant)
-                                else item.addEt(enchant, level)
-                                sender.sendLang(
-                                    "command.subCommands.enchant.sender",
-                                    "name" to receiver.name,
-                                    "state" to state,
-                                    "enchantment" to enchant.display(level)
-                                )
-                                receiver.sendLang("command.subCommands.enchant.receiver", "state" to state, "enchantment" to enchant.display(level))
-                            } ?: sender.sendLang("command.subCommands.enchant.fail")
-                        }
+                        suggestPlayers()
+                        execute<CommandSender> { sender, args, _ -> handle(sender, args["player"], splendidEt(args["enchant"])!!, args["level"].toInt()) }
                     }
                 }
             }
         }
+
+
+    fun handle(sender: CommandSender, who: String?, enchant: SplendidEnchant, level: Int = enchant.maxLevel) {
+        (who?.let { Bukkit.getPlayer(it) } ?: (sender as? Player))?.let { receiver ->
+            val item = receiver.inventory.itemInMainHand
+            if (item.isNull) {
+                sender.sendLang("command.subCommands.enchant.empty")
+                return
+            }
+            val state = if (level == 0) "移除" else "添加"
+            if (level == 0) item.removeEt(enchant)
+            else item.addEt(enchant, level)
+            sender.sendLang(
+                "command.subCommands.enchant.sender",
+                "name" to receiver.name,
+                "state" to state,
+                "enchantment" to enchant.display(level)
+            )
+            receiver.sendLang("command.subCommands.enchant.receiver", "state" to state, "enchantment" to enchant.display(level))
+        } ?: sender.sendLang("command.subCommands.enchant.fail")
+    }
 
     override val name: String
         get() = "enchant"
