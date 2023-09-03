@@ -14,15 +14,15 @@ limitations:
 display:
   description:
     general: "§7近战攻击时有概率使对手流血"
-    specific: "§7近战攻击时§a{概率}%§7使对手流血 (伤害:§a{每次伤害}点§7/§a{间隔}秒 §7持续§a{持续时间}秒§7)"
+    specific: "§7近战攻击时§a{概率}§7使对手流血 (伤害:§a{每次伤害}§7/§a{间隔} §7持续§a{持续时间}§7)"
 
 variables:
   leveled:
-    概率`: "8*{level}"
-    冷却: "30-2.5*{level}"
-    间隔: "1-0.1*{level}"
-    每次伤害: "0.5*{level}"
-    持续时间: "5-0.5*{level}"
+    概率: "%:8*{level}"
+    冷却: "秒:30-2.5*{level}"
+    间隔: "秒:1-0.1*{level}"
+    每次伤害: "点:0.5*{level}"
+    持续时间: "秒:5-0.5*{level}"
   flexible:
     计数器: "int::0"
 

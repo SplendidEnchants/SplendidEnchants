@@ -17,7 +17,7 @@ object ObjectItem : ObjectEntry<ItemStack>() {
     ): Boolean {
         when (cmd) {
             "修改名称" -> obj.name = params[0]
-            "损耗耐久" -> obj.damage(params[0].calcToInt(), objLivingEntity.d(params[1])!!)
+            "损耗耐久" -> obj.damage(params[0].calcToInt(), objLivingEntity.d(params[1])!!)  //考虑了耐久等附魔
         }
         return true
     }

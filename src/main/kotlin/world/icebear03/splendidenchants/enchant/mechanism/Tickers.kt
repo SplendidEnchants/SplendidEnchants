@@ -53,7 +53,7 @@ class Tickers(val enchant: SplendidEnchant, config: ConfigurationSection?) {
                 if (tot >= chains.size) return
                 val chain = chains[tot]
                 sHolders["随机数"] = (Math.random() * 100).roundToInt().toString()
-                sHolders += enchant.variable.variables(item.etLevel(enchant), player, item)
+                sHolders += enchant.variable.variables(item.etLevel(enchant), player, item, false)
                 fHolders["玩家"] = objPlayer.h(player)
 
                 if (chain.type == ChainType.DELAY) submit(delay = (chain.content.calcToDouble(sHolders) * 20).roundToLong()) { next(tot + 1) }

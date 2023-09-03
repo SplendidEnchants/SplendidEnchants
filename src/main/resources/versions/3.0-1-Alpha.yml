@@ -1,0 +1,9 @@
+version:
+  prefix: "3.0"
+  tag: "1"
+  suffix: "Alpha"
+update:
+  - "嘿！这是一条测试内容哦！"
+  - "用于测试版本更新列表UI是否正常"
+warning:
+  - "这是一条更新到这个版本的警告"

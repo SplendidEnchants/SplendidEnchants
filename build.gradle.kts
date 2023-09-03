@@ -24,7 +24,6 @@ taboolib {
     install("module-nms")
     install("module-nms-util")
     install("module-kether")
-    install("module-database")
     install("module-configuration")
     install("module-ui")
     install("platform-bukkit")
@@ -46,7 +45,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT")
-    
+
     compileOnly("ink.ptms:nms-all:1.0.0")
     compileOnly("ink.ptms.core:v11605:11605")
     compileOnly("ink.ptms.core:v11904:11904:mapped")

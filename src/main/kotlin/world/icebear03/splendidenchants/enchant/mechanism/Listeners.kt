@@ -58,7 +58,7 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
                 if (tot >= chains.size) return
                 val chain = chains[tot]
                 sHolders["随机数"] = (Math.random() * 100).roundToInt().toString()
-                sHolders += enchant.variable.variables(item.etLevel(enchant), entity, item)
+                sHolders += enchant.variable.variables(item.etLevel(enchant), entity, item, false)
 
                 if (chain.type == ChainType.DELAY) submit(delay = (chain.content.calcToDouble(sHolders) * 20).roundToLong()) { next(tot + 1) }
                 else if (chain.type == ChainType.GOTO) next(chain.content.calcToInt(sHolders) - 1)

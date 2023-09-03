@@ -3,7 +3,7 @@ package world.icebear03.splendidenchants.ui
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import org.serverct.parrot.parrotx.function.variable
+import org.serverct.parrot.parrotx.function.variables
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
@@ -72,8 +72,13 @@ object FilterGroupUI {
                 else -> {}
             }
 
-            icon.variable("name", listOf(group.name))
-                .skull(group.skull)
+            icon.variables {
+                when (it) {
+                    "name" -> listOf(group.name)
+                    "amount" -> listOf(group.enchants.size.toString())
+                    else -> emptyList()
+                }
+            }.skull(group.skull)
         }
 
         onClick { (_, _, _, event, args) ->

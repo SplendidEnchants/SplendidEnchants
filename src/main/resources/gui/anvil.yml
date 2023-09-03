@@ -27,9 +27,9 @@ template:
     material: PLAYER_HEAD
     name: "&b拼合信息"
     lore:
-      - "&8| &7是否可以拼合: {allowed}"
-      - "&8| &7经验等级消耗: &e{level}级"
-      - "&8| &7不能拼合原因: "
+      - "&8| &7拼合检测 > {allowed}"
+      - "&8| &7等级消耗 > &e{level}级"
+      - "&8| &7详情 > "
       - "   &7{reasons}"
     feature:
       - ==: Head

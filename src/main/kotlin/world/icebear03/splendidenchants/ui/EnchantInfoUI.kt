@@ -16,6 +16,7 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
+import taboolib.platform.util.modifyLore
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.colorify
@@ -152,7 +153,7 @@ object EnchantInfoUI {
             icon.variables {
                 when (it) {
                     "params" -> enchant.variable.leveled.map { (variable) ->
-                        "&b$variable &7> " + enchant.variable.leveled(variable, level)
+                        "&b$variable &7> " + enchant.variable.leveled(variable, level, true)
                     }
 
                     "roman" -> listOf(level.roman())
@@ -200,19 +201,19 @@ object EnchantInfoUI {
             val enchant = args["enchant"] as SplendidEnchant
             val player = args["player"] as Player
             val limits = enchant.limitations.limitations
-            val conflicts = limits.filter { it.first.toString().contains("CONFLICT") }.ifEmpty { listOf("" to "无") }.joinToString("; ") { it.second }
-            val dependencies = limits.filter { it.first.toString().contains("DEPENDENCE") }.ifEmpty { listOf("" to "无") }.joinToString("; ") { it.second }
+            val conflicts = limits.filter { it.first.toString().contains("CONFLICT") }.joinToString("; ") { it.second }
+            val dependencies = limits.filter { it.first.toString().contains("DEPENDENCE") }.joinToString("; ") { it.second }
+            val disableWorlds = enchant.basicData.disableWorlds
             val perms = limits.filter { it.first == LimitType.PERMISSION }.map { it.second }
             val permission = if (perms.none { !player.hasPermission(it) }) "&a✓" else "&c✗"
-            val disableWorlds = enchant.basicData.disableWorlds.ifEmpty { listOf("无") }
             val activeSlots = enchant.targets.map { it.activeSlots }.flatten().toSet().joinToString("; ") {
                 when (it) {
                     HAND -> "主手"
                     OFF_HAND -> "副手"
-                    FEET -> "靴子"
-                    LEGS -> "护腿"
-                    CHEST -> "盔甲"
-                    HEAD -> "头盔"
+                    FEET -> "足"
+                    LEGS -> "腿"
+                    CHEST -> "胸"
+                    HEAD -> "头"
                 }
             }
             icon.variables {
@@ -225,8 +226,10 @@ object EnchantInfoUI {
                         "disable_worlds" -> disableWorlds.joinToString("; ")
                         "active_slots" -> activeSlots
                         else -> ""
-                    }
+                    }.ifBlank { "删除本行" }
                 )
+            }.modifyLore {
+                removeIf { it.contains("删除本行") }
             }
         }
     }
@@ -314,11 +317,12 @@ object EnchantInfoUI {
                             listOf(
                                 when (it) {
                                     "group" -> group.name
-                                    "max_coexist" -> "${group.maxCoexist - if (args["category"] == "conflicts") 1 else 0}"
+                                    "amount" -> group.enchants.size.toString()
+                                    "max_coexist" -> if (args["category"] == "conflicts") "${group.maxCoexist - 1}" else "删除本行"
                                     else -> ""
                                 }
                             )
-                        }
+                        }.modifyLore { removeIf { it.contains("删除本行") } }
                 }
 
                 "enchant" -> {

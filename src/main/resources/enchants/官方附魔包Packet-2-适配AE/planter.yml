@@ -13,12 +13,12 @@ limitations:
 display:
   description:
     general: "§7右击可范围播种作物(需要种子)"
-    specific: "§7右击可范围播种作物(需要种子) (§a{边长}×§a{边长} §7冷却:§a{冷却}秒§7)"
+    specific: "§7右击可范围播种作物(需要种子) (§a{边长}×§a{边长} §7冷却:§a{冷却}§7)"
 
 variables:
   leveled:
-    冷却: "3.5-{level}"
-    边长: "{level}+1"
+    冷却: "秒:3.5-{level}"
+    边长: "格:{level}+1"
 
 mechanisms:
   listeners:

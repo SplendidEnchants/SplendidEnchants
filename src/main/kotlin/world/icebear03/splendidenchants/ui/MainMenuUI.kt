@@ -42,7 +42,7 @@ object MainMenuUI {
     private val enchant_search = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> EnchantSearchUI.open(event.clicker) } }
 
     @MenuComponent
-    private val item_check = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> ItemCheckUI.open(event.clicker) } }
+    private val item_check = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> ItemCheckUI.open(event.clicker, null, ItemCheckUI.CheckMode.LOAD) } }
 
     @MenuComponent
     private val anvil = MenuFunctionBuilder { onClick { (_, _, _, event, _) -> AnvilUI.open(event.clicker) } }

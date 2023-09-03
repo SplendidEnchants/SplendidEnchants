@@ -3,7 +3,7 @@ package world.icebear03.splendidenchants.ui
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import org.serverct.parrot.parrotx.function.variable
+import org.serverct.parrot.parrotx.function.variables
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
@@ -17,6 +17,7 @@ import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.pages
 import world.icebear03.splendidenchants.api.skull
 import world.icebear03.splendidenchants.enchant.EnchantFilter
+import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.data.targets
 import world.icebear03.splendidenchants.ui.internal.UIType
@@ -72,8 +73,13 @@ object FilterTargetUI {
                 else -> {}
             }
 
-            icon.variable("name", listOf(target.name))
-                .skull(target.skull)
+            icon.variables {
+                when (it) {
+                    "name" -> listOf(target.name)
+                    "amount" -> listOf(EnchantLoader.BY_TARGET[target]!!.size.toString())
+                    else -> emptyList()
+                }
+            }.skull(target.skull)
         }
 
         onClick { (_, _, _, event, args) ->

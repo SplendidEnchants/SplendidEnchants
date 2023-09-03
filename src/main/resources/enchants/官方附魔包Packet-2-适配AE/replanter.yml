@@ -12,11 +12,11 @@ limitations: [ ]
 display:
   description:
     general: "§7把庄稼踩坏时，只会让其退化而不是掉落"
-    specific: "§7把庄稼踩坏时，只会让其退化§a{退化阶段}阶段"
+    specific: "§7把庄稼踩坏时，只会让其退化§a{退化阶段}"
 
 variables:
   leveled:
-    退化阶段: "3-{level}"
+    退化阶段: "阶段:3-{level}"
 
 mechanisms:
   listeners:

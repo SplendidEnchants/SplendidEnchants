@@ -3,7 +3,7 @@ package world.icebear03.splendidenchants.ui
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import org.serverct.parrot.parrotx.function.variable
+import org.serverct.parrot.parrotx.function.variables
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
 import org.serverct.parrot.parrotx.ui.config.MenuConfiguration
@@ -16,14 +16,13 @@ import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.pages
 import world.icebear03.splendidenchants.api.skull
+import world.icebear03.splendidenchants.api.splendidEts
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.rarities
 import world.icebear03.splendidenchants.ui.internal.UIType
 import world.icebear03.splendidenchants.ui.internal.record
-import kotlin.collections.listOf
 import kotlin.collections.set
-import kotlin.collections.toList
 
 
 @MenuComponent("FilterRarity")
@@ -74,8 +73,13 @@ object FilterRarityUI {
                 else -> {}
             }
 
-            icon.variable("rarity_display", listOf(rarity.display()))
-                .skull(rarity.skull)
+            icon.variables {
+                when (it) {
+                    "name", "rarity_display" -> listOf(rarity.display())
+                    "amount" -> listOf(splendidEts(rarity).size.toString())
+                    else -> emptyList()
+                }
+            }.skull(rarity.skull)
         }
 
         onClick { (_, _, _, event, args) ->

@@ -15,12 +15,12 @@ limitations:
 display:
   description:
     general: "§7远程攻击时有概率造成双倍伤害"
-    specific: "§7远程攻击时有§a{概率}%§7造成双倍伤害"
+    specific: "§7远程攻击时有§a{概率}§7造成双倍伤害"
 
 variables:
   leveled:
-    概率: "3*{level}"
-    冷却: "20-2.5*{level}"
+    概率: "%:3*{level}"
+    冷却: "秒:20-2.5*{level}"
 
 mechanisms:
   listeners:

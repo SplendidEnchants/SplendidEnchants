@@ -16,13 +16,13 @@ limitations:
 display:
   description:
     general: "§7攻击时有概率召唤雷电"
-    specific: "§7攻击时§a{概率}%§7召唤雷电 (冷却:§a{冷却}秒§7)"
+    specific: "§7攻击时§a{概率}§7召唤雷电 (冷却:§a{冷却}§7)"
 
 variables:
   leveled:
-    概率: "8*{level}"
-    冷却: "6-0.5*{level}"
-    真实伤害: "2+{level}*0.5"
+    概率: "%:8*{level}"
+    冷却: "秒:6-0.5*{level}"
+    真实伤害: "点:2+{level}*0.5"
 
 mechanisms:
   listeners:

@@ -89,7 +89,7 @@ fun Player.back() {
         UIType.FILTER_GROUP -> FilterGroupUI.open(this)
         UIType.FILTER_RARITY -> FilterRarityUI.open(this)
         UIType.FILTER_TARGET -> FilterTargetUI.open(this)
-        UIType.ITEM_CHECK -> ItemCheckUI.open(this, params["item"] as? ItemStack)
+        UIType.ITEM_CHECK -> ItemCheckUI.open(this, params["item"] as? ItemStack, params["mode"] as ItemCheckUI.CheckMode)
         UIType.MAIN_MENU -> MainMenuUI.open(this)
         UIType.FAVORITE -> {}
     }

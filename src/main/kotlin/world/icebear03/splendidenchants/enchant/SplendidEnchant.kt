@@ -172,7 +172,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             player: Player? = null,
             item: ItemStack? = null
         ): Map<String, String> {
-            val tmp = variable.variables(level, player, item).toMutableMap()
+            val tmp = variable.variables(level, player, item, true).toMutableMap()
             val lv = level ?: basicData.maxLevel
             tmp["id"] = basicData.id
             tmp["name"] = basicData.name
@@ -196,7 +196,8 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         val variables = mutableMapOf<String, VariableType>()
 
         //变量名 - 公式
-        val leveled = mutableMapOf<String, LinkedHashMap<Int, String>>()
+        // value： map<等级，公式/数据> to 单位
+        val leveled = mutableMapOf<String, Pair<String, LinkedHashMap<Int, String>>>()
 
         //变量名 - PAPI变量
         val playerRelated = mutableMapOf<String, String>()
@@ -215,8 +216,12 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
                         any.asMap().mapKeys { it.key.cint }.mapValues { it.value.toString() }.toSortedMap().forEach {
                             map[it.key] = it.value
                         }
-                        leveled[variable] = map
-                    } else leveled[variable] = linkedMapOf(1 to any.toString())
+                        leveled[variable] = any.getString("unit", "单位")!! to map
+                    } else {
+                        val unit = any.toString().split(":")[0]
+                        val formula = any.toString().split(":")[1]
+                        leveled[variable] = unit to linkedMapOf(1 to formula)
+                    }
                     variables[variable] = VariableType.LEVELED
                 }
                 getConfigurationSection("player_related").asMap().forEach { (variable, expression) ->
@@ -245,12 +250,13 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
             }
         }
 
-        fun leveled(variable: String, level: Int?): String {
+        fun leveled(variable: String, level: Int?, withUnit: Boolean): String {
             return level?.let {
-                leveled[variable]!!
+                val v = leveled[variable]!!
+                v.second
                     .filter { it.key <= level }
                     .minBy { level - it.key }.value
-                    .calculate("level" to level)
+                    .calculate("level" to level) + if (withUnit) v.first else ""
             } ?: "?"
         }
 
@@ -270,11 +276,12 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         fun variables(
             level: Int?,
             entity: LivingEntity? = null,
-            item: ItemStack? = null
+            item: ItemStack? = null,
+            withUnit: Boolean
         ): Map<String, String> {
             return variables.mapNotNull { (variable, type) ->
                 variable to when (type) {
-                    VariableType.LEVELED -> leveled(variable, level)
+                    VariableType.LEVELED -> leveled(variable, level, withUnit)
                     VariableType.PLAYER_RELATED -> playerRelated(variable, entity as? Player)
                     VariableType.MODIFIABLE -> modifiable(variable, item)
                     else -> return@mapNotNull null
