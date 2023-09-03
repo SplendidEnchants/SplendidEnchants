@@ -19,3 +19,6 @@ database:
   user: minecraft
   password: password
   database: minecraft
+
+#若有更新内容，在op上线时提醒
+update_msg: true

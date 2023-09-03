@@ -1,0 +1,8 @@
+date: "2023/9/3"
+contents:
+  - "嘿！这是一条测试内容哦！"
+  - "用于测试版本更新列表UI是否正常"
+manual:
+  accumulating:
+    file: "enchants/官方附魔包Packet-1/accumulating.yml"
+    path: "variables.leveled"
