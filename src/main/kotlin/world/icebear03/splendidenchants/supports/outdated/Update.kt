@@ -19,6 +19,6 @@ data class Update(
     init {
         version = code.split("-")[0]
         tag = code.split("-")[1].cint
-        type = VersionType.valueOf(code.split("-"))
+//        type = VersionType.valueOf(code.split("-"))
     }
 }
