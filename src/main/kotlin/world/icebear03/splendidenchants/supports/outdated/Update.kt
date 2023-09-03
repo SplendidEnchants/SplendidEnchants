@@ -9,7 +9,7 @@ data class Update(
 ) {
     val version: String
     val tag: Int
-    val type: VersionType
+//    val type: VersionType
 //    val data: String
 //    val contents: List<String>
 //    val checked: Boolean
