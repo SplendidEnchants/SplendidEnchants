@@ -4,10 +4,8 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import taboolib.platform.util.attacker
-import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.EventEntry
-import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
-import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objLivingEntity
-import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.objString
+import world.icebear03.splendidenchants.api.calcToDouble
+import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.*
 
 object EventAttack : EventEntry<EntityDamageByEntityEvent>() {
 
@@ -22,10 +20,12 @@ object EventAttack : EventEntry<EntityDamageByEntityEvent>() {
         val attacker = event.attacker
         val damaged = event.entity
         return when (objName) {
+            "伤害" -> objString.h(event.damage)
             "攻击者" -> objLivingEntity.holderize(attacker!!)
+            "受击者" -> objEntity.holderize(damaged)
             "蓄能程度" -> objString.h((attacker as? Player)?.attackCooldown ?: 1.0f)
-            "是否为暴击" -> objString.h((attacker?.fallDistance ?: -1f) > 0)
-            "是否被格挡" -> objString.h((damaged as? Player)?.isBlocking ?: false)
+            "是否暴击" -> objString.h((attacker?.fallDistance ?: -1f) > 0)
+            "是否格挡" -> objString.h((damaged as? Player)?.isBlocking ?: false)
             else -> EventDamaged[event, objName]
         }
     }

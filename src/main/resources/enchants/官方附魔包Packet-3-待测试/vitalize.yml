@@ -28,7 +28,8 @@ mechanisms:
     damage:
       type: DAMAGED
       chains:
-        - "CONDITION::{受伤者.血量}<={阈值}"
-        - "COOLDOWN::{冷却时间}:true"
-        - "OBJECT::受伤者:恢复生命值:{恢复量}"
+        - "OPERATION::播报:{受伤者.生命值} {阈值}"
+        - "CONDITION::{受伤者.生命值}<={阈值}"
+        - "COOLDOWN::{冷却时间}:false"
+        - "OBJECT::受伤者:设置生命值:{受伤者.生命值}+{恢复量}"
         - "OBJECT::受伤者:发送信息:enchant.vitalize.recovered:amount:{恢复量}"

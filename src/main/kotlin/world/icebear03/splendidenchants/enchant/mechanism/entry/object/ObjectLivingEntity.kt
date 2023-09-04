@@ -50,8 +50,8 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
 
     override fun get(from: LivingEntity, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
-            "血量" -> objString.h(from.health)
-            "最大血量" -> objString.h(from.getAttribute(Attribute.GENERIC_MAX_HEALTH))
+            "生命值" -> objString.h(from.health)
+            "最大生命值" -> objString.h(from.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value)
             "伤害吸收值" -> objString.h(from.absorptionAmount)
             "脚下方块" -> objBlock.holderize(from.blockBelow ?: from.groundBlock)
             "朝向向量" -> objVector.holderize(from.eyeLocation.direction.normalize())

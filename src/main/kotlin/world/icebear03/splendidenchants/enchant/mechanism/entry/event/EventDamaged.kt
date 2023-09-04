@@ -14,7 +14,7 @@ object EventDamaged : EventEntry<EntityDamageEvent>() {
         when (cmd) {
             "设置伤害" -> {
                 val dmg = params[0].calcToDouble()
-                if (dmg <= 0.0) event.isCancelled = true
+                if (dmg < 0.0) event.isCancelled = true
                 else event.damage = dmg
             }
 
