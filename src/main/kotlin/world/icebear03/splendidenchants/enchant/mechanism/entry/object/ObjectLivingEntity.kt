@@ -1,6 +1,7 @@
 package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 
 import org.bukkit.Bukkit
+import org.bukkit.attribute.Attribute
 import org.bukkit.entity.LivingEntity
 import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.submit
@@ -27,6 +28,10 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
 
             "伤害" -> obj.damage(params[0].calcToDouble(), objPlayer.disholderize(params[1]))
 
+            "设置生命值" -> obj.health = params[0].calcToDouble()
+
+            "设置伤害吸收量" -> obj.absorptionAmount = params[0].calcToDouble()
+
             "弹飞" -> {
                 val height = params[0].calcToDouble()
                 val y = 0.1804 * height - 0.0044 * height.pow(2) + 0.00004 * height.pow(3)
@@ -46,7 +51,8 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
     override fun get(from: LivingEntity, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
             "血量" -> objString.h(from.health)
-            "最大血量" -> objString.h(from.maxHealth)
+            "最大血量" -> objString.h(from.getAttribute(Attribute.GENERIC_MAX_HEALTH))
+            "伤害吸收值" -> objString.h(from.absorptionAmount)
             "脚下方块" -> objBlock.holderize(from.blockBelow ?: from.groundBlock)
             "朝向向量" -> objVector.holderize(from.eyeLocation.direction.normalize())
             else -> objEntity[from, objName]

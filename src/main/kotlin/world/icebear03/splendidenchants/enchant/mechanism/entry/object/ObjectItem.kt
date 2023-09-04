@@ -18,6 +18,7 @@ object ObjectItem : ObjectEntry<ItemStack>() {
         when (cmd) {
             "修改名称" -> obj.name = params[0]
             "损耗耐久" -> obj.damage(params[0].calcToInt(), objLivingEntity.d(params[1])!!)  //考虑了耐久等附魔
+            "修改堆叠数" -> obj.amount = params[0].calcToInt()
         }
         return true
     }

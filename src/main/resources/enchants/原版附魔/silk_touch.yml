@@ -3,7 +3,7 @@ basic:
   name: "精准采集"
   max_level: 1
 
-rarity: 稀有
+rarity: 精良
 targets:
   - 斧
   - 镐

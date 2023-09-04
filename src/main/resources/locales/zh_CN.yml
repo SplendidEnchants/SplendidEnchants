@@ -9,6 +9,8 @@ enchant:
   impact:
     attacker: "&7本次远程攻击命中 &e{who} &7触发了&b会心一击"
     damaged: "&7你被 &e{who} &7的弹射物会心一击"
+  vitalize:
+    recovered: "&7你的盾牌为你恢复了 &e{amount} &7点生命值"
 command:
   helper:
     - ' '
