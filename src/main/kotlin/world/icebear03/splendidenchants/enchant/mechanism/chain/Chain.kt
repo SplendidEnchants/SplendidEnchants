@@ -83,15 +83,6 @@ class Chain(val enchant: SplendidEnchant, line: String) {
                 } else tmp.modifyVariable(item, parts[0], parts[1].calculate())
             }
 
-            MODIFY -> {
-                val pair = fHolders[parts[0]]!!
-                val type = pair.first
-                val obj = type.disholderize(pair.second)
-                type.m(obj, parts[1], parts.subList(2))
-                val newPair = type.h(obj)
-                fHolders[parts[0]] = newPair
-            }
-
             EVENT -> event?.let { eventType?.entry?.m(it, entity, parts[0], parts.subList(1)) }
 
             OPERATION -> when (parts[0]) {
@@ -102,10 +93,18 @@ class Chain(val enchant: SplendidEnchant, line: String) {
             }
 
             OBJECT -> {
-                val path = parts[0].split(".")
-                val obj = getObj(path)
-                val type = obj.first
-                return type.m(type.d(obj.second), parts[1], parts.subList(2))
+                fHolders[parts[0]]?.let {
+                    val type = it.first
+                    val obj = type.disholderize(it.second)
+                    type.m(obj, parts[1], parts.subList(2))
+                    val newPair = type.h(obj)
+                    fHolders[parts[0]] = newPair
+                } ?: run {
+                    val path = parts[0].split(".")
+                    val obj = getObj(path)
+                    val type = obj.first
+                    return type.m(type.d(obj.second), parts[1], parts.subList(2))
+                }
             }
 
             ITEM -> objItem.modify(item, parts[0], parts.subList(1))
