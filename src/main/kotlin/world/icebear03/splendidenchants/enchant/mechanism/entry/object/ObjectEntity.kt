@@ -35,7 +35,7 @@ object ObjectEntity : ObjectEntry<Entity>() {
     override fun get(from: Entity, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
             "下落高度" -> objString.h(from.fallDistance)
-            "名称" -> objString.h(from.customName ?: from.getI18nName())
+            "名称" -> objString.h(from.customName() ?: from.getI18nName())
             "在空中" -> objString.h(!from.isOnGround)
             else -> runCatching {
                 objString.h(from.invokeMethod(objName)) // 可以直接填写 "isOnGround" 此类
