@@ -36,7 +36,7 @@ object VillagerListener {
 
         if (result.fixedEnchants.isEmpty()) return
         if (!enableEnchantTrade) {
-            event.isCancelled = true;
+            event.isCancelled = true
             return
         }
 

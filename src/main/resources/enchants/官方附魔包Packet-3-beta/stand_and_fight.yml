@@ -21,7 +21,7 @@ variables:
 
 mechanisms:
   listeners:
-    damage:
+    attack:
       type: ATTACK
       chains:
         - "CONDITION::{是否暴击}==true"
