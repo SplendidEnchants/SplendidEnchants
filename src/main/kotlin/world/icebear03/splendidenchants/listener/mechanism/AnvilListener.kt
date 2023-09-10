@@ -48,7 +48,7 @@ object AnvilListener {
         console().sendMessage("    Successfully load anvil module")
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @SubscribeEvent(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun anvil(event: PrepareAnvilEvent) {
         val inv = event.inventory
         val player = event.viewers[0] as Player
@@ -56,7 +56,9 @@ object AnvilListener {
         val a = inv.firstItem ?: return
         val b = inv.secondItem
 
-        val renameText = inv.renameText
+        var renameText = event.result?.name
+        if (renameText?.isBlank() != false)
+            renameText = inv.renameText
 
         val result = anvil(a, b, player, renameText)
 

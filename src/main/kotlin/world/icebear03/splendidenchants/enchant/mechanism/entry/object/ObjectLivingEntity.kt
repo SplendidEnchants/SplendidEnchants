@@ -26,6 +26,13 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
                 obj.realDamage((params[0, "4.0"]).calcToDouble())
             }
 
+            "真实伤害" -> {
+                val dmg = params[0].calcToDouble()
+                params.getOrNull(1)?.let {
+                    obj.realDamage(dmg, objPlayer.disholderize(it))
+                } ?: obj.realDamage(dmg)
+            }
+
             "伤害" -> obj.damage(params[0].calcToDouble(), objPlayer.disholderize(params[1]))
 
             "设置生命值" -> obj.health = params[0].calcToDouble()
