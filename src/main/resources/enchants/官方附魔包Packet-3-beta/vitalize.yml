@@ -11,8 +11,8 @@ limitations: [ ]
 
 display:
   description:
-    general: "§7受到攻击时如果生命值较低则恢复自身生命值 (§7冷却:§a{冷却时间}秒§7)"
-    specific: "§7受到攻击时如果生命值小于§a{阈值}§7则恢复§a{恢复量}§7生命值 (§7冷却:§a{冷却时间}§7)"
+    general: "§7受到攻击时如果血量较低则恢复自身血量 (§7冷却:§a{冷却时间}秒§7)"
+    specific: "§7受到攻击时如果血量小于§a{阈值}§7则恢复§a{恢复量}§7血量 (§7冷却:§a{冷却时间}§7)"
 
 alternative:
   is_tradeable: false
@@ -28,8 +28,8 @@ mechanisms:
     damage:
       type: DAMAGED
       chains:
-        - "OPERATION::播报:{受伤者.生命值} {阈值}"
-        - "CONDITION::{受伤者.生命值}<={阈值}"
+        - "OPERATION::播报:{受伤者.血量} {阈值}"
+        - "CONDITION::{受伤者.血量}<={阈值}"
         - "COOLDOWN::{冷却时间}:false"
-        - "OBJECT::受伤者:设置生命值:{受伤者.生命值}+{恢复量}"
+        - "OBJECT::受伤者:设置血量:{受伤者.血量}+{恢复量}"
         - "OBJECT::受伤者:发送信息:enchant.vitalize.recovered:amount:{恢复量}"
