@@ -45,7 +45,7 @@ class Chain(val enchant: SplendidEnchant, line: String) {
             return obj
         }
 
-        val reg = Regex("\\{.{1,64}\\}")
+        val reg = Regex("\\{[^{}]*\\}")
         reg.findAll(variabled).forEach { result ->
             val path = result.value.replace("{" to "", "}" to "", tagged = false).split(".")
             variabled = variabled.replace(result.value, getObj(path).second.toString())

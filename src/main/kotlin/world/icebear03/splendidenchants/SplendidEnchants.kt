@@ -130,8 +130,9 @@ object SplendidEnchants : Plugin() {
                 MenuFunctions.unregister("Back")
                 MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
+            }.onFailure {
+                I18n.error(I18n.INIT, "SplendidEnchants", it)
             }
-
         }.let { time ->
             console().sendMessage("                            ")
             console().sendMessage("Reloaded SplendidEnchants in §6${time}ms")
