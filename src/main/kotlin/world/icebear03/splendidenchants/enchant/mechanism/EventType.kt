@@ -10,6 +10,7 @@ enum class EventType(val display: String, val entry: EventEntry<*>) {
     LEFT_CLICK("左击", EventInteract),
     INTERACT_ENTITY("交互生物", EventInteractEntity),
     PHYSICAL_INTERACT("交互方块", EventInteract),
+    DURABILITY_REDUCED("损耗耐久", EventDurabilityReduced),
     DAMAGED("受伤", EventDamaged),
     SNEAK("下蹲", EventSneak),
     FLY("飞行", EventFly);

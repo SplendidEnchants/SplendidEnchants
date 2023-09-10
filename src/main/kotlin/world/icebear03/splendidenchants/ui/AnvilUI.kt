@@ -52,8 +52,7 @@ object AnvilUI {
                 val cost = resultPair.second
 
                 val canCombine = if (result == null || cost <= 0) false
-                else if (result.isSimilar(a)) false
-                else true
+                else !result.isSimilar(a)
 
                 if (canCombine) {
                     info["allowed"] = "&a允许"
