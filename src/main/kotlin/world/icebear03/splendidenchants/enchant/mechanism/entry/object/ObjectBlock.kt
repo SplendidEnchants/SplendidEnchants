@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.Ageable
+import taboolib.library.reflex.Reflex.Companion.invokeMethod
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
@@ -64,7 +65,9 @@ object ObjectBlock : ObjectEntry<Block>() {
             "z" -> objString.h(from.z)
             "是否为农作物" -> objString.h(crops.containsKey(from.type))
             "年龄" -> objString.h((from.blockData as? Ageable)?.age ?: 0)
-            else -> objString.h(null)
+            else -> runCatching {
+                objString.h(from.invokeMethod(objName)) // 可以直接填写 "isOnGround" 此类
+            }.getOrElse { objString.h(null) }
         }
     }
 

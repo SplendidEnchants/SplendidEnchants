@@ -1,3 +1,9 @@
+buildscript {
+    repositories {
+        maven("https://maven.aliyun.com/repository/central")
+    }
+}
+
 plugins {
     `java-library`
     `maven-publish`
@@ -31,15 +37,11 @@ taboolib {
     version = "6.0.12-15"
 
     relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
+    relocate("com.mcstarrysky.starrysky", "world.icebear03.splendidenchants.taboolib.starrysky")
 }
 
 repositories {
-    maven {
-        url = uri("https://repo.papermc.io/repository/maven-public/")
-    }
-    maven {
-        url = uri("https://jitpack.io")
-    }
+    maven("https://repo.papermc.io/repository/maven-public/")
     mavenCentral()
 }
 
@@ -56,7 +58,12 @@ dependencies {
     compileOnly("ink.ptms.core:v12001:12001:universal")
 
     taboo("org.tabooproject.taboolib:module-parrotx:1.5.4") // Module-ParrotX
-    taboo("com.mcstarrysky.taboolib:module-starrysky:1.0.11-9") // Module-StarrySky
+    taboo("com.mcstarrysky.taboolib:module-starrysky:1.0.12-6") // Module-StarrySky
+
+    // Purtmars Repository
+    compileOnly("public:TrChat:2.0.4")
+    compileOnly("public:InteractiveChat:4.2.7.2")
+
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }

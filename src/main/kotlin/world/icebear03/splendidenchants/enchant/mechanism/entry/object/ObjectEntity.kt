@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.enchant.mechanism.entry.`object`
 import com.mcstarrysky.starrysky.i18n.sendLang
 import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
+import taboolib.library.reflex.Reflex.Companion.invokeMethod
 import taboolib.module.nms.getI18nName
 import world.icebear03.splendidenchants.api.toLoc
 import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.ObjectEntry
@@ -36,7 +37,9 @@ object ObjectEntity : ObjectEntry<Entity>() {
             "下落高度" -> objString.h(from.fallDistance)
             "名称" -> objString.h(from.customName ?: from.getI18nName())
             "在空中" -> objString.h(!from.isOnGround)
-            else -> objString.h(null)
+            else -> runCatching {
+                objString.h(from.invokeMethod(objName)) // 可以直接填写 "isOnGround" 此类
+            }.getOrElse { objString.h(null) }
         }
     }
 
