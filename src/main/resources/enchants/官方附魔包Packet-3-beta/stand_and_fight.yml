@@ -12,7 +12,7 @@ limitations: [ ]
 display:
   description:
     general: "§7当前的血量越低，暴击伤害越高"
-    specific: "§7生命值≤§a{阈值}§7时每损失§a1%§7的血量增加§a{增幅}§7的暴击伤害"
+    specific: "§7血量≤§a{阈值}§7时每损失§a1%§7的血量增加§a{增幅}§7的暴击伤害"
 
 variables:
   leveled:
@@ -26,5 +26,4 @@ mechanisms:
       chains:
         - "CONDITION::{是否暴击}==true"
         - "CONDITION::{攻击者.血量}<={阈值}/100.0*{攻击者.最大血量}"
-        - "OPERATION::播报:1"
         - "EVENT::设置伤害:{伤害}*(1+{阈值}/100.0-{攻击者.血量}/{攻击者.最大血量})*{增幅}/100.0"

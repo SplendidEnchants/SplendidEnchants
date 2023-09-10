@@ -35,7 +35,7 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
 
             "伤害" -> obj.damage(params[0].calcToDouble(), objPlayer.disholderize(params[1]))
 
-            "设置生命值" -> obj.health = params[0].calcToDouble()
+            "设置血量" -> obj.health = params[0].calcToDouble()
 
             "设置伤害吸收量" -> obj.absorptionAmount = params[0].calcToDouble()
 
@@ -57,8 +57,8 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
 
     override fun get(from: LivingEntity, objName: String): Pair<ObjectEntry<*>, Any?> {
         return when (objName) {
-            "生命值" -> objString.h(from.health)
-            "最大生命值" -> objString.h(from.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value)
+            "血量" -> objString.h(from.health)
+            "最大血量" -> objString.h(from.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value)
             "伤害吸收值" -> objString.h(from.absorptionAmount)
             "脚下方块" -> objBlock.holderize(from.blockBelow ?: from.groundBlock)
             "朝向向量" -> objVector.holderize(from.eyeLocation.direction.normalize())
