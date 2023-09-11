@@ -136,7 +136,7 @@ template:
 
   'X':
     material: RED_STAINED_GLASS_PANE
-    name: "&c←-1"
+    name: "&c-1"
     lore:
       - "&8| &7&c点击&7按钮使查询等级&c-1级"
     feature:
@@ -145,7 +145,7 @@ template:
 
   'Y':
     material: GREEN_STAINED_GLASS_PANE
-    name: "&a→+1"
+    name: "&a+1"
     lore:
       - "&8| &7&a点击&7按钮使查询等级&a+1级"
     feature:

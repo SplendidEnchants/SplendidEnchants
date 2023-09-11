@@ -10,6 +10,7 @@ import org.serverct.parrot.parrotx.function.round
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
+import taboolib.common.platform.function.submit
 import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
@@ -88,12 +89,14 @@ object AttainListener {
         event.enchantsToAdd.putAll(result.first)
 
         //对书的附魔，必须手动进行，因为原版处理会掉特殊附魔
+        //也许可以用更好的方法兼容，submit有一定风险 FIXME
         if (item.type == Material.BOOK) {
-            event.isCancelled = true
-            event.inventory.setItem(0, result.second)
+            submit {
+                event.inventory.setItem(0, result.second)
+            }
         }
 
-        result.first.forEach { enchant, level ->
+        result.first.forEach { (enchant, level) ->
             val rarity = enchant.rarity
             celebrateNotice[rarity]?.let { lines ->
                 lines.forEach { line ->

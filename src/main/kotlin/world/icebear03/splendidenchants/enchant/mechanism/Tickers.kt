@@ -87,7 +87,9 @@ class Tickers(val enchant: SplendidEnchant, config: ConfigurationSection?) {
             routine.clear()
 
             var counter = 0
+            println(task)
             task?.cancel()
+            println(task)
             task = submit(period = 1L) {
                 counter++
                 routine.filterValues { counter % it == 0 }.forEach { (pair, _) ->
