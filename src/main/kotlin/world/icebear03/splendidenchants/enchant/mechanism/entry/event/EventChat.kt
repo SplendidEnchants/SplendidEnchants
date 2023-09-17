@@ -9,7 +9,7 @@ object EventChat : EventEntry<AsyncPlayerChatEvent>() {
     override fun modify(event: AsyncPlayerChatEvent, entity: LivingEntity, cmd: String, params: List<String>): Boolean {
         when (cmd) {
             "取消发送" -> event.isCancelled = true
-            "设置信息" -> event.message = param.firstOrNull() ?: ""
+            "设置信息" -> event.message = params.firstOrNull() ?: ""
             else -> {}
         }
         return true
