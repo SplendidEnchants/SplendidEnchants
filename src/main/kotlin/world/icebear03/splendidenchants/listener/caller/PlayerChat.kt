@@ -27,7 +27,7 @@ object PlayerChat {
     @SubscribeEvent(ignoreCancelled = true)
     fun normal(event: AsyncPlayerChatEvent) = settle(event)
 
-    private fun settle(event: AsyncChatEvent, priority: EventPriority = EventPriority.NORMAL) {
+    private fun settle(event: AsyncPlayerChatEvent, priority: EventPriority = EventPriority.NORMAL) {
         EventType.CHAT.triggerEts(event, priority, TriggerSlots.ALL, event.player)
     }
 }
