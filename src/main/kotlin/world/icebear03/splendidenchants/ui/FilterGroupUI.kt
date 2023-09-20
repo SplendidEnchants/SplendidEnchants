@@ -66,7 +66,7 @@ object FilterGroupUI {
             val group = args["group"] as Group
             val player = args["player"] as Player
 
-            when (EnchantFilter.getStatement(player, EnchantFilter.FilterType.GROUP, group)) {
+            when (EnchantFilter.getStatement(player, EnchantFilter.FilterType.GROUP, group.name)) {
                 EnchantFilter.FilterStatement.ON -> icon.type = Material.LIME_STAINED_GLASS_PANE
                 EnchantFilter.FilterStatement.OFF -> icon.type = Material.RED_STAINED_GLASS_PANE
                 else -> {}

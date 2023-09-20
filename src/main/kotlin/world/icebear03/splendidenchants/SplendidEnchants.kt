@@ -19,6 +19,7 @@ import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.mechanism.Tickers
 import world.icebear03.splendidenchants.listener.mechanism.*
 import world.icebear03.splendidenchants.player.DataLoader
+import world.icebear03.splendidenchants.player.saveSEData
 import world.icebear03.splendidenchants.supports.HookInteractiveChat
 import world.icebear03.splendidenchants.supports.HookTrChat
 import world.icebear03.splendidenchants.ui.internal.back
@@ -70,6 +71,8 @@ object SplendidEnchants : Plugin() {
                 MenuFunctions.unregister("Back")
                 MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
+
+                DataLoader.load()
             }.onFailure {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
             }
@@ -125,8 +128,6 @@ object SplendidEnchants : Plugin() {
                 MenuFunctions.unregister("Back")
                 MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
-
-                DataLoader.load()
             }.onFailure {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
             }
@@ -142,6 +143,7 @@ object SplendidEnchants : Plugin() {
     override fun onDisable() {
         if (Bukkit.getPluginManager().isPluginEnabled("TrChat"))
             HookPlugin.registry.removeIf { it.plugin?.name == "SplendidEnchants" }
+        onlinePlayers.forEach { it.saveSEData() }
         EnchantLoader.unregisterAll()
     }
 }

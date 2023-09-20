@@ -67,7 +67,7 @@ object FilterRarityUI {
             val rarity = args["rarity"] as Rarity
             val player = args["player"] as Player
 
-            when (EnchantFilter.getStatement(player, EnchantFilter.FilterType.RARITY, rarity)) {
+            when (EnchantFilter.getStatement(player, EnchantFilter.FilterType.RARITY, rarity.id)) {
                 EnchantFilter.FilterStatement.ON -> icon.type = Material.LIME_STAINED_GLASS_PANE
                 EnchantFilter.FilterStatement.OFF -> icon.type = Material.RED_STAINED_GLASS_PANE
                 else -> {}

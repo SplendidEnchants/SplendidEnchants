@@ -10,6 +10,7 @@ import taboolib.platform.util.onlinePlayers
 object DataLoader {
 
     fun load() {
+        onlinePlayers.forEach { it.loadSEData() }
         submit(period = 600L) {
             onlinePlayers.forEach { it.saveSEData() }
         }

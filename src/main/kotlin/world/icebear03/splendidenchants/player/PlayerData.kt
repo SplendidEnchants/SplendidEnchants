@@ -10,7 +10,7 @@ import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.player.internal.MenuMode
 import java.util.*
 
-data class PlayerData(val serializedData: String?) {
+data class PlayerData(private val serializedData: String?) {
     var menuMode: MenuMode = MenuMode.NORMAL
     var favorites: MutableList<String> = mutableListOf()
     var filters: Map<EnchantFilter.FilterType, MutableMap<String, EnchantFilter.FilterStatement>> =
@@ -20,23 +20,27 @@ data class PlayerData(val serializedData: String?) {
     init {
         serializedData?.let {
             serializedData.split("||")
-                .map { pair -> pair.split("==")[0] to pair.split("=")[2] }
+                .map { pair -> pair.split("==")[0] to pair.split("==")[1] }
                 .forEach { (key, value) ->
                     when (key) {
                         "menu_mode" -> menuMode = MenuMode.valueOf(value)
                         "favorites" -> value.split(";").mapNotNull { id -> splendidEt(id) }
                         "filters" -> {
                             var tot = 0
-                            value.split("|").forEach { content ->
-                                filters[EnchantFilter.filterTypes[tot++]]!!.putAll(content.split(";").associate { filter ->
-                                    filter.split("=")[0] to
-                                            EnchantFilter.FilterStatement.valueOf(filter.split("=")[1])
-                                })
+                            value.split("$").forEach { content ->
+                                filters[EnchantFilter.filterTypes[tot++]]!!.putAll(content.split(";")
+                                    .filter { filter -> filter.isNotBlank() }
+                                    .associate { filter ->
+                                        filter.split("=")[0] to
+                                                EnchantFilter.FilterStatement.valueOf(filter.split("=")[1])
+                                    })
                             }
                         }
 
                         "cooldown" -> {
-                            cooldown.putAll(value.split(";")
+                            cooldown.putAll(value
+                                .split(";")
+                                .filter { pair -> pair.isNotBlank() }
                                 .associate { pair -> pair.split("=")[0] to pair.split("=")[1].clong })
                         }
 
@@ -50,8 +54,8 @@ data class PlayerData(val serializedData: String?) {
             "favorites==${favorites.joinToString(";")}||" +
             "filters==${
                 EnchantFilter.filterTypes.map {
-                    filters[it]!!.map { (value, state) -> "$value=$state" }
-                }.joinToString("|")
+                    filters[it]!!.map { (value, state) -> "$value=$state" }.joinToString(";")
+                }.joinToString("$")
             }||" +
             "cooldown==${cooldown.map { (id, stamp) -> "$id=$stamp" }.joinToString { ";" }}"
 }
@@ -65,6 +69,7 @@ fun Player.loadSEData() {
 fun Player.saveSEData() {
     data[uniqueId]?.let {
         set("splendidenchants_data", PersistentDataType.STRING, it.serialize())
+        println(it.serialize())
     }
 }
 

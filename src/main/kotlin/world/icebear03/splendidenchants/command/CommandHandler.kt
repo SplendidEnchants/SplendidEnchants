@@ -52,4 +52,7 @@ object CommandHandler : CommandHandler {
 
     @CommandBody(permission = "splendidenchants.reload", hidden = true)
     val reload = CommandReload.command
+
+    @CommandBody(permission = "splendidenchants.mode", hidden = true)
+    val mode = CommandMode.command
 }

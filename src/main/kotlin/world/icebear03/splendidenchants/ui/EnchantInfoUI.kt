@@ -387,6 +387,8 @@ object EnchantInfoUI {
             val id = enchant.basicData.id
             if (!player.favorites.contains(id)) player.favorites += id
             else player.favorites -= id
+
+            open(player, args)
         }
     }
 }

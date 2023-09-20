@@ -65,7 +65,7 @@ object EnchantFilter {
 
     fun clearFilter(player: Player, type: FilterType) = player.filters[type]!!.clear()
 
-    fun getStatement(player: Player, type: FilterType, value: Any): FilterStatement? = player.filters[type]!![value]
+    fun getStatement(player: Player, type: FilterType, value: String): FilterStatement? = player.filters[type]!![value]
 
 
     fun addFilter(player: Player, type: FilterType, value: String, state: FilterStatement) {

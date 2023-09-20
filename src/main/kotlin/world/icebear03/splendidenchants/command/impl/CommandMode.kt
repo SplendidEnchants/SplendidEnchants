@@ -18,7 +18,7 @@ object CommandMode : CommandExecutor {
         get() = subCommand {
             dynamic("mode", true) {
                 suggestion<CommandSender> { _, _ -> listOf("作弊", "普通", "cheat", "normal") }
-                execute<CommandSender> { sender, args, _ -> handle(sender, args["mode"], args["player"]) }
+                execute<CommandSender> { sender, args, _ -> handle(sender, args["mode"], sender.name) }
                 dynamic("player", true) {
                     suggestPlayers()
                     execute<CommandSender> { sender, args, _ -> handle(sender, args["mode"], args["player"]) }
@@ -35,7 +35,7 @@ object CommandMode : CommandExecutor {
             }
             receiver.sendLang("command.subCommands.mode.receiver", "mode" to mode)
             sender.sendLang("command.subCommands.mode.sender", "mode" to mode, "name" to receiver.name)
-        } ?: sender.sendLang("command.subCommands.menu.fail")
+        } ?: sender.sendLang("command.subCommands.mode.fail")
     }
 
     override val name: String

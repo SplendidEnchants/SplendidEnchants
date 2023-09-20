@@ -67,7 +67,7 @@ object FilterTargetUI {
             val target = args["target"] as Target
             val player = args["player"] as Player
 
-            when (EnchantFilter.getStatement(player, EnchantFilter.FilterType.TARGET, target)) {
+            when (EnchantFilter.getStatement(player, EnchantFilter.FilterType.TARGET, target.id)) {
                 EnchantFilter.FilterStatement.ON -> icon.type = Material.LIME_STAINED_GLASS_PANE
                 EnchantFilter.FilterStatement.OFF -> icon.type = Material.RED_STAINED_GLASS_PANE
                 else -> {}
@@ -76,7 +76,7 @@ object FilterTargetUI {
             icon.variables {
                 when (it) {
                     "name" -> listOf(target.name)
-                    "amount" -> listOf(EnchantLoader.BY_TARGET[target]!!.size.toString())
+                    "amount" -> listOf((EnchantLoader.BY_TARGET[target]?.size ?: 0).toString())
                     else -> emptyList()
                 }
             }.skull(target.skull)
