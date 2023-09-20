@@ -23,6 +23,7 @@ import world.icebear03.splendidenchants.api.setSlots
 import world.icebear03.splendidenchants.api.skull
 import world.icebear03.splendidenchants.enchant.EnchantFilter
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
+import world.icebear03.splendidenchants.player.filters
 import world.icebear03.splendidenchants.ui.internal.UIType
 import world.icebear03.splendidenchants.ui.internal.record
 import kotlin.collections.set
@@ -47,7 +48,7 @@ object EnchantSearchUI {
             rows(shape.rows)
             val slots = shape["EnchantSearch:enchant"].toList()
             slots(slots)
-            elements { EnchantFilter.filter(player) }
+            elements { EnchantFilter.filter(player.filters) }
 
             load(
                 shape, templates, player,

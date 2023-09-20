@@ -55,6 +55,12 @@ command:
       description: '为玩家打开附魔主菜单'
       usage: '\[玩家\]'
       fail: '控制台无法打开菜单'
+    mode:
+      description: '设置玩家的菜单模式'
+      usage: '<模式> \[玩家\]'
+      sender: '成功将玩家 &e{name} &7的菜单模式修改为 &a{mode}'
+      receiver: '菜单模式修改为 &a{mode}'
+      fail: '控制台无法设置自己的菜单模式'
     random:
       description: '为玩家随机抽取一本指定品质的附魔书'
       usage: '<品质> \[等级\] \[玩家\]'

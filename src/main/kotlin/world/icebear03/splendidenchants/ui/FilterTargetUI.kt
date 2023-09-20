@@ -91,7 +91,7 @@ object FilterTargetUI {
                 ClickType.LEFT, ClickType.RIGHT -> {
                     EnchantFilter.clearFilter(player, EnchantFilter.FilterType.TARGET, target)
                     EnchantFilter.addFilter(
-                        player, EnchantFilter.FilterType.TARGET, target,
+                        player, EnchantFilter.FilterType.TARGET, target.id,
                         when (clickType) {
                             ClickType.RIGHT -> EnchantFilter.FilterStatement.OFF
                             else -> EnchantFilter.FilterStatement.ON

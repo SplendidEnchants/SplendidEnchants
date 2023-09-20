@@ -56,6 +56,12 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
     }
 
     override fun get(from: LivingEntity, objName: String): Pair<ObjectEntry<*>, Any?> {
+        if (objName.startsWith("周围生物")) {
+            val range = objName.numbers[0]
+            return objLivingEntity to from.getNearbyEntities(range, range, range)
+                .filterIsInstance<LivingEntity>()
+                .map { objLivingEntity.h(it) }
+        }
         return when (objName) {
             "血量" -> objString.h(from.health)
             "最大血量" -> objString.h(from.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value)

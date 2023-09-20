@@ -90,7 +90,7 @@ object FilterGroupUI {
                 ClickType.LEFT, ClickType.RIGHT -> {
                     EnchantFilter.clearFilter(player, EnchantFilter.FilterType.GROUP, group)
                     EnchantFilter.addFilter(
-                        player, EnchantFilter.FilterType.GROUP, group,
+                        player, EnchantFilter.FilterType.GROUP, group.name,
                         when (clickType) {
                             ClickType.RIGHT -> EnchantFilter.FilterStatement.OFF
                             else -> EnchantFilter.FilterStatement.ON

@@ -8,7 +8,6 @@ import org.serverct.parrot.parrotx.ui.registry.MenuFunctions
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.platform.util.onlinePlayers
-import world.icebear03.splendidenchants.api.CooldownData
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
@@ -19,6 +18,7 @@ import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.mechanism.Tickers
 import world.icebear03.splendidenchants.listener.mechanism.*
+import world.icebear03.splendidenchants.player.DataLoader
 import world.icebear03.splendidenchants.supports.HookInteractiveChat
 import world.icebear03.splendidenchants.supports.HookTrChat
 import world.icebear03.splendidenchants.ui.internal.back
@@ -53,7 +53,6 @@ object SplendidEnchants : Plugin() {
                 Rarity.load()
                 Target.load()
                 EnchantDisplayer.load()
-                EnchantFilter.load()
                 Tickers.load()
                 EnchantLoader.load()
                 Group.load()
@@ -66,7 +65,6 @@ object SplendidEnchants : Plugin() {
                 ExpListener.load()
 
                 FurtherOperation.load()
-                CooldownData.load()
 
                 console().sendMessage("|- Loading GUIs...")
                 MenuFunctions.unregister("Back")
@@ -111,7 +109,6 @@ object SplendidEnchants : Plugin() {
                 Rarity.load()
                 Target.load()
                 EnchantDisplayer.load()
-                EnchantFilter.load()
                 Tickers.load()
                 EnchantLoader.load(true)
                 Group.load()
@@ -124,12 +121,12 @@ object SplendidEnchants : Plugin() {
                 VillagerListener.load()
                 ExpListener.load()
 
-                CooldownData.load()
-
                 console().sendMessage("|- Reloading GUIs...")
                 MenuFunctions.unregister("Back")
                 MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
+
+                DataLoader.load()
             }.onFailure {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
             }

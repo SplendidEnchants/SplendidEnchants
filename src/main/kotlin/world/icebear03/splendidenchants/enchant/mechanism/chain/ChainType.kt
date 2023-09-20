@@ -7,6 +7,7 @@ enum class ChainType(val display: String) {
     END("终止"), // 格式 - 终止
 
     //在Chain层面中处理
+    TRAVERSE("遍历"), // 格式 - 遍历::列表对象:操作类型:子语句/参数
     COOLDOWN("冷却"), // 格式 - 冷却::时间(秒):是否通告给玩家
     CONDITION("条件"), // 格式 - 条件::布尔表达式
     ASSIGNMENT("赋值"), // 格式 - 赋值::变量名:值表达式

@@ -45,3 +45,4 @@ val objLivingEntity = ObjectLivingEntity
 val objPlayer = ObjectPlayer
 val objItem = ObjectItem
 val objVector = ObjectVector
+val objList = ObjectList

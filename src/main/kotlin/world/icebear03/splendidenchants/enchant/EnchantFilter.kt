@@ -1,25 +1,18 @@
 package world.icebear03.splendidenchants.enchant
 
 import org.bukkit.entity.Player
-import org.bukkit.event.player.PlayerJoinEvent
-import taboolib.common.platform.event.SubscribeEvent
-import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.enchant.EnchantFilter.FilterStatement.OFF
 import world.icebear03.splendidenchants.enchant.EnchantFilter.FilterStatement.ON
 import world.icebear03.splendidenchants.enchant.EnchantFilter.FilterType.*
-import world.icebear03.splendidenchants.enchant.data.*
-import world.icebear03.splendidenchants.enchant.data.Target
-import java.util.*
+import world.icebear03.splendidenchants.enchant.data.group
+import world.icebear03.splendidenchants.enchant.data.isIn
+import world.icebear03.splendidenchants.enchant.data.rarity
+import world.icebear03.splendidenchants.enchant.data.target
+import world.icebear03.splendidenchants.player.filters
 
 object EnchantFilter {
 
-    val filters = mutableMapOf<UUID, Map<FilterType, LinkedHashMap<Any, FilterStatement>>>()
-
-    fun filter(player: Player): List<SplendidEnchant> {
-        return filter(filters[player.uniqueId]!!)
-    }
-
-    fun filter(filters: Map<FilterType, LinkedHashMap<Any, FilterStatement>>): List<SplendidEnchant> {
+    fun filter(filters: Map<FilterType, Map<String, FilterStatement>>): List<SplendidEnchant> {
         return EnchantLoader.BY_ID.values.filter result@{ enchant ->
             filters.forEach { (type, rules) ->
                 var onFlag = false
@@ -28,13 +21,13 @@ object EnchantFilter {
 
                 rules.forEach { (value, state) ->
                     if (when (type) {
-                            RARITY -> value as Rarity == enchant.rarity
-                            TARGET -> (enchant.targets.contains(value as Target) || enchant.targets.any { value.types.containsAll(it.types) })
-                            GROUP -> enchant.isIn(value as Group)
+                            RARITY -> rarity(value) == enchant.rarity
+                            TARGET -> (enchant.targets.contains(target(value)) || enchant.targets.any { target(value)?.types?.containsAll(it.types) == true })
+                            GROUP -> enchant.isIn(group(value))
                             STRING -> {
-                                enchant.basicData.name.contains(value.toString()) ||
-                                        enchant.basicData.id.contains(value.toString()) ||
-                                        enchant.displayer.generalDescription.contains(value.toString())
+                                enchant.basicData.name.contains(value) ||
+                                        enchant.basicData.id.contains(value) ||
+                                        enchant.displayer.generalDescription.contains(value)
                             }
                         }
                     ) {
@@ -51,54 +44,38 @@ object EnchantFilter {
         }
     }
 
-    fun generateLore(type: FilterType, player: Player): List<String> = generateLore(type, filters[player.uniqueId]!![type]!!)
+    fun generateLore(type: FilterType, player: Player): List<String> = generateLore(type, player.filters[type]!!)
 
-    fun generateLore(type: FilterType, rules: LinkedHashMap<Any, FilterStatement>): List<String> {
+    fun generateLore(type: FilterType, rules: Map<String, FilterStatement>): List<String> {
         return rules.map { (value, state) ->
             state.symbol + " " + when (type) {
-                RARITY -> (value as Rarity).display()
-                TARGET -> (value as Target).name
-                GROUP -> (value as Group).name
+                RARITY -> rarity(value)?.display() ?: value
+                TARGET -> target(value)?.name ?: value
+                GROUP -> group(value)?.name ?: value
                 STRING -> value
             }
         }
     }
 
     fun clearFilters(player: Player) {
-        filters[player.uniqueId] = FilterType.entries.associateWith { linkedMapOf() }
+        filterTypes.forEach {
+            player.filters[it]!!.clear()
+        }
     }
 
-    fun clearFilter(player: Player, type: FilterType) = filters[player.uniqueId]!![type]!!.clear()
+    fun clearFilter(player: Player, type: FilterType) = player.filters[type]!!.clear()
 
-    fun getStatement(player: Player, type: FilterType, value: Any): FilterStatement? = filters[player.uniqueId]!![type]!![value]
+    fun getStatement(player: Player, type: FilterType, value: Any): FilterStatement? = player.filters[type]!![value]
 
 
     fun addFilter(player: Player, type: FilterType, value: String, state: FilterStatement) {
-        val key: Any? = when (type) {
-            RARITY -> rarity(value)
-            TARGET -> target(value)
-            GROUP -> group(value)
-            STRING -> value
-        }
-        key?.let { addFilter(player, type, it, state) }
+        player.filters[type]!![value] = state
     }
 
-    fun addFilter(player: Player, type: FilterType, value: Any, state: FilterStatement) {
-        filters[player.uniqueId]!![type]!![value] = state
-    }
+    fun clearFilter(player: Player, type: FilterType, value: Any) = player.filters[type]!!.remove(value)
 
-    fun clearFilter(player: Player, type: FilterType, value: Any) = filters[player.uniqueId]!![type]!!.remove(value)
 
-    @SubscribeEvent
-    fun join(event: PlayerJoinEvent) {
-        filters[event.player.uniqueId] = FilterType.entries.associateWith { linkedMapOf() }
-    }
-
-    fun load() {
-        onlinePlayers.forEach {
-            filters[it.uniqueId] = FilterType.entries.associateWith { linkedMapOf() }
-        }
-    }
+    val filterTypes = FilterType.entries.toList()
 
     enum class FilterType(val display: String) {
         RARITY("品质"),

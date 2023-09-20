@@ -16,6 +16,7 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
+import taboolib.platform.util.giveItem
 import taboolib.platform.util.modifyLore
 import taboolib.platform.util.modifyMeta
 import world.icebear03.splendidenchants.api.*
@@ -27,6 +28,8 @@ import world.icebear03.splendidenchants.enchant.data.groups
 import world.icebear03.splendidenchants.enchant.data.isIn
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.data.limitation.LimitType
+import world.icebear03.splendidenchants.player.internal.MenuMode
+import world.icebear03.splendidenchants.player.menuMode
 import world.icebear03.splendidenchants.ui.internal.UIType
 import world.icebear03.splendidenchants.ui.internal.record
 import kotlin.collections.set
@@ -60,6 +63,11 @@ object EnchantInfoUI {
         checked: ItemStack = ItemStack(Material.AIR),
         category: String = "conflicts"
     ) {
+        if (player.menuMode == MenuMode.CHEAT) {
+            player.giveItem(enchant.book(level))
+            return
+        }
+
         player.record(UIType.ENCHANT_INFO, "enchant" to enchant, "level" to level, "checked" to checked, "category" to category)
         player.openMenu<Linked<String>>(
             config.title()

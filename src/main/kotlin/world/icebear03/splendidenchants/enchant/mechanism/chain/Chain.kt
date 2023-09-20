@@ -23,6 +23,7 @@ class Chain(val enchant: SplendidEnchant, line: String) {
 
     //注意：这里的item一定要是原物品，不能是副本
     //前两个参数在ticker trigger时为空
+    @Suppress("UNCHECKED_CAST")
     fun trigger(
         event: Event?,
         eventType: EventType?,
@@ -34,13 +35,13 @@ class Chain(val enchant: SplendidEnchant, line: String) {
         //首先全部替换
         var variabled = content.replace(sHolders).replace(fHolders.mapValues { it.value.second })
 
-        fun getObj(path: List<String>): Pair<ObjectEntry<*>, Any?> {
+        fun getObj(nodes: List<String>, start: Pair<ObjectEntry<*>, Any?>? = null): Pair<ObjectEntry<*>, Any?> {
             var obj =
-                if (path[0] == "物品") objItem.h(item)
-                else fHolders[path[0]] ?: event?.let { eventType?.entry?.g(it, path[0]) } ?: objString.h(null)
-            for (i in 1 until path.size) {
+                start?.let { it.first.g(it.second, nodes[0]) } ?: if (nodes[0] == "物品") objItem.h(item)
+                else fHolders[nodes[0]] ?: event?.let { eventType?.entry?.g(it, nodes[0]) } ?: objString.h(null)
+            for (i in 1 until nodes.size) {
                 val type = obj.first
-                obj = type.g(type.d(obj.second), path[i])
+                obj = type.g(type.d(obj.second), nodes[i])
             }
             return obj
         }
@@ -48,7 +49,9 @@ class Chain(val enchant: SplendidEnchant, line: String) {
         val reg = Regex("\\{[^{}]*\\}")
         reg.findAll(variabled).forEach { result ->
             val path = result.value.replace("{" to "", "}" to "", tagged = false).split(".")
-            variabled = variabled.replace(result.value, getObj(path).second.toString())
+            getObj(path).second?.let {
+                variabled = variabled.replace(result.value, it.toString())
+            }
         }
 
         //生成变量
@@ -61,6 +64,9 @@ class Chain(val enchant: SplendidEnchant, line: String) {
             //格式：
             //冷却::冷却时间(s):是否播报给玩家
             COOLDOWN -> {
+                if (entity !is Player)
+                    return true
+
                 val cdInSec = parts[0].toDouble()
                 val key = enchant.basicData.id
                 val info = parts[1].toBoolean()
@@ -108,6 +114,33 @@ class Chain(val enchant: SplendidEnchant, line: String) {
             }
 
             ITEM -> objItem.modify(item, parts[0], parts.subList(1))
+
+            TRAVERSE -> {
+                val nodes = parts[0].split(".")
+                val pair = getObj(nodes).second as Pair<ObjectEntry<*>, List<String>>
+                val type = pair.first
+                val elements = pair.second
+                when (parts[1]) {
+                    "存在" -> {
+                        return elements.any { element ->
+                            val obj = type.disholderize(element) ?: return@any false
+                            var line = parts[2]
+                            reg.findAll(variabled).forEach { result ->
+                                val nodesInner = result.value.replace("{" to "", "}" to "", tagged = false).split(".")
+                                if (nodesInner[0] == "元素") {
+                                    getObj(nodesInner.subList(1), type to obj).second?.let {
+                                        line = line.replace(result.value, it.toString())
+                                    }
+                                }
+                            }
+                            line.calcToBoolean()
+                        }
+                    }
+
+                    "至少" -> {}
+                    "修改" -> {}
+                }
+            }
 
             else -> {}
         }

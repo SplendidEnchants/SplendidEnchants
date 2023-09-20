@@ -91,7 +91,7 @@ object FilterRarityUI {
                 ClickType.LEFT, ClickType.RIGHT -> {
                     EnchantFilter.clearFilter(player, EnchantFilter.FilterType.RARITY, rarity)
                     EnchantFilter.addFilter(
-                        player, EnchantFilter.FilterType.RARITY, rarity,
+                        player, EnchantFilter.FilterType.RARITY, rarity.id,
                         when (clickType) {
                             ClickType.RIGHT -> EnchantFilter.FilterStatement.OFF
                             else -> EnchantFilter.FilterStatement.ON
