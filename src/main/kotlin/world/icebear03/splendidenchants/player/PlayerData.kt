@@ -24,7 +24,8 @@ data class PlayerData(private val serializedData: String?) {
                 .forEach { (key, value) ->
                     when (key) {
                         "menu_mode" -> menuMode = MenuMode.valueOf(value)
-                        "favorites" -> value.split(";").mapNotNull { id -> splendidEt(id) }
+                        "favorites" -> favorites.addAll(value.split(";").mapNotNull { id -> splendidEt(id)?.basicData?.id })
+
                         "filters" -> {
                             var tot = 0
                             value.split("$").forEach { content ->
@@ -69,7 +70,6 @@ fun Player.loadSEData() {
 fun Player.saveSEData() {
     data[uniqueId]?.let {
         set("splendidenchants_data", PersistentDataType.STRING, it.serialize())
-        println(it.serialize())
     }
 }
 
