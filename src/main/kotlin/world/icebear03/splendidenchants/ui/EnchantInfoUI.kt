@@ -7,6 +7,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.serverct.parrot.parrotx.function.variable
 import org.serverct.parrot.parrotx.function.variables
 import org.serverct.parrot.parrotx.mechanism.Reloadable
 import org.serverct.parrot.parrotx.ui.MenuComponent
@@ -28,6 +29,7 @@ import world.icebear03.splendidenchants.enchant.data.groups
 import world.icebear03.splendidenchants.enchant.data.isIn
 import world.icebear03.splendidenchants.enchant.data.limitation.CheckType
 import world.icebear03.splendidenchants.enchant.data.limitation.LimitType
+import world.icebear03.splendidenchants.player.favorites
 import world.icebear03.splendidenchants.player.internal.MenuMode
 import world.icebear03.splendidenchants.player.menuMode
 import world.icebear03.splendidenchants.ui.internal.UIType
@@ -362,6 +364,29 @@ object EnchantInfoUI {
 
                 "enchant" -> open(player, splendidEt(parts[1])!!)
             }
+        }
+    }
+
+    @MenuComponent
+    private val favorite = MenuFunctionBuilder {
+        onBuild { (_, _, _, _, icon, args) ->
+            val enchant = args["enchant"] as SplendidEnchant
+            val player = args["player"] as Player
+            icon.variable(
+                "state", listOf(
+                    if (!player.favorites.contains(enchant.basicData.id)) "&a收藏"
+                    else "&c移除收藏"
+                )
+            )
+        }
+
+
+        onClick { (_, _, _, event, args) ->
+            val player = event.clicker
+            val enchant = args["enchant"] as SplendidEnchant
+            val id = enchant.basicData.id
+            if (!player.favorites.contains(id)) player.favorites += id
+            else player.favorites -= id
         }
     }
 }
