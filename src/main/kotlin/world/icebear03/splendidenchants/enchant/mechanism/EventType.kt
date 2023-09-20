@@ -13,7 +13,8 @@ enum class EventType(val display: String, val entry: EventEntry<*>) {
     DURABILITY_REDUCED("损耗耐久", EventDurabilityReduced),
     DAMAGED("受伤", EventDamaged),
     SNEAK("下蹲", EventSneak),
-    FLY("飞行", EventFly);
+    FLY("飞行", EventFly),
+    CHAT("聊天", EventChat);
 
     companion object {
         fun getType(identifier: String?): EventType? = entries.find { it.display == identifier || it.name == identifier }

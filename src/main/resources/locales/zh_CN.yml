@@ -11,6 +11,8 @@ enchant:
     damaged: "&7你被 &e{who} &7的弹射物会心一击"
   vitalize:
     recovered: "&7你的盾牌为你恢复了 &e{amount} &7点血量"
+  prohibition_curse:
+    damaged: "&7你的装备对你造成了 &c{amount} &7点真实伤害"
 command:
   helper:
     - ' '
