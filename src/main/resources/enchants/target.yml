@@ -207,6 +207,13 @@ damageable:
   max: 16
   name: 可损坏物品
   skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmJiMTI1NmViOWY2NjdjMDVmYjIxZTAyN2FhMWQ1MzU1OGJkYTc0ZTI0MGU0ZmE5ZTEzN2Q4NTFjNDE2ZmU5OCJ9fX0="
+  active_slots:
+    - HAND
+    - OFF_HAND
+    - FEET
+    - LEGS
+    - CHEST
+    - HEAD
   types:
     - FLINT_AND_STEEL
     - FISHING_ROD
@@ -275,6 +282,13 @@ all:
   max: 16
   name: 所有物品
   skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFhNzg1OTE2ZDJkMTdjYTBlYTJhZDIzZDgwMjQ3YzdjNTAyMTQ0MzkwM2JiYWI3YjI0Yjc5MzRiNmEzNjFhYiJ9fX0="
+  active_slots:
+    - HAND
+    - OFF_HAND
+    - FEET
+    - LEGS
+    - CHEST
+    - HEAD
   types:
     - PLAYER_HEAD
     - CARVED_PUMPKIN
