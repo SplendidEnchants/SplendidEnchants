@@ -6,7 +6,7 @@ import org.bukkit.Bukkit
 import org.serverct.parrot.parrotx.mechanism.Reloadables
 import org.serverct.parrot.parrotx.ui.registry.MenuFunctions
 import taboolib.common.platform.Plugin
-import taboolib.common.platform.function.info
+import taboolib.common.platform.function.console
 import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.api.internal.colorify
@@ -27,13 +27,13 @@ import kotlin.system.measureTimeMillis
 
 object SplendidEnchants : Plugin() {
     override fun onActive() {
-        info("Loading supports for other plugins...")
+        console().sendMessage("Loading supports for other plugins...")
         if (Bukkit.getPluginManager().isPluginEnabled("TrChat")) {
-            info("|- TrChat detected, attempt to hook it...")
+            console().sendMessage("|- TrChat detected, attempt to hook it...")
             HookPlugin.addHook(HookTrChat)
         }
         if (Bukkit.getPluginManager().isPluginEnabled("InteractiveChat")) {
-            info("|- InteractiveChat detected, attempt to hook it...")
+            console().sendMessage("|- InteractiveChat detected, attempt to hook it...")
             HookInteractiveChat.load()
         }
     }
@@ -41,15 +41,15 @@ object SplendidEnchants : Plugin() {
     override fun onEnable() {
         measureTimeMillis {
             sendLogo();
-            info("Installing SplendidEnchants...")
+            console().sendMessage("Installing SplendidEnchants...")
 
             I18n.initialize() // 加载的提示信息已经内置在 I18n 类里了，不需要再单独写
 
             runCatching {
-                info("|- Loading Config Module...")
+                console().sendMessage("|- Loading Config Module...")
                 Config.load()
 
-                info("|- Loading Enchants...")
+                console().sendMessage("|- Loading Enchants...")
                 Rarity.load()
                 Target.load()
                 EnchantDisplayer.load()
@@ -57,7 +57,7 @@ object SplendidEnchants : Plugin() {
                 EnchantLoader.load()
                 Group.load()
 
-                info("|- Loading Mechanisms...")
+                console().sendMessage("|- Loading Mechanisms...")
                 AnvilListener.load()
                 AttainListener.load()
                 GrindstoneListener.load()
@@ -66,7 +66,7 @@ object SplendidEnchants : Plugin() {
 
                 FurtherOperation.load()
 
-                info("|- Loading GUIs...")
+                console().sendMessage("|- Loading GUIs...")
                 MenuFunctions.unregister("Back")
                 MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
@@ -76,11 +76,11 @@ object SplendidEnchants : Plugin() {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
             }
         }.let { time ->
-            info("                            ")
-            info("Installed SplendidEnchants in §6${time}ms")
-            info("| Version: §r3.0.0")
-            info("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
-            info("| Tester: All players of §bStarLight§3繁星工坊")
+            console().sendMessage("                            ")
+            console().sendMessage("Installed SplendidEnchants in §6${time}ms")
+            console().sendMessage("| Version: §r3.0.0")
+            console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
+            console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
         }
     }
 
@@ -92,16 +92,16 @@ object SplendidEnchants : Plugin() {
     }
 
     fun reload() {
-        info("Reloading SplendidEnchants...")
+        console().sendMessage("Reloading SplendidEnchants...")
 
         measureTimeMillis {
             runCatching {
                 I18n.reload()
 
-                info("|- Reloading Config Module...")
+                console().sendMessage("|- Reloading Config Module...")
                 Config.load()
 
-                info("|- Reloading Enchants...")
+                console().sendMessage("|- Reloading Enchants...")
                 EnchantLoader.resetSort()
                 Rarity.load()
                 Target.load()
@@ -111,14 +111,14 @@ object SplendidEnchants : Plugin() {
                 Group.load()
                 onlinePlayers.forEach { EnchantFilter.clearFilters(it) }
 
-                info("|- Reloading Mechanisms...")
+                console().sendMessage("|- Reloading Mechanisms...")
                 AnvilListener.load()
                 AttainListener.load()
                 GrindstoneListener.load()
                 VillagerListener.load()
                 ExpListener.load()
 
-                info("|- Reloading GUIs...")
+                console().sendMessage("|- Reloading GUIs...")
                 MenuFunctions.unregister("Back")
                 MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
@@ -126,27 +126,27 @@ object SplendidEnchants : Plugin() {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
             }
         }.let { time ->
-            info("                            ")
-            info("Reloaded SplendidEnchants in §6${time}ms")
-            info("| Version: §r3.0.0")
-            info("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
-            info("| Tester: All players of §bStarLight§3繁星工坊")
+            console().sendMessage("                            ")
+            console().sendMessage("Reloaded SplendidEnchants in §6${time}ms")
+            console().sendMessage("| Version: §r3.0.0")
+            console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
+            console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
         }
     }
 
     fun sendLogo() {
-        info("§e                                                               ")
-        info("§e ______   ______  __       ______   __   __   _____    __   _____                         ")
-        info("§e/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
-        info("§e\\ \\___  \\\\ \\  _-/\\ \\ \\____\\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\/\\ \\\\ \\ \\\\ \\ \\/\\ \\                      ")
-        info("§e \\/\\_____\\\\ \\_\\   \\ \\_____\\\\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\____- \\ \\_\\\\ \\____-                      ")
-        info("§e  \\/_____/ \\/_/    \\/_____/ \\/_____/ \\/_/ \\/_/ \\/____/  \\/_/ \\/____/                      ")
-        info("§e                                                                                          ")
-        info("§e                ______   __   __   ______   __  __   ______   __   __   ______  ______    ")
-        info("§e               /\\  ___\\ /\\ \"-.\\ \\ /\\  ___\\ /\\ \\_\\ \\ /\\  __ \\ /\\ \"-.\\ \\ /\\__  _\\/\\  ___\\   ")
-        info("§e               \\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\____\\ \\  __ \\\\ \\  __ \\\\ \\ \\-.  \\\\/_/\\ \\/\\ \\___  \\  ")
-        info("§e                \\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\_____\\\\ \\_\\ \\_\\\\ \\_\\ \\_\\\\ \\_\\\\\"\\_\\  \\ \\_\\ \\/\\_____\\ ")
-        info("§e                 \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/\\/_/ \\/_/\\/_/ \\/_/ \\/_/   \\/_/  \\/_____/ ")
-        info("§e                                                               ")
+        console().sendMessage("§e                                                               ")
+        console().sendMessage("§e ______   ______  __       ______   __   __   _____    __   _____                         ")
+        console().sendMessage("§e/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
+        console().sendMessage("§e\\ \\___  \\\\ \\  _-/\\ \\ \\____\\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\/\\ \\\\ \\ \\\\ \\ \\/\\ \\                      ")
+        console().sendMessage("§e \\/\\_____\\\\ \\_\\   \\ \\_____\\\\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\____- \\ \\_\\\\ \\____-                      ")
+        console().sendMessage("§e  \\/_____/ \\/_/    \\/_____/ \\/_____/ \\/_/ \\/_/ \\/____/  \\/_/ \\/____/                      ")
+        console().sendMessage("§e                                                                                          ")
+        console().sendMessage("§e                ______   __   __   ______   __  __   ______   __   __   ______  ______    ")
+        console().sendMessage("§e               /\\  ___\\ /\\ \"-.\\ \\ /\\  ___\\ /\\ \\_\\ \\ /\\  __ \\ /\\ \"-.\\ \\ /\\__  _\\/\\  ___\\   ")
+        console().sendMessage("§e               \\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\____\\ \\  __ \\\\ \\  __ \\\\ \\ \\-.  \\\\/_/\\ \\/\\ \\___  \\  ")
+        console().sendMessage("§e                \\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\_____\\\\ \\_\\ \\_\\\\ \\_\\ \\_\\\\ \\_\\\\\"\\_\\  \\ \\_\\ \\/\\_____\\ ")
+        console().sendMessage("§e                 \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/\\/_/ \\/_/\\/_/ \\/_/ \\/_/   \\/_/  \\/_____/ ")
+        console().sendMessage("§e                                                               ")
     }
 }
