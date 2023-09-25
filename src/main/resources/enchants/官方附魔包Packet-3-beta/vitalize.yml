@@ -11,7 +11,7 @@ limitations: [ ]
 
 display:
   description:
-    general: "§7受到攻击时如果血量较低则恢复自身血量 (§7冷却:§a{冷却时间}秒§7)"
+    general: "受到攻击时如果血量较低则恢复自身血量 (§7冷却:§a{冷却时间}秒§7)"
     specific: "§7受到攻击时如果血量小于§a{阈值}§7则恢复§a{恢复量}§7血量 (§7冷却:§a{冷却时间}§7)"
 
 alternative:

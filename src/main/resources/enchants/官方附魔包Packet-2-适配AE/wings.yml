@@ -12,7 +12,7 @@ limitations:
 
 display:
   description:
-    general: "§7可进入飞行状态，飞行时持续消耗靴子耐久"
+    general: "可进入飞行状态，飞行时持续消耗靴子耐久"
 
 mechanisms:
   tickers:

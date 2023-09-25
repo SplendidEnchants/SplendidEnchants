@@ -12,6 +12,6 @@ limitations:
 
 display:
   description:
-    general: "§7使射出的箭可以穿过多个实体"
+    general: "使射出的箭可以穿过多个实体"
 
 #TODO 数据录入

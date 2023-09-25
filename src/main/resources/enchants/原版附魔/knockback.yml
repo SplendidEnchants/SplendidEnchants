@@ -9,6 +9,6 @@ targets:
 
 display:
   description:
-    general: "§7增加击退距离"
+    general: "增加击退距离"
 
 #TODO 数据录入

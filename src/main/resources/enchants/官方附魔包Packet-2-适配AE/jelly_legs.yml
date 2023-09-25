@@ -12,7 +12,7 @@ limitations:
 
 display:
   description:
-    general: "§7摔伤时可减少伤害并弹起"
+    general: "摔伤时可减少伤害并弹起"
     specific: "§7不超过§a{最大高度}§7的摔伤时减少§a{减少伤害}§7伤害并弹起"
 
 variables:

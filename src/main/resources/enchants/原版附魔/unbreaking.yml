@@ -9,6 +9,6 @@ targets:
 
 display:
   description:
-    general: "§7减少物品损耗耐久的概率"
+    general: "减少物品损耗耐久的概率"
 
 #TODO 数据录入

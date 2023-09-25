@@ -9,7 +9,7 @@ targets:
 
 display:
   description:
-    general: "§7被诅咒的物品会在玩家死亡时消失"
+    general: "被诅咒的物品会在玩家死亡时消失"
 
 alternatives:
   grindstoneable: false

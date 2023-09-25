@@ -14,7 +14,7 @@ limitations:
 
 display:
   description:
-    general: "§7远程攻击时有概率造成双倍伤害"
+    general: "远程攻击时有概率造成双倍伤害"
     specific: "§7远程攻击时有§a{概率}§7造成双倍伤害"
 
 variables:
