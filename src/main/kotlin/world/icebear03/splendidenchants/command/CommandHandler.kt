@@ -24,7 +24,7 @@ import taboolib.common.platform.command.mainCommand
 import world.icebear03.splendidenchants.command.impl.*
 import java.util.concurrent.ConcurrentHashMap
 
-@CommandHeader(name = "splendidenchants", aliases = ["se", "spe", "nereusopus", "no", "nereus"])
+@CommandHeader(name = "splendidenchants", aliases = ["se", "spe", "nereusopus", "nereus"])
 object CommandHandler : CommandHandler {
 
     override val sub: ConcurrentHashMap<String, CommandExecutor> = ConcurrentHashMap()
