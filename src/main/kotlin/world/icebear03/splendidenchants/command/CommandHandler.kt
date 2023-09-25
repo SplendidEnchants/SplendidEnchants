@@ -24,7 +24,7 @@ import taboolib.common.platform.command.mainCommand
 import world.icebear03.splendidenchants.command.impl.*
 import java.util.concurrent.ConcurrentHashMap
 
-@CommandHeader(name = "splendidenchants", aliases = ["se", "spe", "nereusopus", "no", "nereus"])
+@CommandHeader(name = "splendidenchants", aliases = ["se", "spe", "nereusopus", "nereus"])
 object CommandHandler : CommandHandler {
 
     override val sub: ConcurrentHashMap<String, CommandExecutor> = ConcurrentHashMap()
@@ -35,24 +35,24 @@ object CommandHandler : CommandHandler {
         createTabooLibLegacyHelper()
     }
 
-    @CommandBody(permission = "splendidenchants.book", hidden = true)
+    @CommandBody(permission = "splendidenchants.book")
     val book = CommandBook.command
 
-    @CommandBody(permission = "splendidenchants.enchant", hidden = true)
+    @CommandBody(permission = "splendidenchants.enchant")
     val enchant = CommandEnchant.command
 
-    @CommandBody(permission = "splendidenchants.random", hidden = true)
+    @CommandBody(permission = "splendidenchants.random")
     val random = CommandRandom.command
 
-    @CommandBody(permission = "splendidenchants.menu", hidden = true)
+    @CommandBody(permission = "splendidenchants.menu")
     val menu = CommandMenu.command
 
-    @CommandBody(permission = "splendidenchants.calculate", hidden = true)
+    @CommandBody(permission = "splendidenchants.calculate")
     val calculate = CommandCalculate.command
 
-    @CommandBody(permission = "splendidenchants.reload", hidden = true)
+    @CommandBody(permission = "splendidenchants.reload")
     val reload = CommandReload.command
 
-    @CommandBody(permission = "splendidenchants.mode", hidden = true)
+    @CommandBody(permission = "splendidenchants.mode")
     val mode = CommandMode.command
 }

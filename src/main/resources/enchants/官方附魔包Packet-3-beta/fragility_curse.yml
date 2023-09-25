@@ -17,7 +17,7 @@ alternatives:
 
 display:
   description:
-    general: "§7被诅咒的物品使用时消耗耐久度翻倍"
+    general: "被诅咒的物品使用时消耗耐久度翻倍"
     specific: "§7被诅咒的物品使用时耐久度消耗量变为原来的§a{倍率}"
 
 variables:

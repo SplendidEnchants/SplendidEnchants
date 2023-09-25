@@ -15,7 +15,7 @@ alternatives:
 
 display:
   description:
-    general: "§7手持被诅咒的物品时发言会受到百分比真实伤害"
+    general: "手持被诅咒的物品时发言会受到百分比真实伤害"
     specific: "§7手持被诅咒的物品时发言会受到等同于当前生命值§a{比例}§7的真实伤害"
 
 variables:

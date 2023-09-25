@@ -26,21 +26,16 @@ import world.icebear03.splendidenchants.ui.internal.back
 import kotlin.system.measureTimeMillis
 
 object SplendidEnchants : Plugin() {
-
-    fun sendLogo() {
-        console().sendMessage("§e                                                               ")
-        console().sendMessage("§e ______   ______  __       ______   __   __   _____    __   _____                         ")
-        console().sendMessage("§e/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
-        console().sendMessage("§e\\ \\___  \\\\ \\  _-/\\ \\ \\____\\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\/\\ \\\\ \\ \\\\ \\ \\/\\ \\                      ")
-        console().sendMessage("§e \\/\\_____\\\\ \\_\\   \\ \\_____\\\\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\____- \\ \\_\\\\ \\____-                      ")
-        console().sendMessage("§e  \\/_____/ \\/_/    \\/_____/ \\/_____/ \\/_/ \\/_/ \\/____/  \\/_/ \\/____/                      ")
-        console().sendMessage("§e                                                                                          ")
-        console().sendMessage("§e                ______   __   __   ______   __  __   ______   __   __   ______  ______    ")
-        console().sendMessage("§e               /\\  ___\\ /\\ \"-.\\ \\ /\\  ___\\ /\\ \\_\\ \\ /\\  __ \\ /\\ \"-.\\ \\ /\\__  _\\/\\  ___\\   ")
-        console().sendMessage("§e               \\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\____\\ \\  __ \\\\ \\  __ \\\\ \\ \\-.  \\\\/_/\\ \\/\\ \\___  \\  ")
-        console().sendMessage("§e                \\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\_____\\\\ \\_\\ \\_\\\\ \\_\\ \\_\\\\ \\_\\\\\"\\_\\  \\ \\_\\ \\/\\_____\\ ")
-        console().sendMessage("§e                 \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/\\/_/ \\/_/\\/_/ \\/_/ \\/_/   \\/_/  \\/_____/ ")
-        console().sendMessage("§e                                                               ")
+    override fun onActive() {
+        console().sendMessage("Loading supports for other plugins...")
+        if (Bukkit.getPluginManager().isPluginEnabled("TrChat")) {
+            console().sendMessage("|- TrChat detected, attempt to hook it...")
+            HookPlugin.addHook(HookTrChat)
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("InteractiveChat")) {
+            console().sendMessage("|- InteractiveChat detected, attempt to hook it...")
+            HookInteractiveChat.load()
+        }
     }
 
     override fun onEnable() {
@@ -89,16 +84,11 @@ object SplendidEnchants : Plugin() {
         }
     }
 
-    override fun onActive() {
-        console().sendMessage("Loading supports for other plugins...")
-        if (Bukkit.getPluginManager().isPluginEnabled("TrChat")) {
-            console().sendMessage("|- TrChat detected, attempt to hook it...")
-            HookPlugin.addHook(HookTrChat)
-        }
-        if (Bukkit.getPluginManager().isPluginEnabled("InteractiveChat")) {
-            console().sendMessage("|- InteractiveChat detected, attempt to hook it...")
-            HookInteractiveChat.load()
-        }
+    override fun onDisable() {
+        if (Bukkit.getPluginManager().isPluginEnabled("TrChat"))
+            HookPlugin.registry.removeIf { it.plugin?.name == "SplendidEnchants" }
+        onlinePlayers.forEach { it.saveSEData() }
+        EnchantLoader.unregisterAll()
     }
 
     fun reload() {
@@ -144,10 +134,19 @@ object SplendidEnchants : Plugin() {
         }
     }
 
-    override fun onDisable() {
-        if (Bukkit.getPluginManager().isPluginEnabled("TrChat"))
-            HookPlugin.registry.removeIf { it.plugin?.name == "SplendidEnchants" }
-        onlinePlayers.forEach { it.saveSEData() }
-        EnchantLoader.unregisterAll()
+    fun sendLogo() {
+        console().sendMessage("§e                                                               ")
+        console().sendMessage("§e ______   ______  __       ______   __   __   _____    __   _____                         ")
+        console().sendMessage("§e/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
+        console().sendMessage("§e\\ \\___  \\\\ \\  _-/\\ \\ \\____\\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\/\\ \\\\ \\ \\\\ \\ \\/\\ \\                      ")
+        console().sendMessage("§e \\/\\_____\\\\ \\_\\   \\ \\_____\\\\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\____- \\ \\_\\\\ \\____-                      ")
+        console().sendMessage("§e  \\/_____/ \\/_/    \\/_____/ \\/_____/ \\/_/ \\/_/ \\/____/  \\/_/ \\/____/                      ")
+        console().sendMessage("§e                                                                                          ")
+        console().sendMessage("§e                ______   __   __   ______   __  __   ______   __   __   ______  ______    ")
+        console().sendMessage("§e               /\\  ___\\ /\\ \"-.\\ \\ /\\  ___\\ /\\ \\_\\ \\ /\\  __ \\ /\\ \"-.\\ \\ /\\__  _\\/\\  ___\\   ")
+        console().sendMessage("§e               \\ \\  __\\ \\ \\ \\-.  \\\\ \\ \\____\\ \\  __ \\\\ \\  __ \\\\ \\ \\-.  \\\\/_/\\ \\/\\ \\___  \\  ")
+        console().sendMessage("§e                \\ \\_____\\\\ \\_\\\\\"\\_\\\\ \\_____\\\\ \\_\\ \\_\\\\ \\_\\ \\_\\\\ \\_\\\\\"\\_\\  \\ \\_\\ \\/\\_____\\ ")
+        console().sendMessage("§e                 \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/\\/_/ \\/_/\\/_/ \\/_/ \\/_/   \\/_/  \\/_____/ ")
+        console().sendMessage("§e                                                               ")
     }
 }

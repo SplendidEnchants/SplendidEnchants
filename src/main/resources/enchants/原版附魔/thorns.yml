@@ -12,6 +12,6 @@ targets:
 
 display:
   description:
-    general: "§7受到攻击时对攻击者造成伤害，并消耗盔甲耐久"
+    general: "受到攻击时对攻击者造成伤害，并消耗盔甲耐久"
 
 #TODO 数据录入
