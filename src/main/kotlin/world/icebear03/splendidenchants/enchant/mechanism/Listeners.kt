@@ -46,7 +46,6 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
         item: ItemStack,
         slot: EquipmentSlot
     ) {
-        println(enchant.basicData.name + " " + enchant.limitations.checkAvailable(CheckType.USE, item, entity, slot).second)
         if (!enchant.limitations.checkAvailable(CheckType.USE, item, entity, slot).first) return
 
         byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach listeners@{ id ->
