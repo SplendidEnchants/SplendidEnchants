@@ -76,6 +76,7 @@ object EnchantDisplayer {
                     val enchantPair = enchantPairs[i + j]
                     layout = layout.replace(enchantPair.first.displayer.displays(enchantPair.second, player, item, j + 1))
                 }
+                lore += layout.split("\n")
             }
         }
 

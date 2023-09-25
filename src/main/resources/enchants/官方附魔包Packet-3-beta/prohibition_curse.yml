@@ -26,14 +26,11 @@ variables:
       2: "19.19"
       3: "81.0"
       4: "99.9"
-  modifiable:
-    伤害: "damage=0.0"
 
 mechanisms:
   listeners:
     chat:
       type: CHAT
       chains:
-        - "ASSIGNMENT::伤害:{发送者.血量}*{比例}/100.0"
-        - "OBJECT::发送者:真实伤害:{伤害}"
-        - "OBJECT::发送者:发送信息:enchant.prohibition_curse.damaged:amount:{伤害}"
+        - "对象::发送者:真实伤害:{发送者.血量}*{比例}/100.0"
+        - "对象::发送者:发送信息:enchant.prohibition_curse.damaged:amount:{伤害}"

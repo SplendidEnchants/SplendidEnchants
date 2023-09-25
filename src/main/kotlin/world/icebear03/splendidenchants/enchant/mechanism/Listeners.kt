@@ -49,6 +49,7 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
         if (!enchant.limitations.checkAvailable(CheckType.USE, item, entity, slot).first) return
 
         byType[eventType]?.filter { byId[it]!!.first == priority }?.forEach listeners@{ id ->
+
             val sHolders = mutableMapOf<String, String>()
             val fHolders = mutableMapOf<String, Pair<ObjectEntry<*>, String>>()
             fHolders += enchant.variable.flexible

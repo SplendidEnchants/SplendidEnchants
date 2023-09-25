@@ -5,6 +5,7 @@ import org.bukkit.attribute.Attribute
 import org.bukkit.entity.LivingEntity
 import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.submit
+import taboolib.module.nms.getI18nName
 import taboolib.platform.util.groundBlock
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.enchant.mechanism.entry.internal.*
@@ -20,7 +21,11 @@ object ObjectLivingEntity : ObjectEntry<LivingEntity>() {
     ): Boolean {
         objEntity.modify(obj, cmd, params)
         when (cmd) {
-            "施加药水效果" -> obj.effect(PotionEffectType.getByName(params[0])!!, params[1].calcToInt(), params[2].calcToInt())
+            "施加药水效果" -> {
+                val type = PotionEffectType.values().find { it.name == params[0] || it.getI18nName() == params[0] } ?: return true
+                obj.effect(type, params[1].calcToInt(), params[2].calcToInt())
+            }
+
             "霹雷" -> {
                 obj.world.strikeLightningEffect(obj.location)
                 obj.realDamage((params[0, "4.0"]).calcToDouble())
