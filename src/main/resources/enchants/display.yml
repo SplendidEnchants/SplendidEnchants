@@ -37,6 +37,8 @@ combine:
   min: 8
   #每次合并几个附魔
   amount: 2
+  #是否独立在最后单行显示拥有特殊显示的附魔
+  separate_special: true
   #合并的布局
   layout:
     - "{previous_1}{subsequent_1}" #只有一个的情况

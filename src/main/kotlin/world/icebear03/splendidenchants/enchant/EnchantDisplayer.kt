@@ -27,6 +27,7 @@ object EnchantDisplayer {
     var minimal = 8
     var amount = 2
     var layouts = listOf<String>()
+    var separateSpecial = true
 
     var loreFormation = mutableMapOf<Boolean, List<String>>()
 
@@ -43,6 +44,7 @@ object EnchantDisplayer {
             minimal = getInt("combine.min", 8)
             amount = getInt("combine.amount", 2)
             layouts = getStringList("combine.layout")
+            separateSpecial = getBoolean("combine.separate_special", true)
 
             loreFormation[true] = getStringList("lore_formation.has_lore")
             loreFormation[false] = getStringList("lore_formation.without_lore")
@@ -68,7 +70,7 @@ object EnchantDisplayer {
 
         if (!combineMode) lore += enchants.map { (enchant, level) -> enchant.displayer.display(level, player, item) }
         else {
-            val enchantPairs = enchants.toList()
+            val enchantPairs = enchants.filter { !separateSpecial || it.key.displayer.isDefaultDisplay() }.toList()
             for (i in 0 until enchants.size step amount) {
                 val total = min(amount, enchants.size - i)
                 var layout = layouts[total - 1]
@@ -77,6 +79,9 @@ object EnchantDisplayer {
                     layout = layout.replace(enchantPair.first.displayer.displays(enchantPair.second, player, item, j + 1))
                 }
                 lore += layout.split("\n")
+            }
+            enchants.filter { (et, _) -> enchantPairs.none { et == it.first } }.forEach { (enchant, level) ->
+                lore += enchant.displayer.display(level, player, item);
             }
         }
 
