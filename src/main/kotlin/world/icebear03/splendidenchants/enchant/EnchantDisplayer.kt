@@ -71,7 +71,7 @@ object EnchantDisplayer {
         if (!combineMode) lore += enchants.map { (enchant, level) -> enchant.displayer.display(level, player, item) }
         else {
             val enchantPairs = enchants.filter { !separateSpecial || it.key.displayer.isDefaultDisplay() }.toList()
-            for (i in 0 until enchants.size step amount) {
+            for (i in enchantPairs.indices step amount) {
                 val total = min(amount, enchantPairs.size - i)
                 var layout = layouts[total - 1]
                 for (j in 0 until total) {

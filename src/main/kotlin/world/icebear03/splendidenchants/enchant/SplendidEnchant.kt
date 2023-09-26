@@ -141,7 +141,7 @@ class SplendidEnchant(file: File, key: NamespacedKey) : Enchantment(key) {
         val generalDescription = displayerConfig.getString("description.general", "§7附魔介绍未设置")!!
         val specificDescription = displayerConfig.getString("description.specific", generalDescription)!!
 
-        fun isDefaultDisplay() = previous == "{default_previous}" && subsequent == "default_subsequent"
+        fun isDefaultDisplay() = previous == "{default_previous}" && subsequent == "{default_subsequent}"
 
         //生成本附魔在当前状态下的显示，在非合并模式下
         fun display(level: Int?, player: Player?, item: ItemStack?) = display(holders(level, player, item))

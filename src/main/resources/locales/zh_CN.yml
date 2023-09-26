@@ -73,3 +73,5 @@ command:
       description: '重载附魔插件'
       usage: ''
       success: '插件已经重载完毕'
+    calculate:
+      description: '测试计算公式'
