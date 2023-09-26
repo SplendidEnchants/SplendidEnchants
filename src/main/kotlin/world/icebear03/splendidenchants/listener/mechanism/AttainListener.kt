@@ -11,6 +11,7 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
+import taboolib.module.chat.colored
 import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.YamlUpdater
@@ -100,8 +101,8 @@ object AttainListener {
             val rarity = enchant.rarity
             celebrateNotice[rarity]?.let { lines ->
                 lines.forEach { line ->
-                    val type = line.split(":")[0]
-                    val text = line.split(":")[1].replace("player" to player.name, "enchant" to enchant.display(level))
+                    val type = line.substringBefore(':')
+                    val text = line.substringAfter(":").replace("player" to player.name, "enchant" to enchant.display(level)).colored()
                     onlinePlayers.forEach {
                         when (type) {
                             "actionbar" -> it.sendActionBar(text)
