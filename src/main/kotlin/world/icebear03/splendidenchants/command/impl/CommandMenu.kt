@@ -17,7 +17,7 @@ import world.icebear03.splendidenchants.ui.MainMenuUI
 
 object CommandMenu : CommandExecutor {
 
-    private val menus = listOf("main", "anvil", "search", "check")
+    val menus = listOf("main", "anvil", "search", "check")
 
     override val command: SimpleCommandBody
         get() = subCommand {

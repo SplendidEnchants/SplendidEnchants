@@ -78,9 +78,7 @@ object SplendidEnchants : Plugin() {
         }.let { time ->
             console().sendMessage("                            ")
             console().sendMessage("Installed SplendidEnchants in §6${time}ms")
-            console().sendMessage("| Version: §r3.0.0")
-            console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
-            console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
+            sendInfo()
         }
     }
 
@@ -128,13 +126,17 @@ object SplendidEnchants : Plugin() {
         }.let { time ->
             console().sendMessage("                            ")
             console().sendMessage("Reloaded SplendidEnchants in §6${time}ms")
-            console().sendMessage("| Version: §r3.0.0")
-            console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
-            console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊")
+            sendInfo()
         }
     }
 
-    fun sendLogo() {
+    private fun sendInfo() {
+        console().sendMessage("| Version: §r3.0.0")
+        console().sendMessage("| Author: §f白熊_IceBear " + "&{#FFD0DB}Micalhl".colorify() + " §fxiaozhangup")
+        console().sendMessage("| Tester: All players of §bStarLight§3繁星工坊 §eHAPPYLAND")
+    }
+
+    private fun sendLogo() {
         console().sendMessage("§e                                                               ")
         console().sendMessage("§e ______   ______  __       ______   __   __   _____    __   _____                         ")
         console().sendMessage("§e/\\  ___\\ /\\  == \\/\\ \\     /\\  ___\\ /\\ \"-.\\ \\ /\\  __-. /\\ \\ /\\  __-.                       ")
