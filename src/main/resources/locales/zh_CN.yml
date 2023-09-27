@@ -15,6 +15,13 @@ enchant:
     recovered: "&7你的盾牌为你恢复了 &e{amount} &7点血量"
   prohibition_curse:
     damaged: "&7你的装备对你造成了 &c{amount} &7点真实伤害"
+messages:
+  menu:
+    search:
+      input: "&e请在聊天栏中输入字段..."
+      input_finish: "&a输入完成"
+  misc:
+    cool_down: "冷却未结束，还有{second}s"
 command:
   helper:
     - ' '

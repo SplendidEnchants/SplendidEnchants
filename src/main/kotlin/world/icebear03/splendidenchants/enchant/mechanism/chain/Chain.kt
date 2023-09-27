@@ -1,5 +1,6 @@
 package world.icebear03.splendidenchants.enchant.mechanism.chain
 
+import com.mcstarrysky.starrysky.i18n.sendLang
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -73,7 +74,7 @@ class Chain(val enchant: SplendidEnchant, line: String) {
 
                 val result = entity.checkCd(key, cdInSec)
                 if (!result.first) {
-                    if (info) entity.sendMessage("冷却未结束，还有${result.second}s")
+                    if (info) entity.sendLang("messages.misc.cool_down", "second" to result.second)
                     return false
                 }
                 entity.addCd(key)

@@ -16,6 +16,7 @@ import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.nextChat
+import com.mcstarrysky.starrysky.i18n.sendLang
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.pages
@@ -131,9 +132,9 @@ object EnchantSearchUI {
             when (clickType) {
                 ClickType.LEFT, ClickType.RIGHT -> {
                     player.closeInventory()
-                    player.sendMessage("§e请在聊天栏中输入字段...")
+                    player.sendLang("messages.menu.search.input")
                     player.nextChat {
-                        player.sendMessage("§a输入完成")
+                        player.sendLang("messages.menu.search.input_finish")
                         EnchantFilter.addFilter(
                             player, EnchantFilter.FilterType.STRING, it,
                             when (clickType) {
