@@ -16,6 +16,7 @@ import world.icebear03.splendidenchants.enchant.EnchantLoader
 import world.icebear03.splendidenchants.enchant.data.Group
 import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
+import world.icebear03.splendidenchants.enchant.data.limitation.Limitations
 import world.icebear03.splendidenchants.enchant.mechanism.Tickers
 import world.icebear03.splendidenchants.listener.mechanism.*
 import world.icebear03.splendidenchants.player.DataLoader
@@ -56,6 +57,8 @@ object SplendidEnchants : Plugin() {
                 Tickers.load()
                 EnchantLoader.load()
                 Group.load()
+
+                Limitations.initConflicts()
 
                 console().sendMessage("|- Loading Mechanisms...")
                 AnvilListener.load()
@@ -108,6 +111,8 @@ object SplendidEnchants : Plugin() {
                 Tickers.load()
                 EnchantLoader.load(true)
                 Group.load()
+
+                Limitations.initConflicts()
                 onlinePlayers.forEach { EnchantFilter.clearFilters(it) }
 
                 console().sendMessage("|- Reloading Mechanisms...")

@@ -19,8 +19,21 @@ class Limitations(
     private val belonging: SplendidEnchant,
     lines: List<String>
 ) {
-    val limitations = listOf(MAX_CAPABILITY to "", TARGET to "", DISABLE_WORLD to "", SLOT to "") +
-            lines.map { LimitType.valueOf(it.split(":")[0]) to it.split(":")[1] }
+    val limitations = lines.mapNotNull {
+        val type = LimitType.valueOf(it.split(":")[0])
+        val value = it.split(":")[1]
+        if (type == CONFLICT_ENCHANT) {
+            conflicts[belonging.basicData.name] = value
+            null
+        } else type to value
+    }.toMutableList()
+    
+    init {
+        limitations += MAX_CAPABILITY to ""
+        limitations += TARGET to ""
+        limitations += DISABLE_WORLD to ""
+        limitations += SLOT to ""
+    }
 
     // 检查操作是否被允许（比如是否可以附魔到某个物品上、使用时是否可以生效、村民生成新交易等）
     // item 就是跟操作直接有关的物品（如正在被附魔的书、正在使用的剑、生成的新交易中卖出的附魔书等）
@@ -67,6 +80,25 @@ class Limitations(
             DEPENDENCE_GROUP -> enchants.any { (enchant, _) -> enchant.isIn(value) && enchant.key != belonging.key }
             CONFLICT_GROUP -> enchants.count { (enchant, _) -> enchant.isIn(value) && enchant.key != belonging.key } < (group(value)?.maxCoexist ?: 10000)
             else -> true
+        }
+    }
+
+    companion object {
+
+        //记录单项conflicts，然后自动挂双向
+        //防止服主只写了单向
+        val conflicts = mutableMapOf<String, String>()
+
+        fun initConflicts() {
+            conflicts.forEach { (a, b) ->
+                val etA = splendidEt(a) ?: return@forEach
+                val etB = splendidEt(b) ?: return@forEach
+                val conflictA = CONFLICT_ENCHANT to b
+                val conflictB = CONFLICT_ENCHANT to a
+                etA.limitations.limitations.add(conflictA)
+                etB.limitations.limitations.add(conflictB)
+            }
+            conflicts.clear()
         }
     }
 }
