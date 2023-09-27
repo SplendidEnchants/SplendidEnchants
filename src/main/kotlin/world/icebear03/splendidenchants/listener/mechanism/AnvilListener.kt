@@ -149,8 +149,9 @@ object AnvilListener {
             fixed = 108
         if (type == Material.TURTLE_HELMET && fixer == Material.SCUTE)
             fixed = 68
-        if (type == fixer)
+        if (type == fixer) {
             fixed = fixer.maxDurability - dmgB
+        }
 
         val minAmount = minOf(ceil(dmgA.cdouble / fixed).roundToInt(), amount)
         return (fixed * minAmount).coerceAtMost(type.maxDurability.toInt()) to minAmount
