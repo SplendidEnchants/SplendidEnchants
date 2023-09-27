@@ -25,10 +25,20 @@ class Limitations(
     // 检查操作是否被允许（比如是否可以附魔到某个物品上、使用时是否可以生效、村民生成新交易等）
     // item 就是跟操作直接有关的物品（如正在被附魔的书、正在使用的剑、生成的新交易中卖出的附魔书等）
     fun checkAvailable(checkType: CheckType, item: ItemStack, creature: LivingEntity? = null, slot: EquipmentSlot? = null): Pair<Boolean, String> {
+        return checkAvailable(checkType.limitTypes.toList(), item, creature, slot, checkType == CheckType.USE)
+    }
+
+    fun checkAvailable(
+        limits: List<LimitType>,
+        item: ItemStack,
+        creature: LivingEntity? = null,
+        slot: EquipmentSlot? = null,
+        use: Boolean = false
+    ): Pair<Boolean, String> {
         if (!belonging.basicData.enable)
             return false to "附魔未启用"
 
-        limitations.filter { checkType.has(it.first) }.forEach { (type, value) ->
+        limitations.filter { limits.contains(it.first) }.forEach { (type, value) ->
             when (type) {
                 PAPI_EXPRESSION ->
                     if (creature is Player) value.replacePlaceholder(creature).compileToJexl().eval() as Boolean
@@ -38,7 +48,7 @@ class Limitations(
                 DISABLE_WORLD -> !belonging.basicData.disableWorlds.contains(creature?.world?.name)
                 TARGET, MAX_CAPABILITY, SLOT,
                 CONFLICT_ENCHANT, CONFLICT_GROUP,
-                DEPENDENCE_ENCHANT, DEPENDENCE_GROUP -> checkItem(type, item, value, slot, checkType == CheckType.USE)
+                DEPENDENCE_ENCHANT, DEPENDENCE_GROUP -> checkItem(type, item, value, slot, use)
             }.run { if (!this) return false to "${type.typeName}错误" }
         }
 

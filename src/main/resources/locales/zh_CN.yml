@@ -1,4 +1,6 @@
 prefix: '&6SplendidEnchants &7>> '
+info:
+  illegal_item: "&7你背包中的物品 &a{item} &7包含非法附魔，已经移除(&c{reason}&7)"
 enchant:
   strike:
     attacker: "&7你的武器召唤了雷电击中 &e{who}"

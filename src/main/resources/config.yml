@@ -22,3 +22,12 @@ database:
 
 #若有更新内容，在op上线时提醒
 update_msg: true
+
+#对玩家背包内的非法物品的进行检测，并修改它们
+anti_illegal_item:
+  enable: false #是否打开此功能，会略微增加性能消耗
+  interval: 60 #检测的tick
+  check_list:
+    - CAPABILITY
+    - CONFLICT_GROUP
+    - CONFLICT_ENCHANT

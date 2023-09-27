@@ -95,18 +95,25 @@ object AnvilListener {
 
         if (typeA == typeB || typeB == Material.ENCHANTED_BOOK ||
             (allowDifferentMaterial && typeB.belongedTargets.any { !typeA.belongedTargets.contains(it) })
-        ) b!!.fixedEnchants.filterKeys { it.limitations.checkAvailable(CheckType.ANVIL, a, player).first }.forEach { (enchant, lv) ->
-            val old = a.etLevel(enchant)
-            val new = if (old < lv) {
-                if (old <= 0) cost += newEnchantExtraCost
-                if (lv > enchant.maxLevel && !allowUnsafeLevel) return@forEach
-                lv
-            } else if (old == lv) {
-                if (old >= enchant.maxLevel && !allowUnsafeCombine) return@forEach
-                lv + 1
-            } else return@forEach
-            result.addEt(enchant, new)
-            cost += enchantCostPerLevel.calcToDouble("max_level" to enchant.maxLevel) * (new - old.coerceAtLeast(0))
+        ) {
+            val tmp = a.clone()
+            b!!.fixedEnchants.filterKeys {
+                val checked = it.limitations.checkAvailable(CheckType.ANVIL, tmp, player)
+                if (checked.first) tmp.addEt(it, b.etLevel(it))
+                checked.first
+            }.forEach { (enchant, lv) ->
+                val old = a.etLevel(enchant)
+                val new = if (old < lv) {
+                    if (old <= 0) cost += newEnchantExtraCost
+                    if (lv > enchant.maxLevel && !allowUnsafeLevel) return@forEach
+                    lv
+                } else if (old == lv) {
+                    if (old >= enchant.maxLevel && !allowUnsafeCombine) return@forEach
+                    lv + 1
+                } else return@forEach
+                result.addEt(enchant, new)
+                cost += enchantCostPerLevel.calcToDouble("max_level" to enchant.maxLevel) * (new - old.coerceAtLeast(0))
+            }
         }
 
         if (cost == 0.0 || result == a)

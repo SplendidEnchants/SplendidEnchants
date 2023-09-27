@@ -18,6 +18,7 @@ import world.icebear03.splendidenchants.enchant.data.Rarity
 import world.icebear03.splendidenchants.enchant.data.Target
 import world.icebear03.splendidenchants.enchant.mechanism.Tickers
 import world.icebear03.splendidenchants.listener.mechanism.*
+import world.icebear03.splendidenchants.player.AntiIllegalItem
 import world.icebear03.splendidenchants.player.DataLoader
 import world.icebear03.splendidenchants.player.saveSEData
 import world.icebear03.splendidenchants.supports.HookInteractiveChat
@@ -72,6 +73,7 @@ object SplendidEnchants : Plugin() {
                 Reloadables.execute()
 
                 DataLoader.load()
+                AntiIllegalItem.load()
             }.onFailure {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
             }
@@ -120,6 +122,8 @@ object SplendidEnchants : Plugin() {
                 MenuFunctions.unregister("Back")
                 MenuFunctions.register("Back", false) { back }
                 Reloadables.execute()
+
+                AntiIllegalItem.load()
             }.onFailure {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
             }
