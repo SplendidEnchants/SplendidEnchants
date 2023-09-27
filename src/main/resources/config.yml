@@ -28,6 +28,6 @@ anti_illegal_item:
   enable: false #是否打开此功能，会略微增加性能消耗
   interval: 60 #检测的tick
   check_list:
-    - CAPABILITY
+    - MAX_CAPABILITY
     - CONFLICT_GROUP
     - CONFLICT_ENCHANT
