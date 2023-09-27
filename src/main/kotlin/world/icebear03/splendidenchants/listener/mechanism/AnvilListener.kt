@@ -86,7 +86,7 @@ object AnvilListener {
             }
         }
         if (b != null)
-            if (b.canRepair(a) || typeB == typeA) {
+            if ((b.canRepair(a) || typeB == typeA) && a.type.maxDurability != 0.toShort()) {
                 val pair = durabilityFixed(typeA, typeB, b.amount, a.damage, b.damage)
                 result.damage = maxOf(0, result.damage - pair.first)
                 cost += repairCost
@@ -97,6 +97,7 @@ object AnvilListener {
             (allowDifferentMaterial && typeB.belongedTargets.any { !typeA.belongedTargets.contains(it) })
         ) {
             val tmp = a.clone()
+            //TODO FIX
             b!!.fixedEnchants.filterKeys {
                 val checked = it.limitations.checkAvailable(CheckType.ANVIL, tmp, player)
                 if (checked.first) tmp.addEt(it, b.etLevel(it))

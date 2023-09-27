@@ -27,7 +27,7 @@ class Limitations(
             null
         } else type to value
     }.toMutableList()
-    
+
     init {
         limitations += MAX_CAPABILITY to ""
         limitations += TARGET to ""
@@ -77,6 +77,7 @@ class Limitations(
             MAX_CAPABILITY -> itemType.capability > enchants.size
             DEPENDENCE_ENCHANT -> return enchants.containsKey(splendidEt(value))
             CONFLICT_ENCHANT -> return !enchants.containsKey(splendidEt(value))
+
             DEPENDENCE_GROUP -> enchants.any { (enchant, _) -> enchant.isIn(value) && enchant.key != belonging.key }
             CONFLICT_GROUP -> enchants.count { (enchant, _) -> enchant.isIn(value) && enchant.key != belonging.key } < (group(value)?.maxCoexist ?: 10000)
             else -> true
@@ -90,6 +91,7 @@ class Limitations(
         val conflicts = mutableMapOf<String, String>()
 
         fun initConflicts() {
+            println(conflicts)
             conflicts.forEach { (a, b) ->
                 val etA = splendidEt(a) ?: return@forEach
                 val etB = splendidEt(b) ?: return@forEach
