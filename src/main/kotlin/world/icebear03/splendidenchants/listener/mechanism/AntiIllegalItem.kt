@@ -42,11 +42,12 @@ object AntiIllegalItem {
                     while (j < enchants.size) {
                         val tmp = item.clone()
                         val et = enchants[j].first
+                        val level = enchants[j].second
                         tmp.removeEt(et)
                         val result = et.limitations.checkAvailable(checkList, tmp)
                         if (!result.first) {
                             enchants.removeAt(j)
-                            player.giveItem(et.book(enchants[j].second))
+                            player.giveItem(et.book(level))
                             item.removeEt(et)
                             player.sendLang(
                                 "info.illegal-item",
