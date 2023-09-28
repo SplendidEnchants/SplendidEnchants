@@ -62,7 +62,11 @@ object AnvilListener {
 
         val result = anvil(a, b, player, renameText)
 
-        result.first ?: return
+        result.first ?: let {
+            event.result = null
+            inv.result = null
+            return
+        }
         event.result = result.first
         inv.repairCost = result.second
         inv.repairCostAmount = result.third
@@ -97,12 +101,12 @@ object AnvilListener {
             (allowDifferentMaterial && typeB.belongedTargets.any { !typeA.belongedTargets.contains(it) })
         ) {
             val tmp = a.clone()
-            //TODO FIX
             b!!.fixedEnchants.filterKeys {
                 val checked = it.limitations.checkAvailable(CheckType.ANVIL, tmp, player)
                 if (checked.first) tmp.addEt(it, b.etLevel(it))
                 checked.first
             }.forEach { (enchant, lv) ->
+                println(enchant)
                 val old = a.etLevel(enchant)
                 val new = if (old < lv) {
                     if (old <= 0) cost += newEnchantExtraCost
