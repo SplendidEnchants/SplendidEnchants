@@ -91,7 +91,6 @@ class Limitations(
         val conflicts = mutableMapOf<String, String>()
 
         fun initConflicts() {
-            println(conflicts)
             conflicts.forEach { (a, b) ->
                 val etA = splendidEt(a) ?: return@forEach
                 val etB = splendidEt(b) ?: return@forEach

@@ -22,6 +22,8 @@ taboolib {
         load("STARTUP")
         dependencies {
             name("TrChat").with("bukkit").optional(true)
+            name("InteractiveChat").with("bukkit").optional(true)
+            name("ProtocolLib").with("bukkit").optional(true)
         }
     }
     install("common")

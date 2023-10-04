@@ -22,6 +22,7 @@ import world.icebear03.splendidenchants.listener.mechanism.*
 import world.icebear03.splendidenchants.player.DataLoader
 import world.icebear03.splendidenchants.player.saveSEData
 import world.icebear03.splendidenchants.supports.HookInteractiveChat
+import world.icebear03.splendidenchants.supports.HookProtocolLib
 import world.icebear03.splendidenchants.supports.HookTrChat
 import world.icebear03.splendidenchants.ui.internal.back
 import kotlin.system.measureTimeMillis
@@ -36,6 +37,10 @@ object SplendidEnchants : Plugin() {
         if (Bukkit.getPluginManager().isPluginEnabled("InteractiveChat")) {
             console().sendMessage("|- InteractiveChat detected, attempt to hook it...")
             HookInteractiveChat.load()
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
+            console().sendMessage("|- ProtocolLib detected, attempt to hook it...")
+            HookProtocolLib.load()
         }
     }
 
