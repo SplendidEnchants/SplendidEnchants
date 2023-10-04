@@ -44,6 +44,7 @@ taboolib {
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.dmulloy2.net/repository/public/")
     mavenCentral()
 }
 
@@ -65,6 +66,9 @@ dependencies {
     // Purtmars Repository
     compileOnly("public:TrChat:2.0.4")
     compileOnly("public:InteractiveChat:4.2.7.2")
+
+    // Misc
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
 
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
