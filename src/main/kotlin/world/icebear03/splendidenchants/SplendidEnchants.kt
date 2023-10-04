@@ -3,10 +3,12 @@ package world.icebear03.splendidenchants
 import com.mcstarrysky.starrysky.i18n.I18n
 import me.arasple.mc.trchat.module.internal.hook.HookPlugin
 import org.bukkit.Bukkit
+import org.bukkit.plugin.java.JavaPlugin
 import org.serverct.parrot.parrotx.mechanism.Reloadables
 import org.serverct.parrot.parrotx.ui.registry.MenuFunctions
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
+import taboolib.platform.BukkitPlugin
 import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.api.internal.colorify
@@ -28,6 +30,8 @@ import world.icebear03.splendidenchants.ui.internal.back
 import kotlin.system.measureTimeMillis
 
 object SplendidEnchants : Plugin() {
+    val plugin: JavaPlugin by lazy { BukkitPlugin.getInstance() }
+
     override fun onActive() {
         console().sendMessage("Loading supports for other plugins...")
         if (Bukkit.getPluginManager().isPluginEnabled("TrChat")) {

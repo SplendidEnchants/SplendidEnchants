@@ -3,54 +3,51 @@ package world.icebear03.splendidenchants.supports
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketAdapter
+import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
-import com.comphenix.protocol.wrappers.ComponentConverter
-import net.md_5.bungee.api.chat.BaseComponent
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.ItemTag
-import net.md_5.bungee.api.chat.TranslatableComponent
-import net.md_5.bungee.api.chat.hover.content.Item
+import com.comphenix.protocol.reflect.StructureModifier
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket
 import org.bukkit.Bukkit
+import taboolib.common.LifeCycle
+import taboolib.common.platform.Awake
+import taboolib.common.platform.function.info
+import taboolib.common.platform.function.submit
+import world.icebear03.splendidenchants.SplendidEnchants.plugin
+import world.icebear03.splendidenchants.supports.HookProtocolLib.modifierChatComponent
+import java.util.function.UnaryOperator
+
 
 object HookProtocolLib {
 
     fun load() {
         ProtocolLibrary.getProtocolManager().addPacketListener(
             object : PacketAdapter(
-                Bukkit.getPluginManager().getPlugin("SplendidEnchants")!!,
-//                ListenerPriority.MONITOR,
-                PacketType.Play.Server.PLAYER_COMBAT_KILL
+                plugin,
+                PacketType.Play.Server.SYSTEM_CHAT
             ) {
                 override fun onPacketSending(event: PacketEvent) {
                     val packet = event.packet
-                    val wrappedComponent = packet.chatComponents.read(0)!!
-                    val baseComponent = ComponentConverter.fromWrapper(wrappedComponent)[0]
 
-                    println("前:$baseComponent")
+                    info(packet.getChatComponent())
 
-                    fun adapt(component: BaseComponent) {
-                        component.hoverEvent?.let { hoverEvent ->
-                            if (hoverEvent.action == HoverEvent.Action.SHOW_ITEM) {
-                                val itemContent = hoverEvent.contents.filterIsInstance<Item>()[0]
-                                val id = itemContent.id
-                                val nbt = itemContent.tag.nbt
+                    packet.modifierChatComponent(Component.text("FUCK YOU"))
 
-                                val adapted = nbt
-
-                                hoverEvent.contents[0] = Item("stone", -1, ItemTag.ofNbt("{}"))
-                                component.hoverEvent = hoverEvent
-                            }
-                        }
-                        component.extra?.forEach { bc -> adapt(bc) }
-                        if (component is TranslatableComponent)
-                            component.with?.forEach { bc -> adapt(bc) }
-                    }
-
-                    adapt(baseComponent)
-                    println("后:$baseComponent")
-                    packet.chatComponents.write(0, ComponentConverter.fromBaseComponent(baseComponent))
+//                    packet.chatComponents.write(0, ComponentConverter.fromBaseComponent(baseComponent))
                 }
             }
         )
+    }
+
+    fun PacketContainer.getChatComponent(): Component? {
+        val adventureModifier: StructureModifier<Component>? = getSpecificModifier(Component::class.java)
+        return adventureModifier?.readSafely(0)
+            ?: strings.readSafely(0)?.let { GsonComponentSerializer.gson().deserialize(it) }
+    }
+
+    fun PacketContainer.modifierChatComponent(component: Component) {
+        val adventureModifier: StructureModifier<Component> = getSpecificModifier(Component::class.java)
+        adventureModifier.modify(0) { component }
     }
 }
