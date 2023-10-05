@@ -1,15 +1,21 @@
 package world.icebear03.splendidenchants.api.internal.nms
 
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import taboolib.library.reflex.Reflex.Companion.invokeMethod
 import taboolib.module.nms.MinecraftVersion
 import taboolib.module.nms.NMSItem
+import taboolib.module.nms.nmsClass
 import world.icebear03.splendidenchants.api.isNull
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 
 abstract class NMS {
 
-    /** 为原版的 MerchantRecipeList 的物品显示更多附魔 **/
+    /** 为原版的 MerchantRecipeList 的物品显示更多附魔 */
     abstract fun adaptMerchantRecipe(merchantRecipeList: Any, player: Player): Any
+
+    /** 获取物品 Json */
+    abstract fun itemToJson(item: ItemStack): String
 }
 
 class NMSImpl : NMS() {
@@ -64,6 +70,12 @@ class NMSImpl : NMS() {
             // Unsupported
             else -> error("Unsupported version.")
         }
+    }
+
+    override fun itemToJson(item: ItemStack): String {
+        return runCatching {
+            NMSItem.asNMSCopy(item).invokeMethod<Any>("save", nmsClass("NBTTagCompound").newInstance()).toString()
+        }.getOrElse { "{}" }
     }
 }
 

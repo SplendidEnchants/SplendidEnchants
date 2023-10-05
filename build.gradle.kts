@@ -21,9 +21,8 @@ taboolib {
         desc("SplendidEnchants 附魔插件")
         load("STARTUP")
         dependencies {
-            name("TrChat").with("bukkit").optional(true)
-            name("InteractiveChat").with("bukkit").optional(true)
-            name("ProtocolLib").with("bukkit").optional(true)
+            name("TrChat").optional(true)
+            name("InteractiveChat").optional(true)
         }
     }
     install("common")
@@ -36,7 +35,7 @@ taboolib {
     install("module-ui")
     install("platform-bukkit")
     classifier = null
-    version = "6.0.12-15"
+    version = "6.0.12-26"
 
     relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
     relocate("com.mcstarrysky.starrysky", "world.icebear03.splendidenchants.taboolib.starrysky")
@@ -44,7 +43,6 @@ taboolib {
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.dmulloy2.net/repository/public/")
     mavenCentral()
 }
 
@@ -53,6 +51,8 @@ dependencies {
 
     compileOnly("ink.ptms:nms-all:1.0.0")
     compileOnly("ink.ptms.core:v11605:11605")
+    compileOnly("ink.ptms.core:v11900:11900:mapped")
+    compileOnly("ink.ptms.core:v11900:11900:universal")
     compileOnly("ink.ptms.core:v11904:11904:mapped")
     compileOnly("ink.ptms.core:v11904:11904:universal")
     compileOnly("ink.ptms.core:v11802:11802:universal")
@@ -66,9 +66,6 @@ dependencies {
     // Purtmars Repository
     compileOnly("public:TrChat:2.0.4")
     compileOnly("public:InteractiveChat:4.2.7.2")
-
-    // Misc
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
 
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
