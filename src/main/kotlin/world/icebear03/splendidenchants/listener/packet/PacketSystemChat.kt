@@ -16,6 +16,7 @@
  */
 package world.icebear03.splendidenchants.listener.packet
 
+import org.bukkit.entity.Player
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.chat.ComponentText
@@ -30,19 +31,20 @@ object PacketSystemChat {
     @SubscribeEvent(priority = EventPriority.MONITOR)
     fun e(e: PacketSendEvent) {
         if (e.packet.name == "ClientboundSystemChatPacket") {
+            val player = e.player
             if (isPaper) {
                 val adventure = e.packet.read<Any>("adventure\$content") ?: return
                 val taboo = AdventureUtils.toTabooLibComponent(adventure) as ComponentText
-                val result = AdventureUtils.fromTabooLibComponent(modify(taboo))
+                val result = AdventureUtils.fromTabooLibComponent(modify(taboo, player))
                 e.packet.write("adventure\$content", result)
             } else {
                 val taboo = Components.parseRaw(e.packet.read<String>("content") ?: return)
-                e.packet.write("content", modify(taboo).toRawMessage())
+                e.packet.write("content", modify(taboo, player).toRawMessage())
             }
         }
     }
 
-    private fun modify(taboo: ComponentText): ComponentText {
-        return Components.parseRaw(ComponentUtils.parseRaw(ComponentUtils.applyItemDisplay(taboo.toSpigotObject())))
+    private fun modify(taboo: ComponentText, player: Player): ComponentText {
+        return Components.parseRaw(ComponentUtils.parseRaw(ComponentUtils.applyItemDisplay(taboo.toSpigotObject(), player)))
     }
 }
