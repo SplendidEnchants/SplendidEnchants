@@ -45,8 +45,11 @@ object ComponentUtils {
                 val content = hover.contents[0] as Item
                 val id = content.id
                 val cnt = content.count
+                println("未修改物品的nbt: " + nmsProxy<NMS>().itemToJson(content))
+                println("未修改物品的bukkit物品堆: " + nmsProxy<NMS>().jsonToItem(nmsProxy<NMS>().itemToJson(content)))
                 val item = nmsProxy<NMS>().jsonToItem(nmsProxy<NMS>().itemToJson(content)) // 这是未修改过的物品
                 val newItem = EnchantDisplayer.display(item, player) // 生成展示过的物品
+                println("新物品nbt: " + nmsProxy<NMS>().bkItemToJson(newItem))
                 val newNBT = nmsProxy<NMS>().bkItemToJson(newItem) // 新物品 NBT
 
                 hover.contents[0] = Item(id, cnt, ItemTag.ofNbt(newNBT)) // 设置回去

@@ -1,6 +1,7 @@
 package world.icebear03.splendidenchants.api.internal.nms
 
 import com.mcstarrysky.starrysky.function.emptyItemStack
+import com.mojang.brigadier.StringReader
 import net.md_5.bungee.api.chat.hover.content.Item
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -11,7 +12,6 @@ import taboolib.module.nms.NMSItem
 import taboolib.module.nms.nmsClass
 import world.icebear03.splendidenchants.api.isNull
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
-import java.io.StringReader
 
 abstract class NMS {
 
@@ -84,20 +84,32 @@ class NMSImpl : NMS() {
 
     override fun itemToJson(item: Item): String {
         return runCatching {
-            nmsClass("MojangsonParser").invokeConstructor(StringReader(item.tag.nbt)).invokeMethod<String>("a") ?: "{}"
-        }.getOrElse { "{}" }
+            nmsClass("MojangsonParser").invokeConstructor(StringReader(item.tag.nbt))
+                .invokeMethod<Any>(if (MinecraftVersion.majorLegacy >= 11800) "readSingleStruct" else "a")?.toString() ?: "{}"
+        }.getOrElse {
+            println("itemToJson failed: $it")
+            "{}"
+        }
     }
 
     override fun bkItemToJson(item: ItemStack): String {
         return runCatching {
             NMSItem.asNMSCopy(item).invokeMethod<Any>("save", nmsClass("NBTTagCompound").newInstance()).toString()
-        }.getOrElse { "{}" }
+        }.getOrElse {
+            println("bkItemToJson failed: $it")
+            "{}"
+        }
     }
 
     override fun jsonToItem(json: String): ItemStack {
         return runCatching {
-            NMSItem.asBukkitCopy(nmsClass("ItemStack").invokeConstructor(nmsClass("MojangsonParser").invokeMethod(if (MinecraftVersion.majorLegacy >= 11800) "parseTag" else "parse", isStatic = true)))
-        }.getOrElse { emptyItemStack }
+            val nbt = nmsClass("MojangsonParser").invokeMethod<Any>(if (MinecraftVersion.majorLegacy >= 11800) "parseTag" else "parse", json, isStatic = true)
+            println("parse出来的 java class: " + nbt?.javaClass?.name)
+            NMSItem.asBukkitCopy(nmsClass("ItemStack").invokeConstructor(nbt))
+        }.getOrElse {
+            println("jsonToItem failed: $it")
+            emptyItemStack
+        }
     }
 }
 
