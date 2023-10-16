@@ -22,7 +22,8 @@ import net.md_5.bungee.api.chat.ItemTag
 import net.md_5.bungee.api.chat.hover.content.Item
 import net.md_5.bungee.chat.ComponentSerializer
 import org.bukkit.entity.Player
-import taboolib.platform.util.bukkitPlugin
+import taboolib.module.nms.nmsProxy
+import world.icebear03.splendidenchants.api.internal.nms.NMS
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -44,13 +45,11 @@ object ComponentUtils {
                 val content = hover.contents[0] as Item
                 val id = content.id
                 val cnt = content.count
-                val tag = content.tag
-                val nbt = tag.nbt //这是没修改的json nbt
-                val item = bukkitPlugin.server.itemFactory.createItemStack(id + tag.nbt) //这是未修改过的物品，注意，不会带有更多附魔，需要手动读json的enchantments内容
-                val newItem = EnchantDisplayer.display(item, player) //生成展示过的物品
-                val newNBT;//把newItem转换为json nbt
+                val item = nmsProxy<NMS>().jsonToItem(nmsProxy<NMS>().itemToJson(content)) // 这是未修改过的物品
+                val newItem = EnchantDisplayer.display(item, player) // 生成展示过的物品
+                val newNBT = nmsProxy<NMS>().bkItemToJson(newItem) // 新物品 NBT
 
-                hover.contents[0] = Item(id, cnt, ItemTag.ofNbt(newNBT))
+                hover.contents[0] = Item(id, cnt, ItemTag.ofNbt(newNBT)) // 设置回去
                 processing.hoverEvent = hover
             }
         }

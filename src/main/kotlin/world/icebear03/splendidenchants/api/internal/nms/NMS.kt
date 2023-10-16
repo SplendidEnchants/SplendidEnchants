@@ -1,21 +1,31 @@
 package world.icebear03.splendidenchants.api.internal.nms
 
+import com.mcstarrysky.starrysky.function.emptyItemStack
+import net.md_5.bungee.api.chat.hover.content.Item
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.reflex.Reflex.Companion.invokeMethod
 import taboolib.module.nms.MinecraftVersion
 import taboolib.module.nms.NMSItem
 import taboolib.module.nms.nmsClass
 import world.icebear03.splendidenchants.api.isNull
 import world.icebear03.splendidenchants.enchant.EnchantDisplayer
+import java.io.StringReader
 
 abstract class NMS {
 
     /** 为原版的 MerchantRecipeList 的物品显示更多附魔 */
     abstract fun adaptMerchantRecipe(merchantRecipeList: Any, player: Player): Any
 
-    /** 获取物品 Json */
-    abstract fun itemToJson(item: ItemStack): String
+    /** 获取 BungeeCord 物品 Json */
+    abstract fun itemToJson(item: Item): String
+
+    /** 获取 Bukkit 物品 Json */
+    abstract fun bkItemToJson(item: ItemStack): String
+
+    /** 从 Json 获取 Bukkit 物品 */
+    abstract fun jsonToItem(json: String): ItemStack
 }
 
 class NMSImpl : NMS() {
@@ -72,10 +82,22 @@ class NMSImpl : NMS() {
         }
     }
 
-    override fun itemToJson(item: ItemStack): String {
+    override fun itemToJson(item: Item): String {
+        return runCatching {
+            nmsClass("MojangsonParser").invokeConstructor(StringReader(item.tag.nbt)).invokeMethod<String>("a") ?: "{}"
+        }.getOrElse { "{}" }
+    }
+
+    override fun bkItemToJson(item: ItemStack): String {
         return runCatching {
             NMSItem.asNMSCopy(item).invokeMethod<Any>("save", nmsClass("NBTTagCompound").newInstance()).toString()
         }.getOrElse { "{}" }
+    }
+
+    override fun jsonToItem(json: String): ItemStack {
+        return runCatching {
+            NMSItem.asBukkitCopy(nmsClass("ItemStack").invokeConstructor(nmsClass("MojangsonParser").invokeMethod(if (MinecraftVersion.majorLegacy >= 11800) "parseTag" else "parse", isStatic = true)))
+        }.getOrElse { emptyItemStack }
     }
 }
 
