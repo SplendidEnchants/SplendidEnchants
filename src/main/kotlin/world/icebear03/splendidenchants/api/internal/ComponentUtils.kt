@@ -16,42 +16,17 @@
  */
 package world.icebear03.splendidenchants.api.internal
 
-import com.mojang.brigadier.StringReader
-import me.arasple.mc.trchat.taboolib.common.reflect.Reflex.Companion.invokeMethod
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.ItemTag
 import net.md_5.bungee.api.chat.hover.content.Item
 import net.md_5.bungee.chat.ComponentSerializer
-import net.minecraft.nbt.MojangsonParser
-import net.minecraft.nbt.NBTTagCompound
-import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import taboolib.module.nms.NMSItem
-import java.lang.reflect.Constructor
+import taboolib.platform.util.bukkitPlugin
+import world.icebear03.splendidenchants.enchant.EnchantDisplayer
 import java.util.concurrent.ConcurrentLinkedQueue
 
 object ComponentUtils {
-
-    val nmsItemConstructor: Constructor<*>;
-
-    init {
-        println(
-            NMSItem.asNMSCopy(ItemStack(Material.STONE))
-                .javaClass
-                .constructors
-                .map { it.parameterTypes.map { it.name } }
-        )
-        nmsItemConstructor =
-            NMSItem.asNMSCopy(ItemStack(Material.STONE))
-                .javaClass
-                .constructors
-                .find {
-                    it.parameterTypes.size == 1 &&
-                            it.parameters.getOrNull(0)?.type?.name == "NBTTagCompound"
-                }!!
-    }
 
     /**
      * 处理聊天展示
@@ -66,19 +41,16 @@ object ComponentUtils {
 
             val hover = processing.hoverEvent ?: continue
             if (hover.action == HoverEvent.Action.SHOW_ITEM) {
-                val item = hover.contents[0] as Item
-                val id = item.id
-                val cnt = item.count
-                val tag = item.tag
+                val content = hover.contents[0] as Item
+                val id = content.id
+                val cnt = content.count
+                val tag = content.tag
+                val nbt = tag.nbt //这是没修改的json nbt
+                val item = bukkitPlugin.server.itemFactory.createItemStack(id + tag.nbt) //这是未修改过的物品，注意，不会带有更多附魔，需要手动读json的enchantments内容
+                val newItem = EnchantDisplayer.display(item, player) //生成展示过的物品
+                val newNBT;//把newItem转换为json nbt
 
-                val nbt: NBTTagCompound? = MojangsonParser(StringReader(tag.nbt)).invokeMethod("a")
-                println(nbt)
-                //success!
-                val nmsItem: Any = nmsItemConstructor.newInstance(nbt)
-                println("BKITEM: " + NMSItem.asBukkitCopy(nmsItem))
-                //未通过测试
-
-                hover.contents[0] = Item(id, cnt, ItemTag.ofNbt("{}"))
+                hover.contents[0] = Item(id, cnt, ItemTag.ofNbt(newNBT))
                 processing.hoverEvent = hover
             }
         }
