@@ -39,6 +39,8 @@ taboolib {
 
     relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
     relocate("com.mcstarrysky.starrysky", "world.icebear03.splendidenchants.taboolib.starrysky")
+
+    options("keep-kotlin-module")
 }
 
 repositories {
