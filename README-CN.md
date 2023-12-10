@@ -5,7 +5,7 @@
 
 > 适用于 Spigot 1.16+ 的更多附魔插件。
 
-SplendidEnchants 是一个为 Minecraft（Java 版）提供更多附魔的平台，它的前身是 NereusOpus。但是 SplendidEnchants 不仅仅只是提供了更多的附魔，还提供了一个令人惊奇的的框架来创建属于你自己的独一无二的附魔，例如提供了一些可以操作事件、方块、实体或其他东西的魔法般的工具，通过我们自己的脚本语法帮助你向游戏中添加更多的乐趣。
+SplendidEnchants 是一个为 Minecraft（Java 版）提供更多附魔的平台，它的前身是 NereusOpus。但是 SplendidEnchants 不仅仅只是提供了更多的附魔，还提供了一个令人惊叹的框架来创建属于你自己的独一无二的附魔，例如提供了一些可以操作事件、方块、实体或其他东西的魔法般的工具，通过我们自己的脚本语法帮助你向游戏中添加更多的乐趣。
 
 - 在 2.x 版本中，NereusOpus 起初是针对 Paper 的解决方案，不过现在 SplendidEnchant 业已支持 Spigot。
 - 我们使用 GPL-3.0 协议进行开源, 这意味着你可以通过编程来创建属于自己的特性。
