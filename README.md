@@ -1,4 +1,10 @@
 # SplendidEnchants
+
+[**[中文版本/Chinese Ver.]**](https://github.com/SplendidEnchants/SplendidEnchants/blob/master/README-CN.md)
+
+![](https://img.shields.io/github/contributors/splendidenchants/splendidenchants)
+![](https://img.shields.io/github/languages/code-size/splendidenchants/splendidenchants)
+
 > A splendid plugin for more enchants in spigot 1.16+.
 
 SplendidEnchants is a enchantment framework for Minecraft Java Version, whose predecessor is NereusOpus 2.0. However, SplendidEnchants itself provides not only lots of new enchantments, but also an amazing framework for creating unique enchantments of you own, like providing some magic tools to access to events, blocks, entities or other objects, helping you add more fun to the game through our own defined special script syntax.
