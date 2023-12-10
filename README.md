@@ -7,7 +7,7 @@ SplendidEnchants is a enchantment framework for Minecraft Java Version, whose pr
 - SplendidEnchants is offered under the GPL-3.0 License, which means you can create your own features by coding.
 - Free (with **limited** services).
 
-Along with the 3.0 update, we believe that the 2.0 code is too cumbersome and unintelligent, this has become troublesome. A plugin which is exquisitely rewritten with efficient framework, which is highly customizable, which is stable, which is easy-to-use, is what we need. So it was a foregone conclusion that a huge update to v3.0 was in order, in which we carefully redesigned every single component of NereusOpus, and we changed a name, and it just becomes SplendidEnchants.
+Along with the 3.0 update, we believe that the 2.0 code is too cumbersome and unintelligent, this has become troublesome. A plugin which is exquisitely rewritten with efficient framework, which is highly customizable, which is stable, which is easy-to-use, is what we need. So it was a foregone conclusion that a huge update to v3.0 was in order, in which we carefully redesigned every single component of NereusOpus, so it just becomes SplendidEnchants after we redesigned and changed the name.
 
 ## Authors
 - HamsterYDS .......... Maintainer (has left)
