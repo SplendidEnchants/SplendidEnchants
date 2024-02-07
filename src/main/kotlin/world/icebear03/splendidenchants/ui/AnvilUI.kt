@@ -11,7 +11,7 @@ import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
-import taboolib.module.ui.type.Basic
+import taboolib.module.ui.type.Chest
 import world.icebear03.splendidenchants.api.fixedEnchants
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.isNull
@@ -37,7 +37,7 @@ object AnvilUI {
 
     fun open(player: Player, a: ItemStack? = null, b: ItemStack? = null) {
         player.record(UIType.ANVIL, "a" to a, "b" to b)
-        player.openMenu<Basic>(config.title().colorify()) {
+        player.openMenu<Chest>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             map(*shape.array)

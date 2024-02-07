@@ -11,7 +11,7 @@ import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
-import taboolib.module.ui.type.Linked
+import taboolib.module.ui.type.PageableChest
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.pages
@@ -40,7 +40,7 @@ object FilterTargetUI {
 
     fun open(player: Player) {
         player.record(UIType.FILTER_TARGET)
-        player.openMenu<Linked<Target>>(config.title().colorify()) {
+        player.openMenu<PageableChest<Target>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["FilterTarget:filter"].toList()

@@ -14,7 +14,7 @@ data class PlayerData(private val serializedData: String?) {
     var menuMode: MenuMode = MenuMode.NORMAL
     var favorites: MutableList<String> = mutableListOf()
     var filters: Map<EnchantFilter.FilterType, MutableMap<String, EnchantFilter.FilterStatement>> =
-        EnchantFilter.FilterType.entries.associateWith { mutableMapOf() }
+        EnchantFilter.FilterType.values().associateWith { mutableMapOf() }
     var cooldown: MutableMap<String, Long> = mutableMapOf()
 
     init {

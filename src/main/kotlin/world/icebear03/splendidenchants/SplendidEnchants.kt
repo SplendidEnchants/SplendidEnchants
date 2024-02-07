@@ -1,12 +1,16 @@
 package world.icebear03.splendidenchants
 
+import com.mcstarrysky.starrysky.StarrySky
 import com.mcstarrysky.starrysky.i18n.I18n
 import me.arasple.mc.trchat.module.internal.hook.HookPlugin
 import org.bukkit.Bukkit
 import org.serverct.parrot.parrotx.mechanism.Reloadables
 import org.serverct.parrot.parrotx.ui.registry.MenuFunctions
+import taboolib.common.platform.Platform
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
+import taboolib.common.platform.function.submitAsync
+import taboolib.module.metrics.Metrics
 import taboolib.platform.util.onlinePlayers
 import world.icebear03.splendidenchants.api.internal.FurtherOperation
 import world.icebear03.splendidenchants.api.internal.colorify
@@ -41,12 +45,14 @@ object SplendidEnchants : Plugin() {
     }
 
     override fun onEnable() {
-        measureTimeMillis {
-            sendLogo();
-            console().sendMessage("Installing SplendidEnchants...")
+        sendLogo();
+        console().sendMessage("Installing SplendidEnchants...")
 
-            I18n.initialize() // 加载的提示信息已经内置在 I18n 类里了，不需要再单独写
-
+        StarrySky.setup(
+            timeLog = "                            \nInstalled SplendidEnchants in §6{time}ms",
+            bStatsDisabled = null,
+            bStatsEnabled = null
+        ) {
             runCatching {
                 console().sendMessage("|- Loading Config Module...")
                 Config.load()
@@ -80,10 +86,13 @@ object SplendidEnchants : Plugin() {
             }.onFailure {
                 I18n.error(I18n.INIT, "SplendidEnchants", it)
             }
-        }.let { time ->
-            console().sendMessage("                            ")
-            console().sendMessage("Installed SplendidEnchants in §6${time}ms")
-            sendInfo()
+        }.let {
+            if (it) {
+                sendInfo()
+                submitAsync {
+                    Metrics(19573, StarrySky.VERSION, Platform.BUKKIT) // Module-StarrySky
+                }
+            }
         }
     }
 

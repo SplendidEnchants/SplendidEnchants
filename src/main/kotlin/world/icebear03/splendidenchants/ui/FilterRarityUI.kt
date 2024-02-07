@@ -11,7 +11,7 @@ import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
-import taboolib.module.ui.type.Linked
+import taboolib.module.ui.type.PageableChest
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.pages
@@ -23,7 +23,6 @@ import world.icebear03.splendidenchants.enchant.data.rarities
 import world.icebear03.splendidenchants.ui.internal.UIType
 import world.icebear03.splendidenchants.ui.internal.record
 import kotlin.collections.set
-
 
 @MenuComponent("FilterRarity")
 object FilterRarityUI {
@@ -40,7 +39,7 @@ object FilterRarityUI {
 
     fun open(player: Player) {
         player.record(UIType.FILTER_RARITY)
-        player.openMenu<Linked<Rarity>>(config.title().colorify()) {
+        player.openMenu<PageableChest<Rarity>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["FilterRarity:filter"].toList()

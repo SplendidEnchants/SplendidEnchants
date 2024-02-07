@@ -75,7 +75,7 @@ object EnchantFilter {
     fun clearFilter(player: Player, type: FilterType, value: Any) = player.filters[type]!!.remove(value)
 
 
-    val filterTypes = FilterType.entries.toList()
+    val filterTypes = FilterType.values().toList()
 
     enum class FilterType(val display: String) {
         RARITY("品质"),

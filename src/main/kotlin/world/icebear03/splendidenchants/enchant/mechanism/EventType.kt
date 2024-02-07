@@ -17,6 +17,6 @@ enum class EventType(val display: String, val entry: EventEntry<*>) {
     CHAT("聊天", EventChat);
 
     companion object {
-        fun getType(identifier: String?): EventType? = entries.find { it.display == identifier || it.name == identifier }
+        fun getType(identifier: String?): EventType? = values().find { it.display == identifier || it.name == identifier }
     }
 }

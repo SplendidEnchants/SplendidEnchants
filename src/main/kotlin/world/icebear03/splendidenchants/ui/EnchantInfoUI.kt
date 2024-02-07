@@ -16,7 +16,7 @@ import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
-import taboolib.module.ui.type.Linked
+import taboolib.module.ui.type.PageableChest
 import taboolib.platform.util.giveItem
 import taboolib.platform.util.modifyLore
 import taboolib.platform.util.modifyMeta
@@ -71,7 +71,7 @@ object EnchantInfoUI {
         }
 
         player.record(UIType.ENCHANT_INFO, "enchant" to enchant, "level" to level, "checked" to checked, "category" to category)
-        player.openMenu<Linked<String>>(
+        player.openMenu<PageableChest<String>>(
             config.title()
                 .replace("[enchant_display_roman]", enchant.display(level))
                 .colorify()

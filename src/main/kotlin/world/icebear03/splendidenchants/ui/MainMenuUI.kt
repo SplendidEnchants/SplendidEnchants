@@ -8,7 +8,7 @@ import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
-import taboolib.module.ui.type.Basic
+import taboolib.module.ui.type.Chest
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.ui.internal.UIType
@@ -29,7 +29,7 @@ object MainMenuUI {
 
     fun open(player: Player) {
         player.record(UIType.MAIN_MENU)
-        player.openMenu<Basic>(config.title().colorify()) {
+        player.openMenu<Chest>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             map(*shape.array)

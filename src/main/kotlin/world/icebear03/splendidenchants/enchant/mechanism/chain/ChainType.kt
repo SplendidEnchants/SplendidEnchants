@@ -17,6 +17,6 @@ enum class ChainType(val display: String) {
     ITEM("物品"); // 格式 - 物品::修改指令:参数...
 
     companion object {
-        fun getType(identifier: String?): ChainType? = ChainType.entries.find { it.display == identifier || it.name == identifier }
+        fun getType(identifier: String?): ChainType? = ChainType.values().find { it.display == identifier || it.name == identifier }
     }
 }

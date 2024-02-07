@@ -3,10 +3,10 @@ package world.icebear03.splendidenchants.api
 import org.bukkit.entity.Player
 import org.serverct.parrot.parrotx.ui.config.advance.ShapeConfiguration
 import org.serverct.parrot.parrotx.ui.config.advance.TemplateConfiguration
-import taboolib.module.ui.type.Basic
-import taboolib.module.ui.type.Linked
+import taboolib.module.ui.type.Chest
+import taboolib.module.ui.type.PageableChest
 
-fun Basic.setSlots(
+fun Chest.setSlots(
     shape: ShapeConfiguration,
     templates: TemplateConfiguration,
     key: String,
@@ -29,7 +29,7 @@ fun Basic.setSlots(
     }
 }
 
-fun Basic.load(
+fun Chest.load(
     shape: ShapeConfiguration,
     templates: TemplateConfiguration,
     player: Player,
@@ -53,7 +53,7 @@ fun Basic.load(
     }
 }
 
-fun <T> Linked<T>.pages(
+fun <T> PageableChest<T>.pages(
     shape: ShapeConfiguration,
     templates: TemplateConfiguration
 ) {

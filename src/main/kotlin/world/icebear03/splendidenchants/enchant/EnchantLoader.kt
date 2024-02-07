@@ -3,6 +3,7 @@ package world.icebear03.splendidenchants.enchant
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import taboolib.common.io.runningResources
+import taboolib.common.io.runningResourcesInJar
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getDataFolder
 import taboolib.library.reflex.Reflex.Companion.getProperty
@@ -91,7 +92,7 @@ object EnchantLoader {
     }
 
     fun releaseEnchantFiles() {
-        runningResources.filter {
+        runningResourcesInJar.keys.filter {
             it.endsWith(".yml")
                     && it.startsWith("enchants/")
                     && it.count { c -> c == '/' } == 2

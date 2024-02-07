@@ -14,7 +14,7 @@ import org.serverct.parrot.parrotx.ui.feature.util.MenuFunctionBuilder
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
-import taboolib.module.ui.type.Linked
+import taboolib.module.ui.type.PageableChest
 import world.icebear03.splendidenchants.api.*
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.enchant.SplendidEnchant
@@ -44,7 +44,7 @@ object ItemCheckUI {
 
     fun open(player: Player, item: ItemStack? = null, mode: CheckMode) {
         player.record(UIType.ITEM_CHECK, "item" to item, "mode" to mode)
-        player.openMenu<Linked<Pair<SplendidEnchant, Int>>>(config.title().colorify()) {
+        player.openMenu<PageableChest<Pair<SplendidEnchant, Int>>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["ItemCheck:enchant"].toList()
@@ -99,14 +99,14 @@ object ItemCheckUI {
     private val mode = MenuFunctionBuilder {
         onBuild { (_, _, _, _, icon, args) ->
             val current = args["mode"] as CheckMode
-            icon.variable("modes", CheckMode.entries.map {
+            icon.variable("modes", CheckMode.values().map {
                 if (current == it) "&a${it.display}"
                 else "&7${it.display}"
             })
         }
         onClick { (_, _, _, event, args) ->
             val current = args["mode"] as CheckMode
-            val entries = CheckMode.entries
+            val entries = CheckMode.values()
             var index = entries.indexOf(current)
             if (index >= entries.size - 1) index = -1
             open(event.clicker, args["item"] as? ItemStack, entries[index + 1])

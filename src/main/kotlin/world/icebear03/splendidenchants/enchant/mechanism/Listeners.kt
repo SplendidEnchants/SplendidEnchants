@@ -30,7 +30,7 @@ class Listeners(val enchant: SplendidEnchant, config: ConfigurationSection?) {
     init {
         config?.getKeys(false)?.forEach { id ->
             val type = EventType.getType(config.getString("$id.type")) ?: return@forEach
-            val priority = EventPriority.entries.find { it.name == config.getString("$id.priority", "HIGHEST") } ?: return@forEach
+            val priority = EventPriority.values().find { it.name == config.getString("$id.priority", "HIGHEST") } ?: return@forEach
             val lines = config.getStringList("$id.chains")
             val chains = lines.map { Chain(enchant, it) }
             byId[id] = priority to chains

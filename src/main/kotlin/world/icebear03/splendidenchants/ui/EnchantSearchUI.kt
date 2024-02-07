@@ -14,9 +14,9 @@ import taboolib.common.platform.function.submit
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.ui.openMenu
-import taboolib.module.ui.type.Linked
 import taboolib.platform.util.nextChat
 import com.mcstarrysky.starrysky.i18n.sendLang
+import taboolib.module.ui.type.PageableChest
 import world.icebear03.splendidenchants.api.internal.colorify
 import world.icebear03.splendidenchants.api.load
 import world.icebear03.splendidenchants.api.pages
@@ -44,7 +44,7 @@ object EnchantSearchUI {
 
     fun open(player: Player) {
         player.record(UIType.ENCHANT_SEARCH)
-        player.openMenu<Linked<SplendidEnchant>>(config.title().colorify()) {
+        player.openMenu<PageableChest<SplendidEnchant>>(config.title().colorify()) {
             val (shape, templates) = config
             rows(shape.rows)
             val slots = shape["EnchantSearch:enchant"].toList()
@@ -62,7 +62,7 @@ object EnchantSearchUI {
             onGenerate { _, element, index, slot -> template(slot, index) { this["enchant"] = element } }
             onClick { event, element -> templates[event.rawSlot]?.handle(this, event, "element" to element) }
 
-            EnchantFilter.FilterType.entries.forEach {
+            EnchantFilter.FilterType.values().forEach {
                 setSlots(
                     shape, templates, "EnchantSearch:filter_${it.toString().lowercase()}", listOf(),
                     "filters" to EnchantFilter.generateLore(it, player)

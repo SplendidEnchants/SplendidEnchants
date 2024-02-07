@@ -1,3 +1,5 @@
+import io.izzel.taboolib.gradle.*
+
 buildscript {
     repositories {
         maven("https://maven.aliyun.com/repository/central")
@@ -7,11 +9,14 @@ buildscript {
 plugins {
     `java-library`
     `maven-publish`
-    id("io.izzel.taboolib") version "1.56"
-    id("org.jetbrains.kotlin.jvm") version "1.9.0"
+    id("io.izzel.taboolib") version "2.0.2"
+    id("org.jetbrains.kotlin.jvm") version "1.8.22"
 }
 
 taboolib {
+
+    env { install(BUKKIT_ALL, CHAT, CONFIGURATION, NMS_UTIL, UI, KETHER, METRICS) }
+
     description {
         contributors {
             name("大白熊_IceBear")
@@ -25,25 +30,15 @@ taboolib {
             name("InteractiveChat").optional(true)
         }
     }
-    install("common")
-    install("common-5")
-    install("module-chat")
-    install("module-nms")
-    install("module-nms-util")
-    install("module-kether")
-    install("module-configuration")
-    install("module-ui")
-    install("platform-bukkit")
-    classifier = null
-    version = "6.0.12-26"
 
-    relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.taboolib.parrotx")
-    relocate("com.mcstarrysky.starrysky", "world.icebear03.splendidenchants.taboolib.starrysky")
+    version { taboolib = "6.1.0" }
 
-    options("keep-kotlin-module")
+    relocate("org.serverct.parrot.parrotx", "world.icebear03.splendidenchants.libs.parrotx")
+    relocate("com.mcstarrysky.starrysky", "world.icebear03.splendidenchants.libs.starrysky")
 }
 
 repositories {
+    mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
     mavenCentral()
 }
@@ -63,8 +58,9 @@ dependencies {
     compileOnly("ink.ptms.core:v12001:12001:mapped")
     compileOnly("ink.ptms.core:v12001:12001:universal")
 
-    taboo("org.tabooproject.taboolib:module-parrotx:1.5.4") // Module-ParrotX
-    taboo("com.mcstarrysky.taboolib:module-starrysky:1.0.12-6") // Module-StarrySky
+    // FIXME: 以下两个库更新版本后, 也要在 RuntimeEnv 中更新对应版本
+    compileOnly("org.tabooproject.taboolib:module-parrotx:1.5.5") // Module-ParrotX
+    compileOnly("com.mcstarrysky.taboolib:module-starrysky:2.0.0-14") // Module-StarrySky
 
     // Purtmars Repository
     compileOnly("public:TrChat:2.0.4")
