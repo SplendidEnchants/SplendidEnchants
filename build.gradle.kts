@@ -58,9 +58,8 @@ dependencies {
     compileOnly("ink.ptms.core:v12001:12001:mapped")
     compileOnly("ink.ptms.core:v12001:12001:universal")
 
-    // FIXME: 以下两个库更新版本后, 也要在 RuntimeEnv 中更新对应版本
-    compileOnly("org.tabooproject.taboolib:module-parrotx:1.5.5") // Module-ParrotX
-    compileOnly("com.mcstarrysky.taboolib:module-starrysky:2.0.0-14") // Module-StarrySky
+    taboo("org.tabooproject.taboolib:module-parrotx:1.5.5") // Module-ParrotX
+    taboo("com.mcstarrysky.taboolib:module-starrysky:2.0.0-14") // Module-StarrySky
 
     // Purtmars Repository
     compileOnly("public:TrChat:2.0.4")
